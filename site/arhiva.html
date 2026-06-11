@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arhiva — Mondialul de dimineață</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="meta">
+    <span>Arhiva dimineților</span>
+    <span><a href="index.html" style="color: var(--muted);">← azi</a></span>
+  </div>
+  <main id="app">
+    <div class="card">
+      <p class="card-label">Alege o dimineață</p>
+      <ul class="archive-list" id="archive-list">
+        <li class="empty-state">Se încarcă…</li>
+      </ul>
+    </div>
+    <div id="digest"></div>
+  </main>
+  <script type="module">
+    import { renderDigest, loadDigest } from './assets/render.js';
+
+    const list = document.getElementById('archive-list');
+    const digestRoot = document.getElementById('digest');
+    const dateFmt = new Intl.DateTimeFormat('ro-RO', {
+      timeZone: 'Europe/Bucharest',
+      weekday: 'long', day: 'numeric', month: 'long',
+    });
+
+    async function showDay(date) {
+      try {
+        const digest = await loadDigest(`data/${date}.json`);
+        renderDigest(digestRoot, digest);
+        digestRoot.scrollIntoView({ behavior: 'smooth' });
+      } catch {
+        digestRoot.replaceChildren(Object.assign(document.createElement('p'), {
+          className: 'empty-state',
+          textContent: `Nu există digest pentru ${date}.`,
+        }));
+      }
+    }
+
+    try {
+      const manifest = await loadDigest('data/manifest.json');
+      list.replaceChildren();
+      for (const date of [...manifest.dates].sort().reverse()) {
+        const link = document.createElement('a');
+        link.href = `#${date}`;
+        link.textContent = dateFmt.format(new Date(`${date}T06:00:00Z`));
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          history.replaceState(null, '', `#${date}`);
+          showDay(date);
+        });
+        const item = document.createElement('li');
+        item.append(link);
+        list.append(item);
+      }
+      if (location.hash) showDay(location.hash.slice(1));
+    } catch {
+      list.replaceChildren(Object.assign(document.createElement('li'), {
+        className: 'empty-state',
+        textContent: 'Arhiva e încă goală.',
+      }));
+    }
+  </script>
+</body>
+</html>

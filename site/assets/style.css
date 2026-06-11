@@ -1,0 +1,209 @@
+/* ── Design tokens ── */
+:root {
+  --bg:        #f5f4f0;
+  --surface:   #ffffff;
+  --border:    rgba(0,0,0,0.12);
+  --text:      #1a1a18;
+  --muted:     #6b6b67;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* status badge colours */
+  --ok-bg:      #e1f5ee; --ok-txt:     #085041;
+  --good-bg:    #eaf3de; --good-txt:   #27500a;
+  --warn-bg:    #faeeda; --warn-txt:   #633806;
+  --danger-bg:  #fcebeb; --danger-txt: #791f1f;
+
+  /* pill accent */
+  --pill-bg:  #faece7; --pill-txt: #993c1d; --pill-head: #4a1b0c;
+
+  /* drama flame */
+  --flame: #d85a30;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:       #1c1c1a;
+    --surface:  #272725;
+    --border:   rgba(255,255,255,0.10);
+    --text:     #f0ede6;
+    --muted:    #9e9d98;
+
+    --ok-bg:    #04342c; --ok-txt:    #9fe1cb;
+    --good-bg:  #173404; --good-txt:  #c0dd97;
+    --warn-bg:  #412402; --warn-txt:  #fac775;
+    --danger-bg:#501313; --danger-txt:#f7c1c1;
+
+    --pill-bg:  #4a1b0c; --pill-txt: #f0997b; --pill-head: #f5c4b3;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background: var(--bg);
+  color: var(--text);
+  padding: 1.25rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ── Meta bar ── */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* ── Page headline ── */
+h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+.summary { font-size: 14px; color: var(--muted); margin-bottom: 1.25rem; }
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-bottom: 12px;
+}
+.card-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+/* ── Match header ── */
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.match-teams {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.team-name { font-size: 15px; font-weight: 500; }
+.score { font-size: 24px; font-weight: 500; white-space: nowrap; }
+
+/* ── Flame rating ── */
+.flames { display: flex; gap: 2px; color: var(--flame); font-size: 18px; flex-shrink: 0; }
+.flame::before { content: "🔥"; font-size: 16px; }
+
+/* ── Scorers line ── */
+.scorers { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.red-card { color: #e24b4a; font-size: 13px; }
+
+/* ── Consequence pill ── */
+.pill {
+  background: var(--pill-bg);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-top: 12px;
+}
+.pill-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pill-head);
+  margin-bottom: 2px;
+}
+.pill-text { font-size: 13px; color: var(--pill-txt); line-height: 1.5; }
+
+/* ── Group table ── */
+table {
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+thead td { color: var(--muted); padding: 4px 0; }
+tbody tr td { padding: 5px 0; }
+.col-team { width: 32%; }
+.col-num  { width: 10%; text-align: center; }
+.col-stat { width: 38%; text-align: right; }
+.pts { font-weight: 500; }
+
+/* ── Status badge ── */
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+}
+.badge-ok     { background: var(--ok-bg);     color: var(--ok-txt);     }
+.badge-good   { background: var(--good-bg);   color: var(--good-txt);   }
+.badge-warn   { background: var(--warn-bg);   color: var(--warn-txt);   }
+.badge-danger { background: var(--danger-bg); color: var(--danger-txt); }
+.badge-muted  { background: var(--bg);        color: var(--muted);      }
+
+/* ── Tonight list ── */
+.tonight-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+}
+.tonight-row .badge { flex-shrink: 0; }
+.tonight-row > div { min-width: 0; }
+.tonight-row + .tonight-row { border-top: 0.5px solid var(--border); }
+.tonight-match { font-size: 14px; }
+.tonight-time  { font-size: 13px; color: var(--muted); }
+.tonight-why   { font-size: 12px; color: var(--muted); }
+
+/* ── WhatsApp share ── */
+.share-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+.share-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  line-height: 1.4;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #25d366;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+}
+
+/* ── Archive ── */
+.archive-list { list-style: none; }
+.archive-list li + li { border-top: 0.5px solid var(--border); }
+.archive-list a {
+  display: block;
+  padding: 10px 0;
+  color: var(--text);
+  text-decoration: none;
+}
+.archive-list a:hover { color: var(--pill-txt); }
+.empty-state { color: var(--muted); font-size: 14px; }

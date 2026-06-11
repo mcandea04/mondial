@@ -1,0 +1,19 @@
+{
+  "name": "mondial",
+  "version": "1.0.0",
+  "description": "Mondialul de dimineață — World Cup morning digest",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "digest": "node pipeline/run.js"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.12.2",
+    "zod": "^3.24.1"
+  }
+}

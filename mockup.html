@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mondialul de dimineață — mockup</title>
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --bg:        #f5f4f0;
+      --surface:   #ffffff;
+      --border:    rgba(0,0,0,0.12);
+      --text:      #1a1a18;
+      --muted:     #6b6b67;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      /* status badge colours */
+      --ok-bg:      #e1f5ee; --ok-txt:     #085041;
+      --good-bg:    #eaf3de; --good-txt:   #27500a;
+      --warn-bg:    #faeeda; --warn-txt:   #633806;
+      --danger-bg:  #fcebeb; --danger-txt: #791f1f;
+
+      /* pill accent */
+      --pill-bg:  #faece7; --pill-txt: #993c1d; --pill-head: #4a1b0c;
+
+      /* drama flame */
+      --flame: #d85a30;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:       #1c1c1a;
+        --surface:  #272725;
+        --border:   rgba(255,255,255,0.10);
+        --text:     #f0ede6;
+        --muted:    #9e9d98;
+
+        --ok-bg:    #04342c; --ok-txt:    #9fe1cb;
+        --good-bg:  #173404; --good-txt:  #c0dd97;
+        --warn-bg:  #412402; --warn-txt:  #fac775;
+        --danger-bg:#501313; --danger-txt:#f7c1c1;
+
+        --pill-bg:  #4a1b0c; --pill-txt: #f0997b; --pill-head: #f5c4b3;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      padding: 1.25rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ── Meta bar ── */
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    /* ── Page headline ── */
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+    .summary { font-size: 14px; color: var(--muted); margin-bottom: 1.25rem; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      margin-bottom: 12px;
+    }
+    .card-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* ── Match header ── */
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .match-teams {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .team-name { font-size: 15px; font-weight: 500; }
+    .score { font-size: 24px; font-weight: 500; }
+
+    /* ── Flame rating ── */
+    .flames { display: flex; gap: 2px; color: var(--flame); font-size: 18px; }
+    /* simple flame using Unicode; production would use an icon font */
+    .flame::before { content: "🔥"; font-size: 16px; }
+
+    /* ── Scorers line ── */
+    .scorers { font-size: 13px; color: var(--muted); margin-top: 8px; }
+    .red-card { color: #e24b4a; font-size: 13px; }
+
+    /* ── Consequence pill ── */
+    .pill {
+      background: var(--pill-bg);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-top: 12px;
+    }
+    .pill-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--pill-head);
+      margin-bottom: 2px;
+    }
+    .pill-text { font-size: 13px; color: var(--pill-txt); line-height: 1.5; }
+
+    /* ── Group table ── */
+    table {
+      width: 100%;
+      font-size: 13px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    thead td { color: var(--muted); padding: 4px 0; }
+    tbody tr td { padding: 5px 0; }
+    .col-team { width: 42%; }
+    .col-num  { width: 12%; text-align: center; }
+    .col-stat { width: 34%; text-align: right; }
+
+    /* ── Status badge ── */
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: var(--radius-md);
+      white-space: nowrap;
+    }
+    .badge-ok     { background: var(--ok-bg);     color: var(--ok-txt);     }
+    .badge-good   { background: var(--good-bg);   color: var(--good-txt);   }
+    .badge-warn   { background: var(--warn-bg);   color: var(--warn-txt);   }
+    .badge-danger { background: var(--danger-bg); color: var(--danger-txt); }
+
+    /* ── Tonight list ── */
+    .tonight-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+    }
+    .tonight-row + .tonight-row { border-top: 0.5px solid var(--border); }
+    .tonight-match { font-size: 14px; }
+    .tonight-time  { font-size: 13px; color: var(--muted); }
+
+    /* ── WhatsApp share ── */
+    .share-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 1.25rem;
+    }
+    .share-text {
+      flex: 1;
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      line-height: 1.4;
+    }
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #25d366;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ① Page header -->
+  <div class="meta">
+    <span>Joi, 18 iunie · azi-noapte la Mondial</span>
+    <span>3 meciuri</span>
+  </div>
+  <h1>Germania, în corzi după șocul cu Japonia</h1>
+  <p class="summary">
+    Ai dormit liniștit? Japonia a întors scorul în 7 minute, Spania a făcut instrucție
+    cu Honduras, iar grupa E e acum un butoi cu pulbere.
+  </p>
+
+  <!-- ② Match card -->
+  <div class="card">
+    <div class="match-header">
+      <div class="match-teams">
+        <span class="team-name">Germania</span>
+        <span class="score">1 – 2</span>
+        <span class="team-name">Japonia</span>
+      </div>
+      <!-- drama rating: 4 flames out of 5 -->
+      <div class="flames" aria-label="dramă 4 din 5">
+        <span class="flame" aria-hidden="true"></span>
+        <span class="flame" aria-hidden="true"></span>
+        <span class="flame" aria-hidden="true"></span>
+        <span class="flame" aria-hidden="true"></span>
+      </div>
+    </div>
+    <p class="scorers">
+      Gnabry 33' &nbsp;·&nbsp; Doan 75' &nbsp;·&nbsp; Asano 82'
+      &nbsp;·&nbsp; <span class="red-card">■ Rüdiger 79'</span>
+    </p>
+    <div class="pill">
+      <p class="pill-label">Pastila de consecințe</p>
+      <p class="pill-text">
+        Germania e obligată să bată Spania în ultima etapă — și nici asta nu ajunge:
+        are nevoie și ca Panama să nu câștige cu Honduras. DRAMĂ maximă marți noapte.
+      </p>
+    </div>
+  </div>
+
+  <!-- ② Match card 2 (compact — no scorers available) -->
+  <div class="card">
+    <div class="match-header">
+      <div class="match-teams">
+        <span class="team-name">Spania</span>
+        <span class="score">4 – 0</span>
+        <span class="team-name">Honduras</span>
+      </div>
+      <div class="flames" aria-label="dramă 1 din 5">
+        <span class="flame" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="pill">
+      <p class="pill-label">Pastila de consecințe</p>
+      <p class="pill-text">
+        Spania e deja calificată după două etape. Honduras e practic eliminată;
+        mai speră matematic, dar diferența de goluri o condamnă.
+      </p>
+    </div>
+  </div>
+
+  <!-- ③ Group snapshot -->
+  <div class="card">
+    <p class="card-label">Grupa E</p>
+    <table>
+      <thead>
+        <tr>
+          <td class="col-team">Echipă</td>
+          <td class="col-num">MJ</td>
+          <td class="col-num">GD</td>
+          <td class="col-num">Pct</td>
+          <td class="col-stat">Status</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Spania</td><td class="col-num">2</td><td class="col-num">+6</td>
+          <td class="col-num" style="font-weight:500">6</td>
+          <td class="col-stat"><span class="badge badge-ok">calificată</span></td>
+        </tr>
+        <tr>
+          <td>Japonia</td><td class="col-num">2</td><td class="col-num">+1</td>
+          <td class="col-num" style="font-weight:500">4</td>
+          <td class="col-stat"><span class="badge badge-good">în cărți</span></td>
+        </tr>
+        <tr>
+          <td>Germania</td><td class="col-num">2</td><td class="col-num">−1</td>
+          <td class="col-num" style="font-weight:500">1</td>
+          <td class="col-stat"><span class="badge badge-warn">are nevoie de minune</span></td>
+        </tr>
+        <tr>
+          <td>Panama</td><td class="col-num">2</td><td class="col-num">−6</td>
+          <td class="col-num" style="font-weight:500">1</td>
+          <td class="col-stat"><span class="badge badge-danger">aproape out</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ④ Tonight -->
+  <div class="card">
+    <p class="card-label">La noapte — merită alarma?</p>
+    <div class="tonight-row">
+      <div>
+        <span class="tonight-match">Brazilia – Maroc</span>
+        <span class="tonight-time">&nbsp;· 22:00 EEST</span>
+      </div>
+      <span class="badge badge-ok">stai treaz</span>
+    </div>
+    <div class="tonight-row">
+      <div>
+        <span class="tonight-match">Qatar – Noua Zeelandă</span>
+        <span class="tonight-time">&nbsp;· 04:00 EEST</span>
+      </div>
+      <span class="badge" style="background:var(--bg); color:var(--muted);">citești dimineața</span>
+    </div>
+  </div>
+
+  <!-- ⑤ WhatsApp share -->
+  <div class="share-bar">
+    <div class="share-text">
+      ⚽ Germania, în corzi după șocul cu Japonia · 3 meciuri azi-noapte<br>
+      https://marius.github.io/mondial/
+    </div>
+    <a class="share-btn"
+       href="https://wa.me/?text=⚽%20Germania%2C%20în%20corzi%20după%20șocul%20cu%20Japonia%20·%203%20meciuri%20azi-noapte%0Ahttps%3A%2F%2Fmarius.github.io%2Fmondial%2F"
+       target="_blank" rel="noopener">
+      Share ↗
+    </a>
+  </div>
+
+</body>
+</html>
