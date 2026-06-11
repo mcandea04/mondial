@@ -100,7 +100,9 @@ async function callGemini({ apiKey, model, userMessage }) {
   });
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`Gemini API returned ${response.status}: ${body.slice(0, 500)}`);
+    const error = new Error(`Gemini API returned ${response.status}: ${body.slice(0, 500)}`);
+    error.retryable = response.status === 429 || response.status >= 500;
+    throw error;
   }
   const data = await response.json();
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -117,14 +119,28 @@ async function callGemini({ apiKey, model, userMessage }) {
 export async function narrate(facts, { apiKey, model = DEFAULT_MODEL } = {}) {
   const userMessage = JSON.stringify(facts, null, 2);
 
+  // Up to 4 attempts: covers transient API errors (429/5xx, with backoff)
+  // and one retry for a response that fails JSON parsing or the schema.
+  const backoffMs = [20_000, 60_000, 120_000];
+  let schemaRetryUsed = false;
   let lastError;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    const text = await callGemini({ apiKey, model, userMessage });
+  for (let attempt = 0; attempt < 4; attempt += 1) {
     try {
+      const text = await callGemini({ apiKey, model, userMessage });
       return narrationSchema.parse(JSON.parse(text));
     } catch (error) {
       lastError = error;
+      if (error.retryable && attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, backoffMs[attempt]));
+        continue;
+      }
+      const badOutput = error instanceof SyntaxError || error.name === 'ZodError';
+      if (badOutput && !schemaRetryUsed) {
+        schemaRetryUsed = true;
+        continue;
+      }
+      break;
     }
   }
-  throw new Error(`Narration failed schema validation twice: ${lastError}`);
+  throw new Error(`Narration failed after retries: ${lastError}`);
 }
