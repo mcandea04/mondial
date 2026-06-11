@@ -1,7 +1,7 @@
 {
   "date": "2026-06-11",
-  "headline": "Începe nebunia! Astăzi dăm startul Campionatului Mondial 2026!",
-  "summary": "Nu s-a jucat nimic azi-noapte, dar asta doar pentru că ne pregătim de o noapte plină de fotbal. Două meciuri din Grupa A ne așteaptă să dăm startul festinului!",
+  "headline": "Mondialul bate la ușă! Diseară dăm startul în Grupa A!",
+  "summary": "Calm înainte de furtună! Nicio minge nu a intrat în plasă azi-noapte, dar Campionatul Mondial e gata să ne țină lipiți de ecrane. Pregătiți-vă pentru două dueluri tari, inclusiv debutul gazdelor!",
   "matches": [],
   "groups": [],
   "tonight": [
@@ -10,15 +10,15 @@
       "away": "South Africa",
       "kickoffEEST": "22:00",
       "alarm": "stai treaz",
-      "why": "Debutul Campionatului Mondial la o oră perfectă pentru fotbal! Mexico joacă acasă, iar South Africa vrea să strice petrecerea."
+      "why": "Mondialul începe cu gazda Mexico! Cine se impune în prima rundă a Grupei A?"
     },
     {
       "home": "South Korea",
       "away": "Czechia",
       "kickoffEEST": "05:00",
       "alarm": "citești dimineața",
-      "why": "Mult prea devreme, dar e prima zi de Mondial! South Korea și Cehia deschid balul pentru cine are energie la 5 dimineața!"
+      "why": "Un meci interesant, dar la o oră nepotrivită pentru somnul de frumusețe."
     }
   ],
-  "teaser": "⚽ Începe nebunia! Astăzi dăm startul Campionatului Mondial 2026! · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Mondialul bate la ușă! Diseară dăm startul în Grupa A! · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
 }
