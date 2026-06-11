@@ -18,6 +18,10 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      # GitHub forces Node 24 action runtimes from 2026-06-16 (mid-tournament);
+      # opt in now so the switch is already verified.
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
