@@ -1,7 +1,7 @@
 {
   "date": "2026-06-11",
-  "headline": "Sombreros contra vuvuzele și cafea amară de dimineață",
-  "summary": "Mexic și Africa de Sud dau startul în Grupa A la o oră la care încă mai poți distinge mingea prin fumul de grătare. Coreea de Sud și Cehia ne testează limitele biologice cu un meci programat exact când se crapă de ziuă.",
+  "headline": "Primele mișcări în Grupa A: Să vedem cine se trezește primul.",
+  "summary": "Azi nu avem rezultate de disecat, dar Grupa A își deschide porțile cu două partide. Mexicul intră pe teren la o oră decentă, apoi vine cafeaua cu cehii și coreenii.",
   "matches": [],
   "groups": [],
   "tonight": [
@@ -10,15 +10,15 @@
       "away": "Africa de Sud",
       "kickoffEEST": "22:00",
       "alarm": "stai treaz",
-      "why": "Mexicul joacă acasă deschiderea Grupei A la o oră la care berea e încă rece și entuziasmul e la cote de debut."
+      "why": "E primul meci din Grupa A, Mexicul vrea să arate că nu e de glumă cu Africa de Sud."
     },
     {
       "home": "Coreea de Sud",
       "away": "Cehia",
       "kickoffEEST": "05:00",
       "alarm": "citești dimineața",
-      "why": "Ora cinci dimineața e potrivită doar pentru cei care vor să vadă dacă Cehia rezistă presiunii asiatice în loc să doarmă."
+      "why": "Coreea de Sud și Cehia se întâlnesc la o oră imposibilă, dar punctele sunt la fel de prețioase."
     }
   ],
-  "teaser": "⚽ Sombreros contra vuvuzele și cafea amară de dimineață · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Primele mișcări în Grupa A: Să vedem cine se trezește primul. · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
 }
