@@ -53,6 +53,44 @@ test('selectDigestMatches splits finished night games from tonight fixtures', ()
   assert.deepEqual(tonight.map((m) => m.id), [2, 3]);
 });
 
+test('team names are translated to Romanian throughout', () => {
+  const match = {
+    id: 1,
+    group: 'GROUP_A',
+    utcDate: '2026-06-11T19:00:00Z',
+    homeTeam: { name: 'Mexico' },
+    awayTeam: { name: 'South Africa' },
+    score: { fullTime: { home: 2, away: 1 } },
+  };
+  const parsed = parseMatch(match);
+  assert.equal(parsed.home, 'Mexic');
+  assert.equal(parsed.away, 'Africa de Sud');
+
+  const standings = parseStandings({
+    standings: [{
+      type: 'TOTAL',
+      group: 'Group B',
+      table: [
+        { team: { name: 'Switzerland' }, playedGames: 0, won: 0, draw: 0, lost: 0, goalDifference: 0, points: 0 },
+      ],
+    }],
+  });
+  assert.equal(standings[0].table[0].team, 'Elveția');
+});
+
+test('unknown team names (knockout placeholders) pass through unchanged', () => {
+  const match = {
+    id: 2,
+    utcDate: '2026-07-01T19:00:00Z',
+    homeTeam: { name: 'Winner Group A' },
+    awayTeam: { name: 'Runner-up Group B' },
+    score: { fullTime: { home: null, away: null } },
+  };
+  const parsed = parseMatch(match);
+  assert.equal(parsed.home, 'Winner Group A');
+  assert.equal(parsed.away, 'Runner-up Group B');
+});
+
 test('parseMatch with full detail: scorers, red cards, penalties', () => {
   const match = {
     id: 9,
