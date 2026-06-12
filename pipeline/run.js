@@ -42,6 +42,8 @@ import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
+import { factsHash } from './facts-hash.js';
+import { reuseNarration } from './prose-reuse.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SITE_DIR = path.join(ROOT, 'site');
@@ -76,6 +78,25 @@ async function loadDotEnv() {
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
+}
+
+async function readJsonOrNull(filePath) {
+  try {
+    return await readJson(filePath);
+  } catch {
+    return null;
+  }
+}
+
+/** Writes only when content differs from what is on disk. */
+async function writeIfChanged(filePath, content) {
+  try {
+    const current = await readFile(filePath);
+    if (Buffer.compare(current, Buffer.from(content)) === 0) return;
+  } catch {
+    // missing file: fall through to write
+  }
+  await writeFile(filePath, content);
 }
 
 function requireEnv(name) {
@@ -193,18 +214,39 @@ async function main() {
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
-  const recentProse = args.fixtures ? [] : await recentProseBefore(dataDir, date);
+  const factsForNarration = { date, finished: facts.finished, tonight: facts.tonight, standings };
+  const hash = factsHash(factsForNarration);
 
-  const narration = await getNarration(
-    { date, finished: facts.finished, tonight: facts.tonight, standings },
-    { fixtures: args.fixtures, recentProse },
-  );
+  // Freeze: when the stored digest was built from the same facts, reuse its
+  // prose instead of regenerating. A stored digest without factsHash predates
+  // this mechanism and is trusted as-is (the hash gets stamped on rewrite).
+  let narration = null;
+  let reused = false;
+  if (!args.reNarrate) {
+    const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
+    if (existing && (!existing.factsHash || existing.factsHash === hash)) {
+      narration = reuseNarration(existing, facts);
+      reused = narration != null;
+    }
+  }
+
+  if (reused) {
+    console.log('facts unchanged, prose reused');
+  } else {
+    const recentProse = args.fixtures ? [] : await recentProseBefore(dataDir, date);
+    narration = await getNarration(factsForNarration, {
+      fixtures: args.fixtures,
+      recentProse,
+      steer: args.steer,
+    });
+  }
 
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
   const narrationByFixture = new Map(narration.tonight.map((m) => [m.id, m]));
 
   const digest = {
     date,
+    factsHash: hash,
     headline: narration.headline,
     summary: narration.summary,
     matches: facts.finished.map((m) => ({
@@ -214,6 +256,7 @@ async function main() {
     })),
     groups: standings.filter((g) => groupsThatPlayed.has(g.name)),
     tonight: facts.tonight.map((m) => ({
+      id: m.id,
       home: m.home,
       away: m.away,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
@@ -227,23 +270,27 @@ async function main() {
     }),
   };
 
-  const png = await renderOgImage({
-    date,
-    headline: narration.headline,
-    matches: digest.matches,
-  });
-
   await mkdir(path.join(dataDir, 'og'), { recursive: true });
-  await writeFile(path.join(dataDir, `${date}.json`), JSON.stringify(digest, null, 2));
-  await writeFile(path.join(dataDir, 'latest.json'), JSON.stringify(digest, null, 2));
-  await writeFile(path.join(dataDir, 'og', `${date}.png`), png);
+
+  const ogPath = path.join(dataDir, 'og', `${date}.png`);
+  if (!reused || !existsSync(ogPath)) {
+    const png = await renderOgImage({
+      date,
+      headline: narration.headline,
+      matches: digest.matches,
+    });
+    await writeIfChanged(ogPath, png);
+  }
+
+  await writeIfChanged(path.join(dataDir, `${date}.json`), JSON.stringify(digest, null, 2));
+  await writeIfChanged(path.join(dataDir, 'latest.json'), JSON.stringify(digest, null, 2));
 
   // Archive manifest: every per-day JSON present in data/.
   const dates = (await readdir(dataDir))
     .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
     .map((name) => name.replace('.json', ''))
     .sort();
-  await writeFile(path.join(dataDir, 'manifest.json'), JSON.stringify({ dates }, null, 2));
+  await writeIfChanged(path.join(dataDir, 'manifest.json'), JSON.stringify({ dates }, null, 2));
 
   if (!args.out && !args.fixtures) {
     const indexPath = path.join(SITE_DIR, 'index.html');

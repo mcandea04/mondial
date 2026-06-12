@@ -45,3 +45,71 @@ test('--out redirects all writes and leaves site/data untouched', () => {
   assert.equal(after, before, 'site/data digest unchanged');
   assert.equal(readFileSync(path.join(ROOT, 'site', 'index.html'), 'utf8'), indexBefore, 'index.html unchanged');
 });
+
+function setCannedHeadline(fixtures, headline) {
+  const cannedPath = path.join(fixtures, 'narration.json');
+  const canned = JSON.parse(readFileSync(cannedPath, 'utf8'));
+  canned.headline = headline;
+  writeFileSync(cannedPath, JSON.stringify(canned, null, 2));
+}
+
+test('same facts: second run reuses prose and ignores new narration', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const first = readDigest(out);
+  assert.ok(first.factsHash, 'factsHash stored in digest');
+  assert.ok(first.tonight.every((t) => t.id != null), 'tonight entries carry ids');
+
+  setCannedHeadline(fixtures, 'Proză nouă care NU trebuie folosită');
+  const log = runPipeline({ fixtures, out });
+  assert.match(log, /facts unchanged, prose reused/);
+  const second = readDigest(out);
+  // Freeze guarantee is prose-unchanged, not byte-identical.
+  assert.equal(second.headline, first.headline);
+  assert.equal(second.summary, first.summary);
+  assert.deepEqual(second.matches.map((m) => m.pill), first.matches.map((m) => m.pill));
+  assert.deepEqual(second.tonight.map((t) => t.why), first.tonight.map((t) => t.why));
+});
+
+test('--re-narrate forces fresh prose even when facts are unchanged', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+
+  setCannedHeadline(fixtures, 'Proză regenerată la cerere');
+  runPipeline({ fixtures, out, extra: ['--re-narrate'] });
+  assert.equal(readDigest(out).headline, 'Proză regenerată la cerere');
+});
+
+test('changed facts re-narrate automatically', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const first = readDigest(out);
+
+  const matchesPath = path.join(fixtures, 'matches.json');
+  const matches = JSON.parse(readFileSync(matchesPath, 'utf8'));
+  const finished = matches.matches.find((m) => m.status === 'FINISHED');
+  finished.score.fullTime.home += 1;
+  writeFileSync(matchesPath, JSON.stringify(matches, null, 2));
+  setCannedHeadline(fixtures, 'Proză nouă după corecția scorului');
+
+  runPipeline({ fixtures, out });
+  const second = readDigest(out);
+  assert.notEqual(second.factsHash, first.factsHash);
+  assert.equal(second.headline, 'Proză nouă după corecția scorului');
+});
+
+test('legacy digest without factsHash is trusted: prose reused, hash stamped', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const digestPath = path.join(out, `${DATE}.json`);
+  const legacy = JSON.parse(readFileSync(digestPath, 'utf8'));
+  const expectedHash = legacy.factsHash;
+  delete legacy.factsHash;
+  writeFileSync(digestPath, JSON.stringify(legacy, null, 2));
+
+  setCannedHeadline(fixtures, 'Proză nouă care NU trebuie folosită');
+  runPipeline({ fixtures, out });
+  const after = readDigest(out);
+  assert.equal(after.headline, legacy.headline);
+  assert.equal(after.factsHash, expectedHash);
+});
