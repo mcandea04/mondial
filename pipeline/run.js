@@ -283,6 +283,8 @@ async function main() {
       id: m.id,
       home: m.home,
       away: m.away,
+      homeCode: m.homeCode ?? null,
+      awayCode: m.awayCode ?? null,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
       alarm: narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
       why: narrationByFixture.get(m.id)?.why ?? '',

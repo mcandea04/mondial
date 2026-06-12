@@ -15,5 +15,8 @@
     "@resvg/resvg-js": "^2.6.2",
     "satori": "^0.12.2",
     "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "flag-icons": "^7.5.0"
   }
 }

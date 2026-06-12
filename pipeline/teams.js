@@ -60,6 +60,79 @@ export function romanianTeamName(name) {
 }
 
 /**
+ * flag-icons codes keyed by the same canonical English names ROMANIAN_NAMES
+ * uses. Lowercase ISO 3166-1 alpha-2, except the home nations which use
+ * flag-icons sub-national codes (gb-eng, gb-sct). Unknown names (knockout
+ * placeholders) return null so the renderer can skip the flag.
+ */
+const FLAG_CODES = {
+  'Algeria': 'dz',
+  'Argentina': 'ar',
+  'Australia': 'au',
+  'Austria': 'at',
+  'Belgium': 'be',
+  'Bosnia-Herzegovina': 'ba',
+  'Brazil': 'br',
+  'Canada': 'ca',
+  'Cape Verde Islands': 'cv',
+  'Colombia': 'co',
+  'Congo DR': 'cd',
+  'Croatia': 'hr',
+  'Curaçao': 'cw',
+  'Czechia': 'cz',
+  'Ecuador': 'ec',
+  'Egypt': 'eg',
+  'England': 'gb-eng',
+  'France': 'fr',
+  'Germany': 'de',
+  'Ghana': 'gh',
+  'Haiti': 'ht',
+  'Iran': 'ir',
+  'Iraq': 'iq',
+  'Ivory Coast': 'ci',
+  'Japan': 'jp',
+  'Jordan': 'jo',
+  'Mexico': 'mx',
+  'Morocco': 'ma',
+  'Netherlands': 'nl',
+  'New Zealand': 'nz',
+  'Norway': 'no',
+  'Panama': 'pa',
+  'Paraguay': 'py',
+  'Portugal': 'pt',
+  'Qatar': 'qa',
+  'Saudi Arabia': 'sa',
+  'Scotland': 'gb-sct',
+  'Senegal': 'sn',
+  'South Africa': 'za',
+  'South Korea': 'kr',
+  'Spain': 'es',
+  'Sweden': 'se',
+  'Switzerland': 'ch',
+  'Tunisia': 'tn',
+  'Turkey': 'tr',
+  'United States': 'us',
+  'Uruguay': 'uy',
+  'Uzbekistan': 'uz',
+};
+
+export function flagCode(name) {
+  return FLAG_CODES[name] ?? null;
+}
+
+export function teamNameKeys() {
+  return Object.keys(ROMANIAN_NAMES);
+}
+
+export function flagCodeKeys() {
+  return Object.keys(FLAG_CODES);
+}
+
+export function flagCodeValues() {
+  return Object.values(FLAG_CODES);
+}
+
+/**
  * Spanish exonyms keyed by the Romanian name (the form match facts carry once
  * parsed). Used only to match El Gráfico's Spanish recap titles to a game — not
  * user-facing. Unknown names pass through unchanged.

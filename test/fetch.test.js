@@ -9,6 +9,7 @@ import {
   digestReadiness,
   selectDigestMatches,
   parseMatch,
+  parseFixture,
   parseStandings,
 } from '../pipeline/fetch.js';
 
@@ -235,4 +236,62 @@ test('parseStandings maps the live API shape into group tables', async () => {
   for (const key of ['team', 'p', 'gd', 'pts']) {
     assert.ok(key in row, `missing ${key}`);
   }
+});
+
+test('parseMatch attaches home/away flag codes from English names', () => {
+  const match = {
+    id: 1,
+    homeTeam: { name: 'Mexico' },
+    awayTeam: { name: 'South Africa' },
+    score: { fullTime: { home: 2, away: 1 } },
+    group: 'GROUP_A',
+    utcDate: '2026-06-11T19:00:00Z',
+  };
+  const parsed = parseMatch(match);
+  assert.equal(parsed.homeCode, 'mx');
+  assert.equal(parsed.awayCode, 'za');
+});
+
+test('parseMatch leaves codes null for knockout placeholder names', () => {
+  const match = {
+    id: 2,
+    homeTeam: { name: 'Winner Group A' },
+    awayTeam: { name: 'Runner-up Group B' },
+    score: { fullTime: { home: 0, away: 0 } },
+    utcDate: '2026-07-01T19:00:00Z',
+  };
+  const parsed = parseMatch(match);
+  assert.equal(parsed.homeCode, null);
+  assert.equal(parsed.awayCode, null);
+});
+
+test('parseFixture attaches home/away flag codes', () => {
+  const fixture = {
+    id: 3,
+    homeTeam: { name: 'Brazil' },
+    awayTeam: { name: 'Morocco' },
+    group: 'GROUP_C',
+    utcDate: '2026-06-12T19:00:00Z',
+  };
+  const parsed = parseFixture(fixture);
+  assert.equal(parsed.homeCode, 'br');
+  assert.equal(parsed.awayCode, 'ma');
+});
+
+test('parseStandings attaches a flag code per row from the English name', () => {
+  const response = {
+    standings: [
+      {
+        type: 'TOTAL',
+        group: 'Group A',
+        table: [
+          { team: { name: 'Mexico' }, playedGames: 1, won: 1, draw: 0, lost: 0, goalDifference: 2, points: 3 },
+          { team: { name: 'South Korea' }, playedGames: 1, won: 1, draw: 0, lost: 0, goalDifference: 1, points: 3 },
+        ],
+      },
+    ],
+  };
+  const [group] = parseStandings(response);
+  assert.equal(group.table[0].code, 'mx');
+  assert.equal(group.table[1].code, 'kr');
 });

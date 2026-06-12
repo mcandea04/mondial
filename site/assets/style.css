@@ -24,6 +24,8 @@
   --home: #2f6fb0;
   --away: #a8640c;
   --card: #e24b4a;
+
+  --flag-outline: rgba(0, 0, 0, 0.12);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -43,6 +45,8 @@
     --home: #7db0e6;
     --away: #e0a948;
     --card: #f0726f;
+
+    --flag-outline: rgba(255, 255, 255, 0.18);
   }
 }
 
@@ -105,6 +109,17 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 .team-name.home { color: var(--home); }
 .team-name.away { color: var(--away); }
 .score { font-size: 24px; font-weight: 500; white-space: nowrap; }
+.team { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; }
+.flag {
+  height: 18px;
+  width: auto;
+  border-radius: 2px;
+  outline: 0.5px solid var(--flag-outline);
+  flex-shrink: 0;
+}
+.flag-sm { height: 14px; }
+/* keep standings team names at the table's 13px, not the scoreline's 15px */
+td .team .team-name { font-size: 13px; font-weight: 400; }
 
 /* ── Flame rating ── */
 .flames { display: flex; gap: 2px; color: var(--flame); font-size: 18px; flex-shrink: 0; }

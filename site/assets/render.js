@@ -21,6 +21,16 @@ function el(tag, className, text) {
   return node;
 }
 
+function flagImg(code, sizeClass) {
+  if (!code) return null;
+  const img = el('img', sizeClass ? `flag ${sizeClass}` : 'flag');
+  img.src = `assets/flags/${code}.svg`;
+  img.alt = ''; // decorative; the team name beside it is the label
+  img.setAttribute('aria-hidden', 'true');
+  img.onerror = () => img.remove(); // a 404 leaves no broken-image box
+  return img;
+}
+
 function renderHeader(root, digest) {
   const meta = el('div', 'meta');
   const dateLabel = WEEKDAY_FMT.format(new Date(`${digest.date}T06:00:00Z`));
@@ -46,11 +56,16 @@ function renderMatchCard(match) {
 
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
-  teams.append(
-    el('span', 'team-name home', match.home),
-    el('span', 'score', `${match.score[0]} – ${match.score[1]}`),
-    el('span', 'team-name away', match.away),
-  );
+
+  const homeSide = el('div', 'team');
+  homeSide.append(...[flagImg(match.homeCode), el('span', 'team-name home', match.home)].filter(Boolean));
+
+  const score = el('span', 'score', `${match.score[0]} – ${match.score[1]}`);
+
+  const awaySide = el('div', 'team');
+  awaySide.append(...[el('span', 'team-name away', match.away), flagImg(match.awayCode)].filter(Boolean));
+
+  teams.append(homeSide, score, awaySide);
   const flames = el('div', 'flames');
   flames.setAttribute('aria-label', `dramă ${match.drama} din 5`);
   for (let i = 0; i < match.drama; i += 1) {
@@ -133,6 +148,14 @@ function renderEvents(match) {
   return wrap;
 }
 
+function teamCell(row) {
+  const td = el('td', null);
+  const wrap = el('span', 'team');
+  wrap.append(...[flagImg(row.code, 'flag-sm'), el('span', 'team-name', row.team)].filter(Boolean));
+  td.append(wrap);
+  return td;
+}
+
 function renderGroupCard(group) {
   const card = el('div', 'card');
   card.append(el('p', 'card-label', `Grupa ${group.name}`));
@@ -155,7 +178,7 @@ function renderGroupCard(group) {
   for (const row of group.table) {
     const tr = el('tr');
     tr.append(
-      el('td', null, row.team),
+      teamCell(row),
       el('td', 'col-num', String(row.p)),
       el('td', 'col-num', row.gd > 0 ? `+${row.gd}` : String(row.gd)),
       el('td', 'col-num pts', String(row.pts)),
@@ -176,10 +199,15 @@ function renderTonight(tonight) {
   for (const fixture of tonight) {
     const row = el('div', 'tonight-row');
     const left = el('div');
-    left.append(
-      el('span', 'tonight-match', `${fixture.home} – ${fixture.away}`),
-      el('span', 'tonight-time', ` · ${fixture.kickoffEEST} EEST`),
+    const matchLine = el('span', 'team');
+    matchLine.append(
+      ...[
+        flagImg(fixture.homeCode, 'flag-sm'),
+        el('span', 'tonight-match', `${fixture.home} – ${fixture.away}`),
+        flagImg(fixture.awayCode, 'flag-sm'),
+      ].filter(Boolean),
     );
+    left.append(matchLine, el('span', 'tonight-time', ` · ${fixture.kickoffEEST} EEST`));
     if (fixture.why) {
       left.append(el('br'), el('span', 'tonight-why', fixture.why));
     }
