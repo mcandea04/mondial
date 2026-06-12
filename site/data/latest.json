@@ -1,8 +1,8 @@
 {
   "date": "2026-06-12",
   "factsHash": "64b5bfd75b671c94bb1d76aa203f1fce5cd6df7a03923de290eaf57522cacdb5",
-  "headline": "Mexicul are aer, Cehia are nevoie de o cafea tare",
-  "summary": "Mexicul și-a făcut treaba acasă cu un 2-0 sec, în timp ce Coreea de Sud a trimis Cehia la culcare cu o înfrângere la limită. Grupa A începe să se așeze exact cum se temeau europenii, cu gazdele și asiaticii luând primele puncte.",
+  "headline": "Mexic și-a pus sombrero-ul de gală, cehii au rămas în offside",
+  "summary": "Mexic a rezolvat debutul cu Africa de Sud fără să transpire prea tare, în timp ce Coreea de Sud a trimis Cehia la culcare cu o înfrângere la limită. Grupa A are deja un contur clar, cu gazdele și asiaticii instalându-se comod la conducere după prima rundă.",
   "matches": [
     {
       "id": 537327,
@@ -16,7 +16,7 @@
       "events": [],
       "group": "A",
       "utcDate": "2026-06-11T19:00:00Z",
-      "pill": "Mexicul se instalează confortabil în fruntea grupei cu cele trei puncte și un golaveraj curat. Africa de Sud pleacă cu mâna goală și cu perspectiva unui parcurs complicat în următoarele două etape.",
+      "pill": "Mexicul își vede de treabă acasă și doarme liniștită pe primul loc în grupă. Africa de Sud pleacă de pe ultimul loc și are nevoie de o minune ca să nu facă doar act de prezență.",
       "drama": 2
     },
     {
@@ -31,7 +31,7 @@
       "events": [],
       "group": "A",
       "utcDate": "2026-06-12T02:00:00Z",
-      "pill": "Coreea de Sud doarme liniștită pe locul doi după ce a gestionat mai bine detaliile acestui 2-1. Cehia își complică existența încă din prima etapă și va trebui să caute puncte în restul meciurilor din grupă.",
+      "pill": "Coreea de Sud ocupă locul secund după un meci strâns care lasă Cehia fără puncte la debut. Grupa A se împarte deja între cei care au trei puncte și cei care au doar regrete.",
       "drama": 3
     }
   ],
@@ -88,17 +88,17 @@
       "home": "Canada",
       "away": "Bosnia și Herțegovina",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "Ora e decentă, dar e greu de crezut că duelul dintre Canada și Bosnia va oferi motive reale să renunți la planurile de vineri seară."
+      "alarm": "stai treaz",
+      "why": "E ora perfectă să vedem dacă Canada știe să joace și altceva în afară de hochei împotriva unei echipe bosniace mereu imprevizibile."
     },
     {
       "id": 537345,
       "home": "SUA",
       "away": "Paraguay",
       "kickoffEEST": "04:00",
-      "alarm": "stai treaz",
-      "why": "E debutul oficial al celei de-a doua gazde și merită să vezi dacă Paraguayul chiar are resurse să strice petrecerea americanilor la patru dimineața."
+      "alarm": "citești dimineața",
+      "why": "Ora patru dimineața e pentru insomniaci sau pentru cei care chiar cred că Paraguay poate produce o surpriză în fața americanilor."
     }
   ],
-  "teaser": "⚽ Mexicul are aer, Cehia are nevoie de o cafea tare · 2 meciuri azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Mexic și-a pus sombrero-ul de gală, cehii au rămas în offside · 2 meciuri azi-noapte\nhttps://mcandea04.github.io/mondial/"
 }
