@@ -80,6 +80,21 @@ Unchanged from today: any failure leaves `site/data/` untouched and exits non-ze
 - `--steer` plumbing: the steering text ends up in the narration prompt; absent flag leaves the prompt unchanged.
 - Issue-trigger workflow conditions (label + author) verified manually after deployment: an issue without the label and a simulated foreign author must both be no-ops.
 
+## Verification plan (acceptance scenarios)
+
+Layered so the published page is touched only once, at the end:
+
+1. **Offline, no Gemini:** fixtures plus `--out` — hash reuse on second run, no narration call, byte-identical output, `--steer` text present in the built prompt.
+2. **Live Gemini, no publish:** local run for the real date with `--re-narrate --steer "..." --out tmp/` — inspect the regenerated, steered prose in the tmp file. Proves steering quality end to end without deploying.
+3. **Full remote E2E, once:** open the prefilled issue from the phone, watch the workflow re-narrate, deploy, and email the new headline. Then restore.
+
+Restore recipe (verified against git history: every digest commit carries `<date>.json`, `latest.json`, the OG png, and `index.html` together, so one revert restores all prose):
+
+    git revert <digest-commit> && git push
+    gh workflow run digest.yml -f force=true
+
+The forced run recomputes the facts hash, matches the restored file, reuses its prose, commits nothing, and redeploys the restored content to Pages. If today's prose feels too precious even for minutes, run scenario 3 against yesterday's date instead — the `latest.json` guard keeps today's page untouched and the archive day is restored the same way.
+
 ## Out of scope
 
 - Quality comparison between old and new prose (keep-best strategies).
