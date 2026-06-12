@@ -60,8 +60,9 @@
         if (manifest.recaps?.[date]) {
           const mark = document.createElement('span');
           mark.className = 'archive-recaps';
+          const count = manifest.recaps[date];
           mark.textContent = '▶ rezumate';
-          mark.title = `${manifest.recaps[date]} rezumate video`;
+          mark.title = count === 1 ? '1 rezumat video' : `${count} rezumate video`;
           item.append(mark);
         }
         list.append(item);
