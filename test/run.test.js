@@ -113,3 +113,14 @@ test('legacy digest without factsHash is trusted: prose reused, hash stamped', (
   assert.equal(after.headline, legacy.headline);
   assert.equal(after.factsHash, expectedHash);
 });
+
+test('a backfill run for an older date does not clobber a newer latest.json', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const newer = { ...readDigest(out), date: '2026-06-13' };
+  writeFileSync(path.join(out, 'latest.json'), JSON.stringify(newer, null, 2));
+
+  runPipeline({ fixtures, out, extra: ['--re-narrate'] });
+  const latest = JSON.parse(readFileSync(path.join(out, 'latest.json'), 'utf8'));
+  assert.equal(latest.date, '2026-06-13');
+});

@@ -283,7 +283,13 @@ async function main() {
   }
 
   await writeIfChanged(path.join(dataDir, `${date}.json`), JSON.stringify(digest, null, 2));
-  await writeIfChanged(path.join(dataDir, 'latest.json'), JSON.stringify(digest, null, 2));
+
+  const existingLatest = await readJsonOrNull(path.join(dataDir, 'latest.json'));
+  if (!existingLatest?.date || existingLatest.date <= date) {
+    await writeIfChanged(path.join(dataDir, 'latest.json'), JSON.stringify(digest, null, 2));
+  } else {
+    console.log(`latest.json kept at ${existingLatest.date} (newer than ${date})`);
+  }
 
   // Archive manifest: every per-day JSON present in data/.
   const dates = (await readdir(dataDir))
