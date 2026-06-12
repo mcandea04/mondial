@@ -51,6 +51,22 @@ Write `latest.json` only when the digest date is greater than or equal to the da
 - New `workflow_dispatch` boolean input `re_narrate`, passed to the pipeline as `--re-narrate`.
 - A forced re-run after a code fix now hits the hash-match path, produces no content diff, and the existing `git diff --cached --quiet` check skips the commit. The deploy steps still run, so code changes to the site still ship.
 
+### 6. Remote re-narration from the phone (issue trigger + steering note)
+
+For the case "facts are fine, prose is bad, laptop is far away":
+
+- The daily digest email gets one extra line: a prefilled new-issue link,
+  `https://github.com/mcandea04/mondial/issues/new?title=re-narrate&labels=re-narrate&body=<url-encoded placeholder>`.
+  The body placeholder hints that free text typed there becomes a steering note, e.g. "(optional: scrie ce vrei schimbat la ton/glume)".
+- A new workflow triggers on `issues: opened`. It runs only when the issue has the `re-narrate` label **and** the issue author is the repo owner (`mcandea04`); anything else exits without side effects. The `re-narrate` label must be created in the repo once.
+- The issue workflow is a thin trigger, not a second build pipeline: it dispatches the existing digest workflow via `gh workflow run` with `force=true`, `re_narrate=true`, and `steer=<issue body>`, then comments on the issue that regeneration started (with a link to the Actions run) and closes it. The digest workflow's existing email step is the confirmation: a fresh email arrives with the new headline.
+- `digest.yml` gains a second `workflow_dispatch` input `steer` (optional string) next to `re_narrate`, both forwarded to the pipeline.
+- The pipeline gains a `--steer <text>` flag. `narrate()` appends the text to the prompt as a one-shot instruction for this regeneration only. The note is not stored in the digest file; the closed issue is the history of when and why prose was regenerated.
+- Injection safety: the issue body is passed to the workflow step through an `env:` variable, never interpolated directly into a `run:` script (`${{ github.event.issue.body }}` inside shell is a classic script-injection hole). The author check means only the owner can reach the Gemini call at all.
+- Workflow permissions stay minimal: the issue workflow needs `issues: write` and `actions: write`, nothing more.
+
+Phone flow end to end: tap link in the morning email, optionally type a steering note in the issue body, tap Submit. Two taps plus optional typing.
+
 ## Error handling
 
 Unchanged from today: any failure leaves `site/data/` untouched and exits non-zero, so the workflow skips commit and deploy. An existing `<date>.json` that predates this change (no `factsHash` field) is trusted: its prose is reused and the newly computed hash is stamped in, so already-published days are protected from the first run of the new code. A corrupt or unparseable file is treated as "no existing digest": the run re-narrates and overwrites it.
@@ -61,8 +77,11 @@ Unchanged from today: any failure leaves `site/data/` untouched and exits non-ze
 - Pipeline run twice on the same fixtures: the second run makes no narration call and produces byte-identical output.
 - `--out` isolation: a fixtures run leaves the real `site/data/` untouched.
 - `latest.json` guard: a run for an older date does not overwrite a newer `latest.json`.
+- `--steer` plumbing: the steering text ends up in the narration prompt; absent flag leaves the prompt unchanged.
+- Issue-trigger workflow conditions (label + author) verified manually after deployment: an issue without the label and a simulated foreign author must both be no-ops.
 
 ## Out of scope
 
 - Quality comparison between old and new prose (keep-best strategies).
-- Any change to the polling/readiness gate or the email step.
+- Any change to the polling/readiness gate.
+- Persisting steering notes or feeding them into future days' narration.
