@@ -148,11 +148,14 @@ async function getNarration(facts, { fixtures, recentProse, steer }) {
 }
 
 /**
- * Maps finished-match ids to El Gráfico recap URLs. Offline (--fixtures) it reads
- * recaps.xml from the dir when present and skips the network otherwise. Always
- * returns a Map; never throws, so a feed outage cannot fail the digest.
+ * Maps finished-match ids to recap URLs. Disabled by default: the recap source
+ * has unresolved publishing rights, so this returns an empty map unless
+ * HIGHLIGHTS_ENABLED=1. Offline (--fixtures) it reads recaps.xml from the dir
+ * when present and skips the network otherwise. Always returns a Map; never
+ * throws, so a feed outage cannot fail the digest.
  */
 async function getRecaps(finished, { fixtures }) {
+  if (process.env.HIGHLIGHTS_ENABLED !== '1') return new Map();
   if (fixtures) {
     const cannedPath = path.join(fixtures, 'recaps.xml');
     if (!existsSync(cannedPath)) return new Map();
