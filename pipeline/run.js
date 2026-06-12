@@ -77,14 +77,41 @@ async function gatherFacts({ date, fixtures }) {
   return fetchDigestData({ digestDate: date, token });
 }
 
-async function getNarration(facts, { fixtures }) {
+async function getNarration(facts, { fixtures, recentProse }) {
   if (fixtures) {
     const cannedPath = path.join(fixtures, 'narration.json');
     if (existsSync(cannedPath)) return readJson(cannedPath);
   }
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
-  return narrate(facts, { apiKey, model: process.env.GEMINI_MODEL || undefined });
+  return narrate(facts, {
+    apiKey,
+    model: process.env.GEMINI_MODEL || undefined,
+    recentProse,
+  });
+}
+
+/**
+ * Collects the prose (headline, summary, pills, tonight reasons) from the most
+ * recent per-day digests so narration can be told not to recycle the same jokes
+ * and metaphors. The model has no memory across daily runs on its own.
+ */
+async function recentProseBefore(date, days = 3) {
+  const files = (await readdir(DATA_DIR))
+    .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
+    .map((name) => name.replace('.json', ''))
+    .filter((d) => d < date)
+    .sort()
+    .slice(-days);
+
+  const prose = [];
+  for (const d of files) {
+    const digest = await readJson(path.join(DATA_DIR, `${d}.json`));
+    prose.push(digest.headline, digest.summary);
+    for (const m of digest.matches ?? []) prose.push(m.pill);
+    for (const t of digest.tonight ?? []) prose.push(t.why);
+  }
+  return prose.filter(Boolean);
 }
 
 /** Replaces the OG block in index.html between the og:start/og:end markers. */
@@ -117,9 +144,11 @@ async function main() {
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
+  const recentProse = args.fixtures ? [] : await recentProseBefore(date);
+
   const narration = await getNarration(
     { date, finished: facts.finished, tonight: facts.tonight, standings },
-    { fixtures: args.fixtures },
+    { fixtures: args.fixtures, recentProse },
   );
 
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
