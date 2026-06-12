@@ -4,6 +4,7 @@
  */
 
 import { romanianTeamName } from './teams.js';
+import { enrichFinishedMatches } from './enrich.js';
 
 const API_BASE = 'https://api.football-data.org/v4';
 const REQUEST_DELAY_MS = 6500;
@@ -135,7 +136,8 @@ export function selectDigestMatches(matchesResponse, digestDate) {
 
 /**
  * Fetches everything the digest needs for `digestDate`:
- * - finished matches in the night window, with detail (goals/bookings) when available
+ * - finished matches in the night window, enriched with scorers/cards from ESPN
+ *   (football-data's free tier omits goals/bookings)
  * - upcoming fixtures for tonight (the next night window)
  * - current group standings
  */
@@ -151,22 +153,15 @@ export async function fetchDigestData({ digestDate, token }) {
 
   const { finished, tonight } = selectDigestMatches(matchesResponse, digestDate);
 
-  const detailed = [];
-  for (const match of finished) {
-    await sleep(REQUEST_DELAY_MS);
-    try {
-      detailed.push(await apiGet(`/matches/${match.id}`, token));
-    } catch {
-      // Detail endpoint unavailable (tier restriction): degrade to list data.
-      detailed.push(match);
-    }
-  }
+  const enriched = await enrichFinishedMatches(finished, {
+    log: (message) => console.log(`enrich: ${message}`),
+  });
 
   await sleep(REQUEST_DELAY_MS);
   const standingsResponse = await apiGet('/competitions/WC/standings', token);
 
   return {
-    finished: detailed.map(parseMatch),
+    finished: enriched.map(parseMatch),
     tonight: tonight.map(parseFixture),
     standings: parseStandings(standingsResponse),
   };

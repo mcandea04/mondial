@@ -73,14 +73,26 @@ mondial/
 ### 4.1 Fetch (`fetch.js`)
 - Source: football-data.org v4, competition `WC`. Free tier covers the World Cup;
   rate limit ~10 req/min, so serialize calls with a small delay.
-- Pull: yesterday's finished matches (with goals/scorers/bookings where available),
-  today's & tomorrow's fixtures, current group standings.
+- Pull: yesterday's finished matches, today's & tomorrow's fixtures, current group
+  standings.
 - "Yesterday" = the EEST night window: matches with UTC kickoff between
   `yesterday 16:00 UTC` and `today 06:00 UTC` (covers 19:00–09:00 EEST). Compute the
   window with `Intl`/`Temporal` against `Europe/Bucharest`, never hardcode offsets.
 - Secrets: `FOOTBALL_DATA_TOKEN` (GitHub Actions secret).
-- If the API omits scorer details on free tier, degrade gracefully: card shows score +
-  pill only.
+
+### 4.1a Enrich (`enrich.js`)
+- football-data's free tier omits `goals`/`bookings` for WC, so finished matches carry
+  no scorer or card detail. Scorers and cards come from ESPN's public soccer API
+  (`site.api.espn.com/.../soccer/fifa.world`): the `scoreboard` lists a date's events,
+  each event's `summary` carries a `keyEvents` timeline. That is reshaped into
+  football-data's `goals[]`/`bookings[]` so `parseMatch` stays the single normalizer.
+- A football-data match is paired to an ESPN event by kickoff time; simultaneous
+  kickoffs (final group round) are disambiguated by team-name overlap. Score is not
+  compared — ET/shootout totals can differ between sources.
+- No key, no auth, no season gate (ESPN serves WC2026 for free). Unofficial/undocumented,
+  so parsing keys off `keyEvents[].type.text` defensively and the whole step is
+  best-effort: no event match or any HTTP error leaves the match untouched and the card
+  shows score + pill only. A missing scorer never blocks a night from publishing.
 
 ### 4.2 Standings & status (`standings.js`)
 - Recompute or ingest group tables; classify each team:
@@ -211,5 +223,3 @@ mondial/
   a custom domain can be added in Pages settings later — Cloudflare Pages remains a
   fallback only if fancier needs ever appear).
 - Exact visual theme (the mockup's card style is the reference).
-- Whether scorer-level detail is available on the free API tier; if not, decide
-  between degraded cards and upgrading to a paid football API (e.g., API-Football).
