@@ -1,7 +1,7 @@
 {
   "date": "2026-06-12",
-  "headline": "Taco și kimchi la micul dejun, cehii caută drumul spre poartă",
-  "summary": "Mexicul s-a instalat la șefia grupei după un 2-0 sec, în timp ce Coreea de Sud a lăsat Cehia cu golaveraj negativ. Cele două învingătoare au deja un avans de trei puncte în fața urmăritoarelor din Grupa A.",
+  "headline": "Tequila la desert și coreeni care nu te lasă să dormi",
+  "summary": "Mexicul a rezolvat problema cu Africa de Sud și s-a instalat confortabil în fruntea grupei A. Coreenii au trimis Cehia la culcare cu un 2-1 care le complică europenilor planurile de calificare.",
   "matches": [
     {
       "id": 537327,
@@ -15,7 +15,7 @@
       "events": [],
       "group": "A",
       "utcDate": "2026-06-11T19:00:00Z",
-      "pill": "Gazdele s-au instalat confortabil la șefia grupei cu un golaveraj de +2 care le permite să privească restul lumii de sus. Africa de Sud pleacă cu mâna goală și cu grija ultimului loc după prima etapă.",
+      "pill": "Mexicul și-a făcut norma de gazdă fără să transpire și a urcat pe primul loc cu un golaveraj liniștitor. Africa de Sud ocupă momentan ultima poziție, confirmând că entuziasmul nu ține loc de apărare.",
       "drama": 2
     },
     {
@@ -30,7 +30,7 @@
       "events": [],
       "group": "A",
       "utcDate": "2026-06-12T02:00:00Z",
-      "pill": "Coreenii au gestionat mai bine meciul și au acumulat primele trei puncte, lăsând Cehia să reflecteze la înfrângerea cu 2-1. Victoria îi pune la egalitate de puncte cu Mexicul, dar pe poziția a doua din cauza golului încasat.",
+      "pill": "Coreenii au demonstrat că viteza bate tradiția, lăsând Cehia cu zero puncte după acest debut de grupă. Europenii au marcat o dată, dar au rămas pe locul trei, fiind depășiți la capitolul anduranță.",
       "drama": 3
     }
   ],
@@ -86,16 +86,16 @@
       "home": "Canada",
       "away": "Bosnia și Herțegovina",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "E debutul Grupei B între două echipe care probabil se vor anula reciproc până târziu în noapte."
+      "alarm": "stai treaz",
+      "why": "E debutul Grupei B și e singura șansă să vezi dacă bosniacii pot produce mai multă panică decât un urs în vizită prin Canada."
     },
     {
       "home": "SUA",
       "away": "Paraguay",
       "kickoffEEST": "04:00",
       "alarm": "citești dimineața",
-      "why": "Ora patru dimineața e momentul perfect să vezi dacă Paraguay mai știe să strice petrecerea uneia dintre gazde."
+      "why": "Să pui alarma la ora patru pentru un meci cu Paraguay e genul de decizie care te face să regreți că ai internet acasă."
     }
   ],
-  "teaser": "⚽ Taco și kimchi la micul dejun, cehii caută drumul spre poartă · 2 meciuri azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Tequila la desert și coreeni care nu te lasă să dormi · 2 meciuri azi-noapte\nhttps://mcandea04.github.io/mondial/"
 }
