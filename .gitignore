@@ -3,3 +3,4 @@ node_modules/
 .artifacts/
 .playwright-mcp/
 .DS_Store
+tmp/
