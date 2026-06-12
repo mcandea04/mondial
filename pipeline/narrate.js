@@ -130,10 +130,20 @@ async function callGemini({ apiKey, model, userMessage }) {
 }
 
 /**
+ * Cleans a raw steering note. The note arrives from a GitHub issue body whose
+ * prefilled template is an HTML comment placeholder; an untouched submit must
+ * count as "no note". Strips HTML comments and trims; returns null when nothing
+ * meaningful is left.
+ */
+export function normalizeSteer(raw) {
+  return (raw ?? '').replace(/<!--[\s\S]*?-->/g, '').trim() || null;
+}
+
+/**
  * Builds the user message: the day's facts, the previous days' prose to avoid
  * recycling jokes, and an optional one-shot steering note from the editor.
  */
-export function buildUserMessage(facts, recentProse, steer) {
+export function buildUserMessage(facts, recentProse, rawSteer) {
   let message = `FAPTELE DE AZI (JSON):\n${JSON.stringify(facts, null, 2)}`;
   if (recentProse?.length) {
     const avoid = recentProse.map((line) => `- ${line}`).join('\n');
@@ -143,6 +153,7 @@ TEXTE DIN ZILELE TRECUTE — NU le reutiliza. Evită aceleași glume, metafore �
 (de ex. „brutarii", „masochism matinal", aceeași construcție de titlu). Caută unghiuri noi:
 ${avoid}`;
   }
+  const steer = normalizeSteer(rawSteer);
   if (steer) {
     message += `
 

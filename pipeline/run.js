@@ -187,7 +187,6 @@ export function injectOgTags(html, { title, description, image, url }) {
 
 async function main() {
   const args = parseArgs(process.argv);
-  const steer = (args.steer ?? '').replace(/<!--[\s\S]*?-->/g, '').trim() || null;
   await loadDotEnv();
 
   const date = args.date ?? activeDigestDate();
@@ -241,7 +240,7 @@ async function main() {
     narration = await getNarration(factsForNarration, {
       fixtures: args.fixtures,
       recentProse,
-      steer,
+      steer: args.steer,
     });
   }
 
