@@ -16,11 +16,11 @@ export function freshDirs() {
   return { fixtures, out };
 }
 
-export function runPipeline({ fixtures, out, extra = [] }) {
+export function runPipeline({ fixtures, out, extra = [], env = {} }) {
   return execFileSync(
     'node',
     ['pipeline/run.js', '--fixtures', fixtures, '--date', DATE, '--out', out, ...extra],
-    { cwd: ROOT, encoding: 'utf8' },
+    { cwd: ROOT, encoding: 'utf8', env: { ...process.env, ...env } },
   );
 }
 
@@ -114,9 +114,11 @@ test('legacy digest without factsHash is trusted: prose reused, hash stamped', (
   assert.equal(after.factsHash, expectedHash);
 });
 
-test('manifest carries per-day recap counts for days that have recaps', () => {
+const HIGHLIGHTS_ON = { HIGHLIGHTS_ENABLED: '1' };
+
+test('manifest carries per-day recap counts when highlights are enabled', () => {
   const { fixtures, out } = freshDirs();
-  runPipeline({ fixtures, out });
+  runPipeline({ fixtures, out, env: HIGHLIGHTS_ON });
   const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.dates, [DATE]);
   // The recaps.xml fixture links both finished matches.
@@ -127,10 +129,21 @@ test('manifest omits days with no recaps from the recaps map', () => {
   const { fixtures, out } = freshDirs();
   // Drop the recap feed so no match is linked.
   writeFileSync(path.join(fixtures, 'recaps.xml'), '<feed></feed>');
-  runPipeline({ fixtures, out });
+  runPipeline({ fixtures, out, env: HIGHLIGHTS_ON });
   const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.dates, [DATE]);
   assert.equal(manifest.recaps[DATE], undefined);
+});
+
+test('highlights disabled by default: no links, no recap clause, no recaps map', () => {
+  const { fixtures, out } = freshDirs();
+  // recaps.xml is present in fixtures, but the feature is off unless opted in.
+  runPipeline({ fixtures, out });
+  const digest = readDigest(out);
+  assert.ok(digest.matches.every((m) => m.highlight === null), 'no match carries a highlight');
+  assert.ok(!/rezumat/.test(digest.teaser), 'teaser has no recap clause');
+  const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
+  assert.deepEqual(manifest.recaps, {}, 'recaps map is empty');
 });
 
 test('a backfill run for an older date does not clobber a newer latest.json', () => {
