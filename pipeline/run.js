@@ -11,8 +11,10 @@
  *   node pipeline/run.js --out tmp/out          # redirect all data writes to a
  *     # given dir and skip the live index.html OG mutation; fixtures runs default
  *     # to tmp/out/ when --out is omitted
- *   node pipeline/run.js --re-narrate           # (reserved) force fresh narration
- *   node pipeline/run.js --steer "<text>"       # (reserved) steer the narration
+ *   node pipeline/run.js --re-narrate           # force fresh narration even when
+ *     # the stored digest's facts are unchanged (overrides the freeze)
+ *   node pipeline/run.js --steer "<text>"       # append a one-shot steering note
+ *     # to the narration prompt for this run only
  *
  * With --require-complete the run exits 0 without writing anything when not all
  * of the night's matches have finished (used by the polling workflow). When it
