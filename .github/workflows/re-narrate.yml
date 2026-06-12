@@ -1,0 +1,39 @@
+name: Re-narrate digest
+
+# Thin trigger: an issue labeled "re-narrate" opened by the repo owner
+# dispatches the digest workflow with force=true (which implies re-narration)
+# and the issue body as a one-shot steering note. The fresh digest email is the
+# confirmation.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  actions: write
+
+jobs:
+  trigger:
+    if: >
+      contains(github.event.issue.labels.*.name, 're-narrate') &&
+      github.event.issue.user.login == 'mcandea04'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch digest workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Issue body must travel via env, never inline in the script:
+          # direct interpolation of issue content into `run:` is shell injection.
+          STEER: ${{ github.event.issue.body }}
+        run: |
+          gh workflow run digest.yml --repo "$GITHUB_REPOSITORY" \
+            -f force=true -f steer="$STEER"
+
+      - name: Confirm and close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" \
+            --body "Regenerare pornită — vei primi un email nou cu titlul proaspăt. Progres: https://github.com/$GITHUB_REPOSITORY/actions/workflows/digest.yml"
+          gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY"

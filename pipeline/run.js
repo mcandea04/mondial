@@ -8,6 +8,13 @@
  *   node pipeline/run.js --fixtures test/fixtures --date 2026-06-12
  *     # offline run: reads matches.json / standings.json / narration.json
  *     # from the fixtures dir instead of calling the APIs
+ *   node pipeline/run.js --out tmp/out          # redirect all data writes to a
+ *     # given dir and skip the live index.html OG mutation; fixtures runs default
+ *     # to tmp/out/ when --out is omitted
+ *   node pipeline/run.js --re-narrate           # force fresh narration even when
+ *     # the stored digest's facts are unchanged (overrides the freeze)
+ *   node pipeline/run.js --steer "<text>"       # append a one-shot steering note
+ *     # to the narration prompt for this run only
  *
  * With --require-complete the run exits 0 without writing anything when not all
  * of the night's matches have finished (used by the polling workflow). When it
@@ -37,17 +44,22 @@ import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
+import { factsHash } from './facts-hash.js';
+import { reuseNarration } from './prose-reuse.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SITE_DIR = path.join(ROOT, 'site');
 const DATA_DIR = path.join(SITE_DIR, 'data');
 
 function parseArgs(argv) {
-  const args = { date: null, fixtures: null, requireComplete: false };
+  const args = { date: null, fixtures: null, requireComplete: false, out: null, reNarrate: false, steer: null };
   for (let i = 2; i < argv.length; i += 1) {
     if (argv[i] === '--date') args.date = argv[++i];
     else if (argv[i] === '--fixtures') args.fixtures = argv[++i];
     else if (argv[i] === '--require-complete') args.requireComplete = true;
+    else if (argv[i] === '--out') args.out = argv[++i];
+    else if (argv[i] === '--re-narrate') args.reNarrate = true;
+    else if (argv[i] === '--steer') args.steer = argv[++i];
     else throw new Error(`Unknown argument: ${argv[i]}`);
   }
   return args;
@@ -68,6 +80,25 @@ async function loadDotEnv() {
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
+}
+
+async function readJsonOrNull(filePath) {
+  try {
+    return await readJson(filePath);
+  } catch {
+    return null;
+  }
+}
+
+/** Writes only when content differs from what is on disk. */
+async function writeIfChanged(filePath, content) {
+  try {
+    const current = await readFile(filePath);
+    if (Buffer.compare(current, Buffer.from(content)) === 0) return;
+  } catch {
+    // missing file: fall through to write
+  }
+  await writeFile(filePath, content);
 }
 
 function requireEnv(name) {
@@ -102,7 +133,7 @@ async function gatherFacts({ date, fixtures }) {
   return fetchDigestData({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
 }
 
-async function getNarration(facts, { fixtures, recentProse }) {
+async function getNarration(facts, { fixtures, recentProse, steer }) {
   if (fixtures) {
     const cannedPath = path.join(fixtures, 'narration.json');
     if (existsSync(cannedPath)) return readJson(cannedPath);
@@ -111,6 +142,7 @@ async function getNarration(facts, { fixtures, recentProse }) {
     apiKey: requireEnv('GEMINI_API_KEY'),
     model: process.env.GEMINI_MODEL || undefined,
     recentProse,
+    steer,
   });
 }
 
@@ -119,8 +151,9 @@ async function getNarration(facts, { fixtures, recentProse }) {
  * recent per-day digests so narration can be told not to recycle the same jokes
  * and metaphors. The model has no memory across daily runs on its own.
  */
-async function recentProseBefore(date, days = 3) {
-  const files = (await readdir(DATA_DIR))
+async function recentProseBefore(dataDir, date, days = 3) {
+  if (!existsSync(dataDir)) return [];
+  const files = (await readdir(dataDir))
     .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
     .map((name) => name.replace('.json', ''))
     .filter((d) => d < date)
@@ -129,7 +162,7 @@ async function recentProseBefore(date, days = 3) {
 
   const prose = [];
   for (const d of files) {
-    const digest = await readJson(path.join(DATA_DIR, `${d}.json`));
+    const digest = await readJson(path.join(dataDir, `${d}.json`));
     prose.push(digest.headline, digest.summary);
     for (const m of digest.matches ?? []) prose.push(m.pill);
     for (const t of digest.tonight ?? []) prose.push(t.why);
@@ -157,6 +190,11 @@ async function main() {
   await loadDotEnv();
 
   const date = args.date ?? activeDigestDate();
+  const dataDir = args.out
+    ? path.resolve(args.out)
+    : args.fixtures
+      ? path.join(ROOT, 'tmp', 'out')
+      : DATA_DIR;
   const siteUrl = process.env.SITE_URL ?? 'https://mcandea04.github.io/mondial/';
 
   console.log(`Building digest for ${date}${args.fixtures ? ' (fixtures mode)' : ''}`);
@@ -179,18 +217,39 @@ async function main() {
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
-  const recentProse = args.fixtures ? [] : await recentProseBefore(date);
+  const factsForNarration = { date, finished: facts.finished, tonight: facts.tonight, standings };
+  const hash = factsHash(factsForNarration);
 
-  const narration = await getNarration(
-    { date, finished: facts.finished, tonight: facts.tonight, standings },
-    { fixtures: args.fixtures, recentProse },
-  );
+  // Freeze: when the stored digest was built from the same facts, reuse its
+  // prose instead of regenerating. A stored digest without factsHash predates
+  // this mechanism and is trusted as-is (the hash gets stamped on rewrite).
+  let narration = null;
+  let reused = false;
+  if (!args.reNarrate) {
+    const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
+    if (existing && (!existing.factsHash || existing.factsHash === hash)) {
+      narration = reuseNarration(existing, facts);
+      reused = narration != null;
+    }
+  }
+
+  if (reused) {
+    console.log('facts unchanged, prose reused');
+  } else {
+    const recentProse = args.fixtures ? [] : await recentProseBefore(dataDir, date);
+    narration = await getNarration(factsForNarration, {
+      fixtures: args.fixtures,
+      recentProse,
+      steer: args.steer,
+    });
+  }
 
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
   const narrationByFixture = new Map(narration.tonight.map((m) => [m.id, m]));
 
   const digest = {
     date,
+    factsHash: hash,
     headline: narration.headline,
     summary: narration.summary,
     matches: facts.finished.map((m) => ({
@@ -200,6 +259,7 @@ async function main() {
     })),
     groups: standings.filter((g) => groupsThatPlayed.has(g.name)),
     tonight: facts.tonight.map((m) => ({
+      id: m.id,
       home: m.home,
       away: m.away,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
@@ -213,35 +273,47 @@ async function main() {
     }),
   };
 
-  const png = await renderOgImage({
-    date,
-    headline: narration.headline,
-    matches: digest.matches,
-  });
+  await mkdir(path.join(dataDir, 'og'), { recursive: true });
 
-  await mkdir(path.join(DATA_DIR, 'og'), { recursive: true });
-  await writeFile(path.join(DATA_DIR, `${date}.json`), JSON.stringify(digest, null, 2));
-  await writeFile(path.join(DATA_DIR, 'latest.json'), JSON.stringify(digest, null, 2));
-  await writeFile(path.join(DATA_DIR, 'og', `${date}.png`), png);
+  const ogPath = path.join(dataDir, 'og', `${date}.png`);
+  if (!reused || !existsSync(ogPath)) {
+    const png = await renderOgImage({
+      date,
+      headline: narration.headline,
+      matches: digest.matches,
+    });
+    await writeIfChanged(ogPath, png);
+  }
+
+  await writeIfChanged(path.join(dataDir, `${date}.json`), JSON.stringify(digest, null, 2));
+
+  const existingLatest = await readJsonOrNull(path.join(dataDir, 'latest.json'));
+  if (!existingLatest?.date || existingLatest.date <= date) {
+    await writeIfChanged(path.join(dataDir, 'latest.json'), JSON.stringify(digest, null, 2));
+  } else {
+    console.log(`latest.json kept at ${existingLatest.date} (newer than ${date})`);
+  }
 
   // Archive manifest: every per-day JSON present in data/.
-  const dates = (await readdir(DATA_DIR))
+  const dates = (await readdir(dataDir))
     .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
     .map((name) => name.replace('.json', ''))
     .sort();
-  await writeFile(path.join(DATA_DIR, 'manifest.json'), JSON.stringify({ dates }, null, 2));
+  await writeIfChanged(path.join(dataDir, 'manifest.json'), JSON.stringify({ dates }, null, 2));
 
-  const indexPath = path.join(SITE_DIR, 'index.html');
-  const html = await readFile(indexPath, 'utf8');
-  await writeFile(
-    indexPath,
-    injectOgTags(html, {
-      title: narration.headline,
-      description: narration.summary,
-      image: `${siteUrl}data/og/${date}.png`,
-      url: siteUrl,
-    }),
-  );
+  if (!args.out && !args.fixtures) {
+    const indexPath = path.join(SITE_DIR, 'index.html');
+    const html = await readFile(indexPath, 'utf8');
+    await writeFile(
+      indexPath,
+      injectOgTags(html, {
+        title: narration.headline,
+        description: narration.summary,
+        image: `${siteUrl}data/og/${date}.png`,
+        url: siteUrl,
+      }),
+    );
+  }
 
   console.log(
     `Done: ${digest.matches.length} matches, ${digest.groups.length} groups, ${digest.tonight.length} tonight`,

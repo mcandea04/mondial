@@ -130,18 +130,36 @@ async function callGemini({ apiKey, model, userMessage }) {
 }
 
 /**
- * Builds the user message: the day's facts, plus the previous days' prose so
- * the model avoids recycling the same jokes and metaphors across digests.
+ * Cleans a raw steering note. The note arrives from a GitHub issue body whose
+ * prefilled template is an HTML comment placeholder; an untouched submit must
+ * count as "no note". Strips HTML comments and trims; returns null when nothing
+ * meaningful is left.
  */
-function buildUserMessage(facts, recentProse) {
-  const factsBlock = `FAPTELE DE AZI (JSON):\n${JSON.stringify(facts, null, 2)}`;
-  if (!recentProse?.length) return factsBlock;
-  const avoid = recentProse.map((line) => `- ${line}`).join('\n');
-  return `${factsBlock}
+export function normalizeSteer(raw) {
+  return (raw ?? '').replace(/<!--[\s\S]*?-->/g, '').trim() || null;
+}
+
+/**
+ * Builds the user message: the day's facts, the previous days' prose to avoid
+ * recycling jokes, and an optional one-shot steering note from the editor.
+ */
+export function buildUserMessage(facts, recentProse, rawSteer) {
+  let message = `FAPTELE DE AZI (JSON):\n${JSON.stringify(facts, null, 2)}`;
+  if (recentProse?.length) {
+    const avoid = recentProse.map((line) => `- ${line}`).join('\n');
+    message += `
 
 TEXTE DIN ZILELE TRECUTE — NU le reutiliza. Evită aceleași glume, metafore și imagini
 (de ex. „brutarii", „masochism matinal", aceeași construcție de titlu). Caută unghiuri noi:
 ${avoid}`;
+  }
+  const steer = normalizeSteer(rawSteer);
+  if (steer) {
+    message += `
+
+NOTĂ DE LA EDITOR (se aplică doar la această regenerare): ${steer}`;
+  }
+  return message;
 }
 
 /**
@@ -149,8 +167,8 @@ ${avoid}`;
  * @param recentProse - prose lines from previous digests to avoid repeating
  * @returns validated narration { headline, summary, matches, tonight }
  */
-export async function narrate(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [] } = {}) {
-  const userMessage = buildUserMessage(facts, recentProse);
+export async function narrate(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null } = {}) {
+  const userMessage = buildUserMessage(facts, recentProse, steer);
 
   // Up to 4 attempts: covers transient API errors (429/5xx, with backoff)
   // and one retry for a response that fails JSON parsing or the schema.
