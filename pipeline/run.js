@@ -131,7 +131,7 @@ async function gatherFacts({ date, fixtures }) {
   return fetchDigestData({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
 }
 
-async function getNarration(facts, { fixtures, recentProse }) {
+async function getNarration(facts, { fixtures, recentProse, steer }) {
   if (fixtures) {
     const cannedPath = path.join(fixtures, 'narration.json');
     if (existsSync(cannedPath)) return readJson(cannedPath);
@@ -140,6 +140,7 @@ async function getNarration(facts, { fixtures, recentProse }) {
     apiKey: requireEnv('GEMINI_API_KEY'),
     model: process.env.GEMINI_MODEL || undefined,
     recentProse,
+    steer,
   });
 }
 
@@ -184,6 +185,7 @@ export function injectOgTags(html, { title, description, image, url }) {
 
 async function main() {
   const args = parseArgs(process.argv);
+  const steer = (args.steer ?? '').replace(/<!--[\s\S]*?-->/g, '').trim() || null;
   await loadDotEnv();
 
   const date = args.date ?? activeDigestDate();
@@ -237,7 +239,7 @@ async function main() {
     narration = await getNarration(factsForNarration, {
       fixtures: args.fixtures,
       recentProse,
-      steer: args.steer,
+      steer,
     });
   }
 
