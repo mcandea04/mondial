@@ -114,6 +114,25 @@ test('legacy digest without factsHash is trusted: prose reused, hash stamped', (
   assert.equal(after.factsHash, expectedHash);
 });
 
+test('manifest carries per-day recap counts for days that have recaps', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
+  assert.deepEqual(manifest.dates, [DATE]);
+  // The recaps.xml fixture links both finished matches.
+  assert.equal(manifest.recaps[DATE], 2);
+});
+
+test('manifest omits days with no recaps from the recaps map', () => {
+  const { fixtures, out } = freshDirs();
+  // Drop the recap feed so no match is linked.
+  writeFileSync(path.join(fixtures, 'recaps.xml'), '<feed></feed>');
+  runPipeline({ fixtures, out });
+  const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
+  assert.deepEqual(manifest.dates, [DATE]);
+  assert.equal(manifest.recaps[DATE], undefined);
+});
+
 test('a backfill run for an older date does not clobber a newer latest.json', () => {
   const { fixtures, out } = freshDirs();
   runPipeline({ fixtures, out });

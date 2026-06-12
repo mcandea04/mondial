@@ -119,14 +119,19 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 .pill-text { font-size: 13px; color: var(--pill-txt); line-height: 1.5; }
 
 .highlight {
-  display: inline-block;
-  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  background: var(--pill-txt);
+  color: var(--bg);
   font-size: 13px;
-  font-weight: 500;
-  color: var(--pill-txt);
+  font-weight: 600;
   text-decoration: none;
 }
-.highlight:hover { text-decoration: underline; }
+.highlight:hover { opacity: 0.85; }
 
 /* ── Group table ── */
 table {
@@ -208,12 +213,25 @@ tbody tr td { padding: 5px 0; }
 
 /* ── Archive ── */
 .archive-list { list-style: none; }
+.archive-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
 .archive-list li + li { border-top: 0.5px solid var(--border); }
 .archive-list a {
   display: block;
+  flex: 1;
   padding: 10px 0;
   color: var(--text);
   text-decoration: none;
 }
 .archive-list a:hover { color: var(--pill-txt); }
+.archive-recaps {
+  flex: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pill-txt);
+}
 .empty-state { color: var(--muted); font-size: 14px; }

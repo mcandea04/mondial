@@ -60,6 +60,16 @@ export async function renderOgImage({ date, headline, matches }) {
       ),
     );
   }
+  const recapCount = matches.filter((m) => m.highlight).length;
+  if (recapCount > 0) {
+    children.push(
+      el(
+        'div',
+        { fontSize: 28, color: '#9e9d98', marginTop: top ? 12 : 'auto' },
+        '▶ cu rezumate video',
+      ),
+    );
+  }
 
   const svg = await satori(
     el(

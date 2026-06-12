@@ -57,6 +57,13 @@
         });
         const item = document.createElement('li');
         item.append(link);
+        if (manifest.recaps?.[date]) {
+          const mark = document.createElement('span');
+          mark.className = 'archive-recaps';
+          mark.textContent = '▶ rezumate';
+          mark.title = `${manifest.recaps[date]} rezumate video`;
+          item.append(mark);
+        }
         list.append(item);
       }
       if (location.hash) showDay(location.hash.slice(1));

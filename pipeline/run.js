@@ -287,6 +287,7 @@ async function main() {
     teaser: buildTeaser({
       headline: narration.headline,
       matchCount: facts.finished.length,
+      recapCount: recapByMatch.size,
       siteUrl,
     }),
   };
@@ -312,12 +313,19 @@ async function main() {
     console.log(`latest.json kept at ${existingLatest.date} (newer than ${date})`);
   }
 
-  // Archive manifest: every per-day JSON present in data/.
+  // Archive manifest: every per-day JSON present in data/, plus the per-day
+  // recap count so the archive can flag mornings that have video recaps.
   const dates = (await readdir(dataDir))
     .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
     .map((name) => name.replace('.json', ''))
     .sort();
-  await writeIfChanged(path.join(dataDir, 'manifest.json'), JSON.stringify({ dates }, null, 2));
+  const recaps = {};
+  for (const d of dates) {
+    const day = await readJson(path.join(dataDir, `${d}.json`));
+    const count = (day.matches ?? []).filter((m) => m.highlight).length;
+    if (count > 0) recaps[d] = count;
+  }
+  await writeIfChanged(path.join(dataDir, 'manifest.json'), JSON.stringify({ dates, recaps }, null, 2));
 
   if (!args.out && !args.fixtures) {
     const indexPath = path.join(SITE_DIR, 'index.html');
