@@ -79,6 +79,14 @@ function renderMatchCard(match) {
     );
     card.append(pill);
   }
+
+  if (match.highlight) {
+    const link = el('a', 'highlight', '▶ Rezumat');
+    link.href = match.highlight;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    card.append(link);
+  }
   return card;
 }
 

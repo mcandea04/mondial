@@ -42,6 +42,7 @@ import {
 } from './fetch.js';
 import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
+import { fetchRecaps, parseRecapFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
 import { factsHash } from './facts-hash.js';
@@ -147,6 +148,20 @@ async function getNarration(facts, { fixtures, recentProse, steer }) {
 }
 
 /**
+ * Maps finished-match ids to El Gráfico recap URLs. Offline (--fixtures) it reads
+ * recaps.xml from the dir when present and skips the network otherwise. Always
+ * returns a Map; never throws, so a feed outage cannot fail the digest.
+ */
+async function getRecaps(finished, { fixtures }) {
+  if (fixtures) {
+    const cannedPath = path.join(fixtures, 'recaps.xml');
+    if (!existsSync(cannedPath)) return new Map();
+    return recapsFor(finished, parseRecapFeed(await readFile(cannedPath, 'utf8')));
+  }
+  return fetchRecaps({ matches: finished });
+}
+
+/**
  * Collects the prose (headline, summary, pills, tonight reasons) from the most
  * recent per-day digests so narration can be told not to recycle the same jokes
  * and metaphors. The model has no memory across daily runs on its own.
@@ -244,6 +259,8 @@ async function main() {
     });
   }
 
+  const recapByMatch = await getRecaps(facts.finished, { fixtures: args.fixtures });
+
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
   const narrationByFixture = new Map(narration.tonight.map((m) => [m.id, m]));
 
@@ -256,6 +273,7 @@ async function main() {
       ...m,
       pill: narrationByMatch.get(m.id)?.pill ?? '',
       drama: narrationByMatch.get(m.id)?.drama ?? 1,
+      highlight: recapByMatch.get(m.id) ?? null,
     })),
     groups: standings.filter((g) => groupsThatPlayed.has(g.name)),
     tonight: facts.tonight.map((m) => ({

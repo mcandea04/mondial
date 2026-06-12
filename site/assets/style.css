@@ -118,6 +118,16 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 }
 .pill-text { font-size: 13px; color: var(--pill-txt); line-height: 1.5; }
 
+.highlight {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pill-txt);
+  text-decoration: none;
+}
+.highlight:hover { text-decoration: underline; }
+
 /* ── Group table ── */
 table {
   width: 100%;
