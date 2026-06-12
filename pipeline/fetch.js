@@ -4,6 +4,7 @@
  */
 
 import { romanianTeamName } from './teams.js';
+import { enrichFinishedMatches } from './enrich.js';
 
 const API_BASE = 'https://api.football-data.org/v4';
 const REQUEST_DELAY_MS = 6500;
@@ -135,7 +136,8 @@ export function selectDigestMatches(matchesResponse, digestDate) {
 
 /**
  * Fetches everything the digest needs for `digestDate`:
- * - finished matches in the night window, with detail (goals/bookings) when available
+ * - finished matches in the night window, enriched with scorers/cards from ESPN
+ *   (football-data's free tier omits goals/bookings)
  * - upcoming fixtures for tonight (the next night window)
  * - current group standings
  */
@@ -151,45 +153,47 @@ export async function fetchDigestData({ digestDate, token }) {
 
   const { finished, tonight } = selectDigestMatches(matchesResponse, digestDate);
 
-  const detailed = [];
-  for (const match of finished) {
-    await sleep(REQUEST_DELAY_MS);
-    try {
-      detailed.push(await apiGet(`/matches/${match.id}`, token));
-    } catch {
-      // Detail endpoint unavailable (tier restriction): degrade to list data.
-      detailed.push(match);
-    }
-  }
+  const enriched = await enrichFinishedMatches(finished, {
+    log: (message) => console.log(`enrich: ${message}`),
+  });
 
   await sleep(REQUEST_DELAY_MS);
   const standingsResponse = await apiGet('/competitions/WC/standings', token);
 
   return {
-    finished: detailed.map(parseMatch),
+    finished: enriched.map(parseMatch),
     tonight: tonight.map(parseFixture),
     standings: parseStandings(standingsResponse),
   };
 }
 
+/** Reads a 'home'/'away' team tag, leaving anything else (incl. missing) as null. */
+function teamSide(value) {
+  return value === 'home' || value === 'away' ? value : null;
+}
+
 /** Normalizes a finished match; scorers/events are empty when detail is missing. */
 export function parseMatch(match) {
-  const goals = (match.goals ?? []).map(
-    (g) => `${g.scorer?.name ?? '?'} ${g.minute}'`,
-  );
+  const scorers = (match.goals ?? []).map((g) => ({
+    name: g.scorer?.name ?? '?',
+    minute: String(g.minute),
+    team: teamSide(g.team),
+  }));
   const events = (match.bookings ?? [])
     .filter((b) => b.card === 'RED' || b.card === 'YELLOW_RED')
-    .map((b) => `roșu ${b.player?.name ?? '?'} ${b.minute}'`);
-  if (match.score?.penalties) {
-    events.push('decis la penalty-uri');
-  }
+    .map((b) => ({
+      name: b.player?.name ?? '?',
+      minute: String(b.minute),
+      team: teamSide(b.team),
+    }));
   return {
     id: match.id,
     home: romanianTeamName(match.homeTeam.name),
     away: romanianTeamName(match.awayTeam.name),
     score: [match.score.fullTime.home, match.score.fullTime.away],
-    scorers: goals,
+    scorers,
     events,
+    decidedOnPenalties: Boolean(match.score?.penalties),
     group: (match.group ?? '').replace('GROUP_', ''),
     utcDate: match.utcDate,
   };

@@ -144,7 +144,7 @@ test('unknown team names (knockout placeholders) pass through unchanged', () => 
   assert.equal(parsed.away, 'Runner-up Group B');
 });
 
-test('parseMatch with full detail: scorers, red cards, penalties', () => {
+test('parseMatch with full detail: team-attributed scorers, red cards, minutes without apostrophe', () => {
   const match = {
     id: 9,
     group: 'GROUP_E',
@@ -153,19 +153,58 @@ test('parseMatch with full detail: scorers, red cards, penalties', () => {
     awayTeam: { name: 'Japonia' },
     score: { fullTime: { home: 1, away: 2 }, penalties: null },
     goals: [
-      { minute: 33, scorer: { name: 'Gnabry' } },
-      { minute: 75, scorer: { name: 'Doan' } },
+      { minute: '33', scorer: { name: 'Gnabry' }, team: 'home' },
+      { minute: '90+2', scorer: { name: 'Doan' }, team: 'away' },
     ],
     bookings: [
-      { minute: 79, card: 'RED', player: { name: 'Rüdiger' } },
-      { minute: 50, card: 'YELLOW', player: { name: 'Kimmich' } },
+      { minute: '79', card: 'RED', player: { name: 'Rüdiger' }, team: 'home' },
+      { minute: '50', card: 'YELLOW', player: { name: 'Kimmich' }, team: 'home' },
+      { minute: '88', card: 'YELLOW_RED', player: { name: 'Endo' }, team: 'away' },
     ],
   };
   const parsed = parseMatch(match);
   assert.deepEqual(parsed.score, [1, 2]);
-  assert.deepEqual(parsed.scorers, ["Gnabry 33'", "Doan 75'"]);
-  assert.deepEqual(parsed.events, ["roșu Rüdiger 79'"]);
+  assert.deepEqual(parsed.scorers, [
+    { name: 'Gnabry', minute: '33', team: 'home' },
+    { name: 'Doan', minute: '90+2', team: 'away' },
+  ]);
+  assert.deepEqual(parsed.events, [
+    { name: 'Rüdiger', minute: '79', team: 'home' },
+    { name: 'Endo', minute: '88', team: 'away' },
+  ]);
+  assert.equal(parsed.decidedOnPenalties, false);
   assert.equal(parsed.group, 'E');
+});
+
+test('parseMatch sets decidedOnPenalties and keeps it out of events', () => {
+  const match = {
+    id: 10,
+    group: 'GROUP_E',
+    utcDate: '2026-06-11T19:00:00Z',
+    homeTeam: { name: 'Germania' },
+    awayTeam: { name: 'Japonia' },
+    score: { fullTime: { home: 1, away: 1 }, penalties: { home: 4, away: 3 } },
+    bookings: [{ minute: '70', card: 'RED', player: { name: 'X' }, team: 'home' }],
+  };
+  const parsed = parseMatch(match);
+  assert.equal(parsed.decidedOnPenalties, true);
+  assert.deepEqual(parsed.events, [{ name: 'X', minute: '70', team: 'home' }]);
+});
+
+test('parseMatch leaves team null when goals/bookings carry no team (offline fixtures)', () => {
+  const match = {
+    id: 11,
+    group: 'GROUP_A',
+    utcDate: '2026-06-11T19:00:00Z',
+    homeTeam: { name: 'Mexic' },
+    awayTeam: { name: 'Africa de Sud' },
+    score: { fullTime: { home: 1, away: 0 } },
+    goals: [{ minute: '9', scorer: { name: 'Quiñones' } }],
+    bookings: [{ minute: '49', card: 'RED', player: { name: 'Sithole' } }],
+  };
+  const parsed = parseMatch(match);
+  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: null }]);
+  assert.deepEqual(parsed.events, [{ name: 'Sithole', minute: '49', team: null }]);
 });
 
 test('parseMatch degrades gracefully without goals/bookings detail', () => {
@@ -181,6 +220,7 @@ test('parseMatch degrades gracefully without goals/bookings detail', () => {
   assert.deepEqual(parsed.score, [2, 0]);
   assert.deepEqual(parsed.scorers, []);
   assert.deepEqual(parsed.events, []);
+  assert.equal(parsed.decidedOnPenalties, false);
 });
 
 test('parseStandings maps the live API shape into group tables', async () => {

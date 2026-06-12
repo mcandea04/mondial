@@ -47,9 +47,9 @@ function renderMatchCard(match) {
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
   teams.append(
-    el('span', 'team-name', match.home),
+    el('span', 'team-name home', match.home),
     el('span', 'score', `${match.score[0]} – ${match.score[1]}`),
-    el('span', 'team-name', match.away),
+    el('span', 'team-name away', match.away),
   );
   const flames = el('div', 'flames');
   flames.setAttribute('aria-label', `dramă ${match.drama} din 5`);
@@ -61,15 +61,8 @@ function renderMatchCard(match) {
   header.append(teams, flames);
   card.append(header);
 
-  if (match.scorers.length || match.events.length) {
-    const line = el('p', 'scorers');
-    line.append(match.scorers.join('  ·  '));
-    for (const event of match.events) {
-      if (line.childNodes.length) line.append('  ·  ');
-      line.append(el('span', 'red-card', `■ ${event}`));
-    }
-    card.append(line);
-  }
+  const events = renderEvents(match);
+  if (events) card.append(events);
 
   if (match.pill) {
     const pill = el('div', 'pill');
@@ -88,6 +81,56 @@ function renderMatchCard(match) {
     card.append(link);
   }
   return card;
+}
+
+/** A team-colored event span: `${name} ${minute}'`, class `ev` plus the side. */
+function eventSpan(event) {
+  const cls = event.team ? `ev ${event.team}` : 'ev';
+  return el('span', cls, `${event.name} ${event.minute}'`);
+}
+
+/** A red-card event span: the goal span with a `■` mark prepended. */
+function cardSpan(event) {
+  const span = eventSpan(event);
+  span.prepend(el('span', 'card-mark', '■ '));
+  return span;
+}
+
+/** A line (`evline`) of event spans separated by ` · `. */
+function eventLine(spans) {
+  const line = el('p', 'evline');
+  for (const span of spans) {
+    if (line.childNodes.length) line.append(el('span', 'sep', '  ·  '));
+    line.append(span);
+  }
+  return line;
+}
+
+/**
+ * The goals line and (if any) the red-card line, plus a penalties note. Returns
+ * null when there is nothing to show. The note rides on the last line as
+ * ` · decis la penalty-uri`, or stands alone when there are no events.
+ */
+function renderEvents(match) {
+  const lines = [];
+  if (match.scorers.length) lines.push(eventLine(match.scorers.map(eventSpan)));
+  if (match.events.length) lines.push(eventLine(match.events.map(cardSpan)));
+
+  if (match.decidedOnPenalties) {
+    const lastLine = lines[lines.length - 1];
+    if (lastLine) {
+      lastLine.append(el('span', 'sep', '  ·  decis la penalty-uri'));
+    } else {
+      const note = el('p', 'evline');
+      note.append(el('span', null, 'decis la penalty-uri'));
+      lines.push(note);
+    }
+  }
+
+  if (lines.length === 0) return null;
+  const wrap = el('div', 'events');
+  wrap.append(...lines);
+  return wrap;
 }
 
 function renderGroupCard(group) {
