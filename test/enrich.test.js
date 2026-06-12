@@ -7,37 +7,48 @@ import {
 } from '../pipeline/enrich.js';
 import { parseMatch } from '../pipeline/fetch.js';
 
-test('eventsToFootballData maps scoring plays to goals with scorer and minute', () => {
+test('eventsToFootballData maps scoring plays to goals with scorer, minute, and team side', () => {
   const keyEvents = [
-    { clock: { displayValue: "9'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Quiñones' } }, { athlete: { displayName: 'Lira' } }] },
-    { clock: { displayValue: "67'" }, type: { id: '137', text: 'Goal - Header' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Jiménez' } }] },
+    { team: { id: '203' }, clock: { displayValue: "9'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Quiñones' } }, { athlete: { displayName: 'Lira' } }] },
+    { team: { id: '467' }, clock: { displayValue: "67'" }, type: { id: '137', text: 'Goal - Header' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Jiménez' } }] },
   ];
-  const { goals } = eventsToFootballData(keyEvents);
+  const homeAwayById = { '203': 'home', '467': 'away' };
+  const { goals } = eventsToFootballData(keyEvents, homeAwayById);
   assert.deepEqual(goals, [
-    { minute: '9', scorer: { name: 'Quiñones' } },
-    { minute: '67', scorer: { name: 'Jiménez' } },
+    { minute: '9', scorer: { name: 'Quiñones' }, team: 'home' },
+    { minute: '67', scorer: { name: 'Jiménez' }, team: 'away' },
   ]);
 });
 
 test('eventsToFootballData keeps stoppage-time minute as "90+2"', () => {
   const keyEvents = [
-    { clock: { displayValue: "90'+2'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Montes' } }] },
+    { team: { id: '203' }, clock: { displayValue: "90'+2'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Montes' } }] },
   ];
-  const { goals } = eventsToFootballData(keyEvents);
+  const { goals } = eventsToFootballData(keyEvents, { '203': 'home' });
   assert.equal(goals[0].minute, '90+2');
+});
+
+test('eventsToFootballData stamps team null when a key event id is not in the map', () => {
+  const keyEvents = [
+    { team: { id: '999' }, clock: { displayValue: "9'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Ghost' } }] },
+    { team: { id: '999' }, clock: { displayValue: "49'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Ghost' } }] },
+  ];
+  const { goals, bookings } = eventsToFootballData(keyEvents, { '203': 'home' });
+  assert.equal(goals[0].team, null);
+  assert.equal(bookings[0].team, null);
 });
 
 test('eventsToFootballData maps red cards (incl. second yellow) and drops plain yellows', () => {
   const keyEvents = [
-    { clock: { displayValue: "17'" }, type: { id: '94', text: 'Yellow Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Mokoena' } }] },
-    { clock: { displayValue: "49'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Sithole' } }] },
-    { clock: { displayValue: "84'" }, type: { id: '98', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Zwane' } }] },
+    { team: { id: '467' }, clock: { displayValue: "17'" }, type: { id: '94', text: 'Yellow Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Mokoena' } }] },
+    { team: { id: '467' }, clock: { displayValue: "49'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Sithole' } }] },
+    { team: { id: '203' }, clock: { displayValue: "84'" }, type: { id: '98', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Zwane' } }] },
   ];
-  const { bookings } = eventsToFootballData(keyEvents);
+  const { bookings } = eventsToFootballData(keyEvents, { '203': 'home', '467': 'away' });
   assert.deepEqual(bookings, [
-    { minute: '17', card: 'YELLOW', player: { name: 'Mokoena' } },
-    { minute: '49', card: 'RED', player: { name: 'Sithole' } },
-    { minute: '84', card: 'RED', player: { name: 'Zwane' } },
+    { minute: '17', card: 'YELLOW', player: { name: 'Mokoena' }, team: 'away' },
+    { minute: '49', card: 'RED', player: { name: 'Sithole' }, team: 'away' },
+    { minute: '84', card: 'RED', player: { name: 'Zwane' }, team: 'home' },
   ]);
 });
 
@@ -60,12 +71,12 @@ test('eventsToFootballData ignores shootout penalties that carry no match minute
   assert.deepEqual(goals, []);
 });
 
-test('output feeds parseMatch to produce the existing scorer/event strings', () => {
+test('output feeds parseMatch to produce team-attributed scorers and events', () => {
   const keyEvents = [
-    { clock: { displayValue: "33'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Gnabry' } }] },
-    { clock: { displayValue: "79'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Rüdiger' } }] },
+    { team: { id: '5' }, clock: { displayValue: "33'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Gnabry' } }] },
+    { team: { id: '5' }, clock: { displayValue: "79'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Rüdiger' } }] },
   ];
-  const { goals, bookings } = eventsToFootballData(keyEvents);
+  const { goals, bookings } = eventsToFootballData(keyEvents, { '5': 'home' });
   const match = {
     id: 9,
     group: 'GROUP_E',
@@ -77,8 +88,8 @@ test('output feeds parseMatch to produce the existing scorer/event strings', () 
     bookings,
   };
   const parsed = parseMatch(match);
-  assert.deepEqual(parsed.scorers, ["Gnabry 33'"]);
-  assert.deepEqual(parsed.events, ["roșu Rüdiger 79'"]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Gnabry', minute: '33', team: 'home' }]);
+  assert.deepEqual(parsed.events, [{ name: 'Rüdiger', minute: '79', team: 'home' }]);
 });
 
 test('matchEvent pairs a football-data match to the ESPN event with the same kickoff', () => {
@@ -137,9 +148,13 @@ test('enrichFinishedMatches attaches goals/bookings from the ESPN summary', asyn
     }
     if (url.includes('/summary?event=760415')) {
       return jsonResponse({
+        header: { competitions: [{ competitors: [
+          { homeAway: 'home', team: { id: '203' } },
+          { homeAway: 'away', team: { id: '467' } },
+        ] }] },
         keyEvents: [
-          { clock: { displayValue: "9'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Quiñones' } }] },
-          { clock: { displayValue: "49'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Sithole' } }] },
+          { team: { id: '203' }, clock: { displayValue: "9'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Quiñones' } }] },
+          { team: { id: '467' }, clock: { displayValue: "49'" }, type: { id: '93', text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'Sithole' } }] },
         ],
       });
     }
@@ -148,8 +163,8 @@ test('enrichFinishedMatches attaches goals/bookings from the ESPN summary', asyn
 
   const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
   const parsed = parseMatch(enriched[0]);
-  assert.deepEqual(parsed.scorers, ["Quiñones 9'"]);
-  assert.deepEqual(parsed.events, ["roșu Sithole 49'"]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: 'home' }]);
+  assert.deepEqual(parsed.events, [{ name: 'Sithole', minute: '49', team: 'away' }]);
   assert.ok(calls.some((u) => u.includes('dates=20260611')), 'queries the kickoff date in UTC');
 });
 
@@ -206,8 +221,12 @@ test('enrichFinishedMatches finds an after-midnight UTC match on the US-Eastern 
     }
     if (url.includes('/summary?event=760414')) {
       return jsonResponse({
+        header: { competitions: [{ competitors: [
+          { homeAway: 'home', team: { id: '11' } },
+          { homeAway: 'away', team: { id: '12' } },
+        ] }] },
         keyEvents: [
-          { clock: { displayValue: "30'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Son' } }] },
+          { team: { id: '11' }, clock: { displayValue: "30'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Son' } }] },
         ],
       });
     }
@@ -215,8 +234,34 @@ test('enrichFinishedMatches finds an after-midnight UTC match on the US-Eastern 
   };
   const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
   const parsed = parseMatch(enriched[0]);
-  assert.deepEqual(parsed.scorers, ["Son 30'"]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Son', minute: '30', team: 'home' }]);
   assert.ok(queried.includes('20260611'), `expected the ET day to be queried, got ${JSON.stringify(queried)}`);
+});
+
+test('enrichFinishedMatches leaves team null when the summary has no header', async () => {
+  const rawMatches = [
+    { id: 1, utcDate: '2026-06-11T19:00:00Z', homeTeam: { name: 'Mexico' }, awayTeam: { name: 'South Africa' }, score: { fullTime: { home: 1, away: 0 } } },
+  ];
+  const fetchImpl = async (url) => {
+    if (url.includes('/scoreboard?')) {
+      return jsonResponse({
+        events: [
+          { id: '760415', date: '2026-06-11T19:00Z', competitions: [{ competitors: [{ team: { displayName: 'Mexico' } }, { team: { displayName: 'South Africa' } }] }] },
+        ],
+      });
+    }
+    if (url.includes('/summary?event=760415')) {
+      return jsonResponse({
+        keyEvents: [
+          { team: { id: '203' }, clock: { displayValue: "9'" }, type: { id: '70', text: 'Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Quiñones' } }] },
+        ],
+      });
+    }
+    throw new Error(`unexpected url ${url}`);
+  };
+  const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
+  const parsed = parseMatch(enriched[0]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: null }]);
 });
 
 test('enrichFinishedMatches passes a match through when no ESPN event pairs', async () => {

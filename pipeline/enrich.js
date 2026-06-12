@@ -75,24 +75,49 @@ function minute(clock) {
   return (clock?.displayValue ?? '').replaceAll("'", '');
 }
 
-/** Reshapes ESPN keyEvents into football-data `goals[]` / `bookings[]`. */
-export function eventsToFootballData(keyEvents) {
+/** 'home'/'away' for a key event's team, from the header id map; null if unknown. */
+function sideOf(event, homeAwayById) {
+  const id = event.team?.id;
+  if (id == null) return null;
+  const side = homeAwayById instanceof Map ? homeAwayById.get(id) : homeAwayById?.[id];
+  return side ?? null;
+}
+
+/**
+ * Reshapes ESPN keyEvents into football-data `goals[]` / `bookings[]`, stamping
+ * each with the 'home'/'away' side resolved from `homeAwayById` (a Map or object
+ * from ESPN team id to side). Unknown ids fall back to team: null.
+ */
+export function eventsToFootballData(keyEvents, homeAwayById = {}) {
   const goals = [];
   const bookings = [];
   for (const event of keyEvents) {
     const min = minute(event.clock);
     const name = event.participants?.[0]?.athlete?.displayName;
     const type = event.type?.text ?? '';
+    const team = sideOf(event, homeAwayById);
     // Goals carry a match minute; shootout penalties have an empty clock — skip them.
     if (event.scoringPlay && min) {
-      goals.push({ minute: min, scorer: { name } });
+      goals.push({ minute: min, scorer: { name }, team });
     } else if (type.includes('Red Card')) {
-      bookings.push({ minute: min, card: 'RED', player: { name } });
+      bookings.push({ minute: min, card: 'RED', player: { name }, team });
     } else if (type.includes('Yellow Card')) {
-      bookings.push({ minute: min, card: 'YELLOW', player: { name } });
+      bookings.push({ minute: min, card: 'YELLOW', player: { name }, team });
     }
   }
   return { goals, bookings };
+}
+
+/** Builds an ESPN-team-id → 'home'/'away' map from a summary's header competitors. */
+function homeAwayMap(summary) {
+  const competitors = summary.header?.competitions?.[0]?.competitors ?? [];
+  const byId = new Map();
+  for (const competitor of competitors) {
+    if (competitor.team?.id != null && competitor.homeAway) {
+      byId.set(competitor.team.id, competitor.homeAway);
+    }
+  }
+  return byId;
 }
 
 async function espnGet(path, fetchImpl) {
@@ -149,7 +174,7 @@ export async function enrichFinishedMatches(
       }
       await sleep(delayMs);
       const summary = await espnGet(`/summary?event=${event.id}`, fetchImpl);
-      const { goals, bookings } = eventsToFootballData(summary.keyEvents ?? []);
+      const { goals, bookings } = eventsToFootballData(summary.keyEvents ?? [], homeAwayMap(summary));
       enriched.push({ ...match, goals, bookings });
     } catch (error) {
       log(`enrichment failed for ${label}: ${error.message}`);

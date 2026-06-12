@@ -167,24 +167,33 @@ export async function fetchDigestData({ digestDate, token }) {
   };
 }
 
+/** Reads a 'home'/'away' team tag, leaving anything else (incl. missing) as null. */
+function teamSide(value) {
+  return value === 'home' || value === 'away' ? value : null;
+}
+
 /** Normalizes a finished match; scorers/events are empty when detail is missing. */
 export function parseMatch(match) {
-  const goals = (match.goals ?? []).map(
-    (g) => `${g.scorer?.name ?? '?'} ${g.minute}'`,
-  );
+  const scorers = (match.goals ?? []).map((g) => ({
+    name: g.scorer?.name ?? '?',
+    minute: String(g.minute),
+    team: teamSide(g.team),
+  }));
   const events = (match.bookings ?? [])
     .filter((b) => b.card === 'RED' || b.card === 'YELLOW_RED')
-    .map((b) => `roșu ${b.player?.name ?? '?'} ${b.minute}'`);
-  if (match.score?.penalties) {
-    events.push('decis la penalty-uri');
-  }
+    .map((b) => ({
+      name: b.player?.name ?? '?',
+      minute: String(b.minute),
+      team: teamSide(b.team),
+    }));
   return {
     id: match.id,
     home: romanianTeamName(match.homeTeam.name),
     away: romanianTeamName(match.awayTeam.name),
     score: [match.score.fullTime.home, match.score.fullTime.away],
-    scorers: goals,
+    scorers,
     events,
+    decidedOnPenalties: Boolean(match.score?.penalties),
     group: (match.group ?? '').replace('GROUP_', ''),
     utcDate: match.utcDate,
   };
