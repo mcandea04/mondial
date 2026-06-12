@@ -2,27 +2,35 @@
  * Daily digest orchestrator.
  *
  * Usage:
- *   node pipeline/run.js                         # live run for today (EEST)
+ *   node pipeline/run.js                         # live run for the active digest date
  *   node pipeline/run.js --date 2026-06-12       # live run for a given date
+ *   node pipeline/run.js --require-complete       # no-op unless the night is over
  *   node pipeline/run.js --fixtures test/fixtures --date 2026-06-12
  *     # offline run: reads matches.json / standings.json / narration.json
  *     # from the fixtures dir instead of calling the APIs
+ *
+ * With --require-complete the run exits 0 without writing anything when not all
+ * of the night's matches have finished (used by the polling workflow). When it
+ * does publish, it prints "published=true" to $GITHUB_OUTPUT so the workflow can
+ * gate the notification step.
  *
  * On any failure the existing site/data/latest.json is left untouched and the
  * process exits non-zero, so the workflow skips commit + deploy.
  */
 
-import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir, appendFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   fetchDigestData,
+  fetchNightMatches,
+  digestReadiness,
   selectDigestMatches,
   parseMatch,
   parseFixture,
   parseStandings,
-  bucharestToday,
+  activeDigestDate,
   kickoffEEST,
 } from './fetch.js';
 import { classifyStandings } from './standings.js';
@@ -35,10 +43,11 @@ const SITE_DIR = path.join(ROOT, 'site');
 const DATA_DIR = path.join(SITE_DIR, 'data');
 
 function parseArgs(argv) {
-  const args = { date: null, fixtures: null };
+  const args = { date: null, fixtures: null, requireComplete: false };
   for (let i = 2; i < argv.length; i += 1) {
     if (argv[i] === '--date') args.date = argv[++i];
     else if (argv[i] === '--fixtures') args.fixtures = argv[++i];
+    else if (argv[i] === '--require-complete') args.requireComplete = true;
     else throw new Error(`Unknown argument: ${argv[i]}`);
   }
   return args;
@@ -61,6 +70,24 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
 }
 
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`${name} is not set`);
+  return value;
+}
+
+/**
+ * Writes a step output for GitHub Actions when $GITHUB_OUTPUT is set, using the
+ * heredoc form so values with special characters (a headline) are safe. No-op
+ * locally.
+ */
+async function setOutput(name, value) {
+  const file = process.env.GITHUB_OUTPUT;
+  if (!file) return;
+  const delimiter = `ghadelim_${name}`;
+  await appendFile(file, `${name}<<${delimiter}\n${value}\n${delimiter}\n`);
+}
+
 async function gatherFacts({ date, fixtures }) {
   if (fixtures) {
     const matchesResponse = await readJson(path.join(fixtures, 'matches.json'));
@@ -72,9 +99,7 @@ async function gatherFacts({ date, fixtures }) {
       standings: parseStandings(standingsResponse),
     };
   }
-  const token = process.env.FOOTBALL_DATA_TOKEN;
-  if (!token) throw new Error('FOOTBALL_DATA_TOKEN is not set');
-  return fetchDigestData({ digestDate: date, token });
+  return fetchDigestData({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
 }
 
 async function getNarration(facts, { fixtures, recentProse }) {
@@ -82,10 +107,8 @@ async function getNarration(facts, { fixtures, recentProse }) {
     const cannedPath = path.join(fixtures, 'narration.json');
     if (existsSync(cannedPath)) return readJson(cannedPath);
   }
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
   return narrate(facts, {
-    apiKey,
+    apiKey: requireEnv('GEMINI_API_KEY'),
     model: process.env.GEMINI_MODEL || undefined,
     recentProse,
   });
@@ -133,10 +156,22 @@ async function main() {
   const args = parseArgs(process.argv);
   await loadDotEnv();
 
-  const date = args.date ?? bucharestToday();
+  const date = args.date ?? activeDigestDate();
   const siteUrl = process.env.SITE_URL ?? 'https://mcandea04.github.io/mondial/';
 
   console.log(`Building digest for ${date}${args.fixtures ? ' (fixtures mode)' : ''}`);
+
+  // Polling gate: only proceed once every match of the night has finished.
+  if (args.requireComplete && !args.fixtures) {
+    const matches = await fetchNightMatches({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
+    const readiness = digestReadiness(matches);
+    if (!readiness.ready) {
+      console.log(`Not ready: ${readiness.reason}. Exiting without changes.`);
+      await setOutput('published', 'false');
+      return;
+    }
+    console.log(`Ready: ${readiness.reason}.`);
+  }
 
   const facts = await gatherFacts({ date, fixtures: args.fixtures });
   const standings = classifyStandings(facts.standings);
@@ -211,6 +246,11 @@ async function main() {
   console.log(
     `Done: ${digest.matches.length} matches, ${digest.groups.length} groups, ${digest.tonight.length} tonight`,
   );
+
+  await setOutput('published', 'true');
+  await setOutput('date', date);
+  await setOutput('headline', narration.headline);
+  await setOutput('match_count', String(digest.matches.length));
 }
 
 const isDirectRun =

@@ -5,6 +5,8 @@ import {
   nightWindow,
   isInNightWindow,
   kickoffEEST,
+  activeDigestDate,
+  digestReadiness,
   selectDigestMatches,
   parseMatch,
   parseStandings,
@@ -27,6 +29,57 @@ test('window boundaries: start inclusive, end exclusive', () => {
 test('kickoff EEST conversion (summer = UTC+3)', () => {
   assert.equal(kickoffEEST('2026-06-11T19:00:00Z'), '22:00');
   assert.equal(kickoffEEST('2026-06-12T02:00:00Z'), '05:00');
+});
+
+test('activeDigestDate: poll in the evening belongs to the next morning', () => {
+  // 21:00 UTC (00:00 EEST) on the 11th → digest dated the 12th.
+  assert.equal(activeDigestDate(new Date('2026-06-11T21:00:00Z')), '2026-06-12');
+  // 16:00 UTC exactly: window start, rolls to next day.
+  assert.equal(activeDigestDate(new Date('2026-06-11T16:00:00Z')), '2026-06-12');
+  // Morning poll at 04:30 UTC on the 12th → digest dated the 12th.
+  assert.equal(activeDigestDate(new Date('2026-06-12T04:30:00Z')), '2026-06-12');
+  // Just before the 16:00 boundary still belongs to the same calendar day's digest.
+  assert.equal(activeDigestDate(new Date('2026-06-12T15:59:00Z')), '2026-06-12');
+});
+
+test('digestReadiness: not ready while any match is still pending', () => {
+  const matches = [
+    { status: 'FINISHED' },
+    { status: 'IN_PLAY' },
+  ];
+  const r = digestReadiness(matches);
+  assert.equal(r.ready, false);
+});
+
+test('digestReadiness: ready once every match is terminal with at least one finished', () => {
+  const matches = [
+    { status: 'FINISHED' },
+    { status: 'FINISHED' },
+  ];
+  assert.equal(digestReadiness(matches).ready, true);
+});
+
+test('digestReadiness: knockout still in extra time / penalties is not finished', () => {
+  // The API keeps a match non-FINISHED through ET and the shootout.
+  assert.equal(digestReadiness([{ status: 'PAUSED' }]).ready, false);
+  assert.equal(digestReadiness([{ status: 'IN_PLAY' }]).ready, false);
+});
+
+test('digestReadiness: postponed/cancelled do not block, but cannot stand alone', () => {
+  // One real game finished, another postponed → ready (postponed never blocks).
+  assert.equal(
+    digestReadiness([{ status: 'FINISHED' }, { status: 'POSTPONED' }]).ready,
+    true,
+  );
+  // Only postponed/cancelled, nothing actually played → not ready.
+  assert.equal(
+    digestReadiness([{ status: 'POSTPONED' }, { status: 'CANCELLED' }]).ready,
+    false,
+  );
+});
+
+test('digestReadiness: empty night is not ready', () => {
+  assert.equal(digestReadiness([]).ready, false);
 });
 
 test('kickoff EET conversion (winter = UTC+2, no hardcoded offset)', () => {

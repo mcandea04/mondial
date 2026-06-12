@@ -48,6 +48,52 @@ export function isInNightWindow(utcDate, window) {
   return kickoff >= window.start && kickoff < window.end;
 }
 
+/**
+ * The digest date a poll at `now` belongs to. A poll inside the night window
+ * [D-1 16:00 UTC, D 06:00 UTC) belongs to the morning-of-D digest, so anything
+ * from 16:00 UTC onward counts toward the next day's digest.
+ */
+export function activeDigestDate(now = new Date()) {
+  const base = new Date(now);
+  if (base.getUTCHours() >= 16) base.setUTCDate(base.getUTCDate() + 1);
+  return base.toISOString().slice(0, 10);
+}
+
+// Statuses where a match could still play or finish later tonight; any of these
+// in the window means the night is not over yet.
+const PENDING_STATUSES = new Set(['SCHEDULED', 'TIMED', 'IN_PLAY', 'PAUSED', 'SUSPENDED']);
+
+/**
+ * Decides whether a digest can be built for a night, given that night's matches.
+ * The API only marks a match FINISHED once it is fully over — including extra
+ * time and penalties — so no kickoff-time arithmetic is needed for knockouts.
+ * POSTPONED/CANCELLED matches do not block (they won't play tonight).
+ */
+export function digestReadiness(matches) {
+  if (matches.length === 0) {
+    return { ready: false, reason: 'no matches scheduled for this night' };
+  }
+  const pending = matches.filter((m) => PENDING_STATUSES.has(m.status));
+  if (pending.length > 0) {
+    return { ready: false, reason: `${pending.length} of ${matches.length} matches not finished yet` };
+  }
+  const finished = matches.filter((m) => m.status === 'FINISHED');
+  if (finished.length === 0) {
+    return { ready: false, reason: 'no finished matches (all postponed/cancelled)' };
+  }
+  return { ready: true, reason: `all ${matches.length} matches terminal, ${finished.length} finished` };
+}
+
+/** Lightweight fetch of just this night's matches, for the readiness gate. */
+export async function fetchNightMatches({ digestDate, token }) {
+  const window = nightWindow(digestDate);
+  const response = await apiGet(
+    `/competitions/WC/matches?dateFrom=${dateString(window.start)}&dateTo=${dateString(window.end)}`,
+    token,
+  );
+  return response.matches.filter((m) => isInNightWindow(m.utcDate, window));
+}
+
 async function apiGet(path, token) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'X-Auth-Token': token },
