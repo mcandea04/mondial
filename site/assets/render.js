@@ -47,9 +47,9 @@ function renderMatchCard(match) {
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
   teams.append(
-    el('span', 'team-name', match.home),
+    el('span', 'team-name home', match.home),
     el('span', 'score', `${match.score[0]} – ${match.score[1]}`),
-    el('span', 'team-name', match.away),
+    el('span', 'team-name away', match.away),
   );
   const flames = el('div', 'flames');
   flames.setAttribute('aria-label', `dramă ${match.drama} din 5`);
