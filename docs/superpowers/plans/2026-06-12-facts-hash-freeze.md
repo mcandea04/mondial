@@ -20,7 +20,9 @@
 
 - [ ] **Step 1: Write the failing tests**
 
-Create `test/facts-hash.test.js`:
+Create `test/facts-hash.test.js`. The hash covers a **trimmed projection** — only the facts the prose narrates (finished match id + final score, tonight id + teams + kickoff). Standings, scorers, events, and finished-match kickoff times are deliberately excluded so an unrelated standings shift or a late scorer name does not unfreeze a published day.
+
+The score lives on parsed matches as `score: [home, away]` (see `parseMatch` in `pipeline/fetch.js`), so the projection reads `m.score`.
 
 ```js
 import { test } from 'node:test';
@@ -30,10 +32,10 @@ import { factsHash } from '../pipeline/facts-hash.js';
 const base = {
   date: '2026-06-12',
   finished: [
-    { id: 2, home: 'Canada', away: 'Qatar', homeScore: 4, awayScore: 0 },
-    { id: 1, home: 'Mexic', away: 'Africa de Sud', homeScore: 1, awayScore: 0 },
+    { id: 2, home: 'Canada', away: 'Qatar', score: [4, 0], scorers: ['Davies 12'], group: 'B', utcDate: '2026-06-12T02:00:00Z' },
+    { id: 1, home: 'Mexic', away: 'Africa de Sud', score: [1, 0], scorers: ['Lozano 88'], group: 'A', utcDate: '2026-06-11T19:00:00Z' },
   ],
-  tonight: [{ id: 3, home: 'Brazilia', away: 'Maroc' }],
+  tonight: [{ id: 3, home: 'Brazilia', away: 'Maroc', kickoffEEST: '21:00', utcDate: '2026-06-12T18:00:00Z' }],
   standings: [
     { name: 'B', table: [{ team: 'Canada', pts: 3 }] },
     { name: 'A', table: [{ team: 'Mexic', pts: 3 }] },
@@ -46,21 +48,38 @@ test('hash is stable for identical input', () => {
 
 test('object key order does not change the hash', () => {
   const reordered = structuredClone(base);
-  reordered.finished[1] = { homeScore: 1, awayScore: 0, away: 'Africa de Sud', home: 'Mexic', id: 1 };
+  reordered.finished[1] = { utcDate: '2026-06-11T19:00:00Z', group: 'A', scorers: ['Lozano 88'], score: [1, 0], away: 'Africa de Sud', home: 'Mexic', id: 1 };
   assert.equal(factsHash(base), factsHash(reordered));
 });
 
-test('array order of matches and standings does not change the hash', () => {
+test('array order of matches does not change the hash', () => {
   const reordered = structuredClone(base);
   reordered.finished.reverse();
-  reordered.standings.reverse();
   assert.equal(factsHash(base), factsHash(reordered));
 });
 
 test('a changed score changes the hash', () => {
   const corrected = structuredClone(base);
-  corrected.finished[0].awayScore = 1;
+  corrected.finished[0].score = [4, 1];
   assert.notEqual(factsHash(base), factsHash(corrected));
+});
+
+test('a changed standings table does NOT change the hash', () => {
+  const shifted = structuredClone(base);
+  shifted.standings[0].table[0].pts = 6;
+  assert.equal(factsHash(base), factsHash(shifted));
+});
+
+test('a late scorer name does NOT change the hash', () => {
+  const withScorer = structuredClone(base);
+  withScorer.finished[0].scorers.push('Buchanan 90+2');
+  assert.equal(factsHash(base), factsHash(withScorer));
+});
+
+test('a changed tonight kickoff changes the hash', () => {
+  const moved = structuredClone(base);
+  moved.tonight[0].kickoffEEST = '22:00';
+  assert.notEqual(factsHash(base), factsHash(moved));
 });
 
 test('a changed date changes the hash', () => {
@@ -79,10 +98,12 @@ Create `pipeline/facts-hash.js`:
 
 ```js
 /**
- * Stable identity for the narration input. Two runs that gathered the same
- * facts produce the same hash regardless of key order or array order, so the
- * pipeline can tell "facts unchanged, reuse prose" from "facts changed,
- * re-narrate".
+ * Stable identity for the prose a digest narrates. Two runs whose narrated
+ * facts match produce the same hash — regardless of key order, array order, or
+ * volatile fields the prose never mentions (full standings, scorer lists, event
+ * feeds, finished-match kickoff times). This lets the pipeline tell "facts
+ * unchanged, reuse prose" from "facts changed, re-narrate" without unfreezing a
+ * published day every time an unrelated group's table shifts.
  */
 
 import { createHash } from 'node:crypto';
@@ -98,15 +119,22 @@ function canonicalize(value) {
 }
 
 const byId = (a, b) => (a.id ?? 0) - (b.id ?? 0);
-const byName = (a, b) => String(a.name ?? '').localeCompare(String(b.name ?? ''));
 
-export function factsHash({ date, finished, tonight, standings }) {
-  const canonical = canonicalize({
+/** The narrated-facts projection: only what the headline/summary/pills depend on. */
+function project({ date, finished, tonight }) {
+  return {
     date,
-    finished: [...finished].sort(byId),
-    tonight: [...tonight].sort(byId),
-    standings: [...standings].sort(byName),
-  });
+    finished: [...finished]
+      .sort(byId)
+      .map((m) => ({ id: m.id, score: m.score })),
+    tonight: [...tonight]
+      .sort(byId)
+      .map((m) => ({ id: m.id, home: m.home, away: m.away, kickoffEEST: m.kickoffEEST })),
+  };
+}
+
+export function factsHash(facts) {
+  const canonical = canonicalize(project(facts));
   return createHash('sha256').update(JSON.stringify(canonical)).digest('hex');
 }
 ```
@@ -114,7 +142,7 @@ export function factsHash({ date, finished, tonight, standings }) {
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `node --test test/facts-hash.test.js`
-Expected: 5 pass, 0 fail
+Expected: 8 pass, 0 fail
 
 - [ ] **Step 5: Commit**
 
@@ -443,11 +471,15 @@ test('same facts: second run reuses prose and ignores new narration', () => {
   assert.ok(first.factsHash, 'factsHash stored in digest');
   assert.ok(first.tonight.every((t) => t.id != null), 'tonight entries carry ids');
 
-  const firstBytes = readFileSync(path.join(out, `${DATE}.json`), 'utf8');
   setCannedHeadline(fixtures, 'Proză nouă care NU trebuie folosită');
   const log = runPipeline({ fixtures, out });
   assert.match(log, /facts unchanged, prose reused/);
-  assert.equal(readFileSync(path.join(out, `${DATE}.json`), 'utf8'), firstBytes, 'output byte-identical');
+  const second = readDigest(out);
+  // Freeze guarantee is prose-unchanged, not byte-identical.
+  assert.equal(second.headline, first.headline);
+  assert.equal(second.summary, first.summary);
+  assert.deepEqual(second.matches.map((m) => m.pill), first.matches.map((m) => m.pill));
+  assert.deepEqual(second.tonight.map((t) => t.why), first.tonight.map((t) => t.why));
 });
 
 test('--re-narrate forces fresh prose even when facts are unchanged', () => {
@@ -494,7 +526,7 @@ test('legacy digest without factsHash is trusted: prose reused, hash stamped', (
 });
 ```
 
-Note for the "changed facts" test: check the fixture's shape first — `test/fixtures/matches.json` stores scores under `score.fullTime.home` (football-data.org v4 format). If the actual key differs, adjust the mutation to whatever `parseMatch` reads.
+(The fixture stores the score under `score.fullTime.home` — football-data.org v4 format — and `parseMatch` projects it to `score: [home, away]`. The test mutates the raw fixture, which is re-parsed, so the projected score and therefore the hash change.)
 
 - [ ] **Step 2: Run tests to verify they fail**
 
@@ -814,53 +846,80 @@ git commit -m "Add one-shot steering note to narration"
 
 ---
 
-### Task 7: digest.yml — `re_narrate` + `steer` inputs, regenerate link in email
+### Task 7: digest.yml — `steer` input, force-implies-renarrate, email-on-commit, push rebase
 
 **Files:**
 - Modify: `.github/workflows/digest.yml`
 
-- [ ] **Step 1: Add the workflow_dispatch inputs**
+The `force` input already exists. We do NOT add a separate `re_narrate` checkbox (independent booleans created the silently-swallowed-re-narrate trap). `force=true` now means "bypass the readiness gate **and** re-narrate." We add one `steer` string input, make the build pass `--re-narrate` whenever forced, capture whether a commit actually happened, gate the email on that, and rebase before push.
 
-In the `workflow_dispatch` block, after the `force` input:
+- [ ] **Step 1: Add the steer workflow_dispatch input**
+
+In the `workflow_dispatch.inputs` block, after the existing `force` input:
 
 ```yaml
-      re_narrate:
-        description: "Regenerate prose even when facts are unchanged"
-        type: boolean
-        default: false
       steer:
         description: "One-shot steering note for the narration (optional)"
         type: string
         default: ""
 ```
 
-- [ ] **Step 2: Pass the flags to the pipeline**
+- [ ] **Step 2: Pass force→--re-narrate and steer to the pipeline**
 
-Replace the `Build digest` step's `run:` block with (the steer value travels via `env:` — never interpolate `inputs.steer` into the script body):
+Replace the `Build digest` step's `run:` block with (steer travels via `env:`, never interpolated into the script body):
 
 ```yaml
         run: |
-          EXTRA=""
-          if [ "${{ inputs.re_narrate }}" = "true" ]; then
-            EXTRA="--re-narrate"
-          fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
-            node pipeline/run.js $EXTRA --steer "$STEER"
+            node pipeline/run.js --re-narrate --steer "$STEER"
             echo "published=true" >> "$GITHUB_OUTPUT"
           else
-            node pipeline/run.js --require-complete $EXTRA --steer "$STEER"
+            node pipeline/run.js --require-complete --steer "$STEER"
           fi
 ```
 
-And add to that step's `env:` block:
+Add to that step's `env:` block:
 
 ```yaml
           STEER: ${{ inputs.steer }}
 ```
 
-(On scheduled runs `inputs.*` is empty: `EXTRA` stays empty and `--steer ""` is sanitized to null by run.js.)
+(On scheduled runs `inputs.steer` is empty; `--steer ""` is sanitized to null by run.js. A scheduled run never passes `--re-narrate`, so it reuses frozen prose when facts are unchanged.)
 
-- [ ] **Step 3: Add the regenerate link to the email body**
+- [ ] **Step 3: Capture whether a commit happened, and rebase before push**
+
+Give the commit step an `id` and emit a `committed` output. Rebase before pushing so a run queued behind another (phone re-narrate behind a scheduled poll) lands on top instead of failing on non-fast-forward. Replace the `Commit digest data` step with:
+
+```yaml
+      - name: Commit digest data
+        id: commit
+        if: steps.build.outputs.published == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data site/index.html
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "digest: ${{ steps.build.outputs.date }}"
+            git pull --rebase origin main
+            git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+```
+
+- [ ] **Step 4: Gate the email on a real commit**
+
+Change the `Email digest ready` step's `if:` from `steps.build.outputs.published == 'true'` to:
+
+```yaml
+        if: steps.commit.outputs.committed == 'true'
+```
+
+(Deploy steps keep their `published == 'true'` gate, so a restore/no-op forced run still redeploys the restored page without re-emailing the group.)
+
+- [ ] **Step 5: Add the regenerate link to the email body**
 
 In the `Email digest ready` step, extend the `body:` to:
 
@@ -877,16 +936,16 @@ In the `Email digest ready` step, extend the `body:` to:
 
 (The `body` param decodes to `<!-- scrie aici, opțional, ce vrei schimbat la ton sau glume -->` — an HTML comment, stripped by run.js if submitted untouched.)
 
-- [ ] **Step 4: Validate the YAML**
+- [ ] **Step 6: Validate the YAML**
 
 Run: `npx --yes js-yaml .github/workflows/digest.yml > /dev/null && echo OK`
 Expected: `OK`
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add .github/workflows/digest.yml
-git commit -m "Wire re-narrate and steer inputs through the digest workflow"
+git commit -m "Fold re-narrate into force, gate email on commit, rebase before push"
 ```
 
 ---
@@ -904,8 +963,9 @@ Create `.github/workflows/re-narrate.yml`:
 name: Re-narrate digest
 
 # Thin trigger: an issue labeled "re-narrate" opened by the repo owner
-# dispatches the digest workflow with re_narrate=true and the issue body as a
-# one-shot steering note. The fresh digest email is the confirmation.
+# dispatches the digest workflow with force=true (which implies re-narration)
+# and the issue body as a one-shot steering note. The fresh digest email is the
+# confirmation.
 
 on:
   issues:
@@ -930,7 +990,7 @@ jobs:
           STEER: ${{ github.event.issue.body }}
         run: |
           gh workflow run digest.yml --repo "$GITHUB_REPOSITORY" \
-            -f force=true -f re_narrate=true -f steer="$STEER"
+            -f force=true -f steer="$STEER"
 
       - name: Confirm and close issue
         env:
@@ -942,7 +1002,7 @@ jobs:
 ```
 
 Notes for the implementer:
-- `workflow_dispatch` triggered with the repo `GITHUB_TOKEN` is exempt from GitHub's "token events don't trigger workflows" recursion rule, so the dispatch works with the default token — no PAT needed.
+- `workflow_dispatch` (and `repository_dispatch`) are the documented exception to GitHub's "events from the default `GITHUB_TOKEN` don't create new workflow runs" rule — they always create runs. So this dispatch works with the default `github.token`; no PAT needed. (Verified against GitHub docs: "workflow_dispatch and repository_dispatch events always create workflow runs.")
 - The author check plus the label check both must hold; anyone else's issue (or an unlabeled one) makes the job skip entirely.
 
 - [ ] **Step 2: Validate the YAML**
@@ -1000,7 +1060,7 @@ From the phone (or browser): open
 `https://github.com/mcandea04/mondial/issues/new?title=re-narrate&labels=re-narrate&body=test%20regenerare`
 and submit. Verify, in order:
 1. The `Re-narrate digest` workflow run appears and the issue is commented + closed.
-2. A `Daily digest` run starts with `re_narrate=true`.
+2. A `Daily digest` run starts (dispatched with `force=true`).
 3. A new digest commit lands, the page shows new prose, a fresh email arrives.
 
 Negative checks: an issue **without** the label must not trigger the workflow (job skipped).
@@ -1014,7 +1074,7 @@ git push
 gh workflow run digest.yml -f force=true
 ```
 
-Expected: the forced run logs `facts unchanged, prose reused`, commits nothing, and redeploys the restored content.
+Expected: the forced run logs `facts unchanged, prose reused`. The restored bytes match HEAD, so `committed=false` → no commit and no email (the group is not re-notified), but the deploy steps still run and redeploy the restored content.
 
 ---
 
