@@ -14,6 +14,10 @@ on:
         description: "Build even if the night's matches are not all finished"
         type: boolean
         default: false
+      steer:
+        description: "One-shot steering note for the narration (optional)"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -50,13 +54,14 @@ jobs:
         # gates too, but force=true (re-run / backfill) skips the gate.
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
-            node pipeline/run.js
+            node pipeline/run.js --re-narrate --steer "$STEER"
             echo "published=true" >> "$GITHUB_OUTPUT"
           else
-            node pipeline/run.js --require-complete
+            node pipeline/run.js --require-complete --steer "$STEER"
           fi
         env:
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
+          STEER: ${{ inputs.steer }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # Unset by default so narrate.js DEFAULT_MODEL stays the single source of
           # truth; set the GEMINI_MODEL repo variable only to override it.
@@ -64,6 +69,7 @@ jobs:
           SITE_URL: https://mcandea04.github.io/mondial/
 
       - name: Commit digest data
+        id: commit
         if: steps.build.outputs.published == 'true'
         run: |
           git config user.name "github-actions[bot]"
@@ -71,9 +77,12 @@ jobs:
           git add site/data site/index.html
           if git diff --cached --quiet; then
             echo "Nothing to commit"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "digest: ${{ steps.build.outputs.date }}"
+            git pull --rebase origin main
             git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/configure-pages@v5
@@ -89,7 +98,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Email digest ready
-        if: steps.build.outputs.published == 'true'
+        if: steps.commit.outputs.committed == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -106,3 +115,5 @@ jobs:
             ${{ steps.build.outputs.match_count }} meciuri azi-noapte.
 
             Citește digestul: https://mcandea04.github.io/mondial/
+
+            Nu-ți place proza? Regenerează: https://github.com/mcandea04/mondial/issues/new?title=re-narrate&labels=re-narrate&body=%3C%21--%20scrie%20aici%2C%20op%C8%9Bional%2C%20ce%20vrei%20schimbat%20la%20ton%20sau%20glume%20--%3E
