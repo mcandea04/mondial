@@ -118,6 +118,12 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
   flex-shrink: 0;
 }
 .flag-sm { height: 14px; }
+/* scoreline flag: inline with the name text so it stays put when a long name wraps */
+.flag-inline { height: 16px; vertical-align: middle; }
+/* home flag leads the name: keep them on one line so the flag never wraps above */
+.team-name.home { white-space: nowrap; }
+.team-name.home .flag-inline { margin-right: 6px; }
+.team-name.away .flag-inline { margin-left: 6px; }
 /* keep standings team names at the table's 13px, not the scoreline's 15px */
 td .team .team-name { font-size: 13px; font-weight: 400; }
 

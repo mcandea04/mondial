@@ -31,6 +31,16 @@ function flagImg(code, sizeClass) {
   return img;
 }
 
+// A team name with its flag inline, so the flag flows with the text and stays
+// next to the name even when a long name wraps. `side` places the flag 'before'
+// the name (home) or 'after' it (away).
+function teamName(className, name, code, side) {
+  const span = el('span', className, name);
+  const flag = flagImg(code, 'flag-inline');
+  if (flag) span[side === 'before' ? 'prepend' : 'append'](flag);
+  return span;
+}
+
 function renderHeader(root, digest) {
   const meta = el('div', 'meta');
   const dateLabel = WEEKDAY_FMT.format(new Date(`${digest.date}T06:00:00Z`));
@@ -57,15 +67,13 @@ function renderMatchCard(match) {
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
 
-  const homeSide = el('div', 'team');
-  homeSide.append(...[flagImg(match.homeCode), el('span', 'team-name home', match.home)].filter(Boolean));
-
   const score = el('span', 'score', `${match.score[0]} – ${match.score[1]}`);
 
-  const awaySide = el('div', 'team');
-  awaySide.append(...[el('span', 'team-name away', match.away), flagImg(match.awayCode)].filter(Boolean));
-
-  teams.append(homeSide, score, awaySide);
+  teams.append(
+    teamName('team-name home', match.home, match.homeCode, 'before'),
+    score,
+    teamName('team-name away', match.away, match.awayCode, 'after'),
+  );
   const flames = el('div', 'flames');
   flames.setAttribute('aria-label', `dramă ${match.drama} din 5`);
   for (let i = 0; i < match.drama; i += 1) {
