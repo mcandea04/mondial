@@ -88,11 +88,10 @@ function codesConfirmMatch(entry, match) {
  * array order wins per match.
  */
 export function recapsFor(matches, entries) {
+  const kickoffMinuteOf = new Map(matches.map((m) => [m, floorToMinute(Date.parse(m.utcDate))]));
   const recaps = new Map();
   for (const entry of entries) {
-    const sameMinute = matches.filter(
-      (m) => floorToMinute(Date.parse(m.utcDate)) === entry.kickoffMs,
-    );
+    const sameMinute = matches.filter((m) => kickoffMinuteOf.get(m) === entry.kickoffMs);
     const resolved =
       sameMinute.length === 1 ? sameMinute : sameMinute.filter((m) => codesConfirmMatch(entry, m));
     if (resolved.length !== 1) continue;
