@@ -3,71 +3,178 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseRecapFeed, matchRecap, fetchRecaps } from '../pipeline/highlights.js';
+import { parseHighlightFeed, recapsFor, fetchRecaps, CANONICAL_SUFFIX } from '../pipeline/highlights.js';
 
 const FIXTURES = path.join(fileURLToPath(new URL('.', import.meta.url)), 'fixtures');
-const recapXml = await readFile(path.join(FIXTURES, 'recaps.xml'), 'utf8');
+const feed = JSON.parse(await readFile(path.join(FIXTURES, 'highlights.json'), 'utf8'));
 
-// Match facts carry Romanian names (the output of parseMatch).
-const mexicoMatch = { id: 1, home: 'Mexic', away: 'Africa de Sud', score: [2, 1] };
-const canadaMatch = { id: 2, home: 'Canada', away: 'Qatar', score: [4, 0] };
+const mexicoMatch = { id: 537327, homeCode: 'mx', awayCode: 'za', utcDate: '2026-06-11T19:00:00Z' };
+const canadaMatch = { id: 537328, homeCode: 'ca', awayCode: 'qa', utcDate: '2026-06-12T02:00:00Z' };
 
-test('parseRecapFeed keeps only watch?v= videos, dropping shorts', () => {
-  const entries = parseRecapFeed(recapXml);
-  assert.ok(entries.length >= 2);
-  assert.ok(entries.every((e) => e.url.includes('watch?v=')));
-  assert.ok(entries.every((e) => !e.url.includes('/shorts/')));
+/** Runs fn with console.warn silenced; returns the captured warn messages. */
+async function withSilencedWarn(fn) {
+  const original = console.warn;
+  const warns = [];
+  console.warn = (msg) => warns.push(msg);
+  try {
+    await fn();
+  } finally {
+    console.warn = original;
+  }
+  return warns;
+}
+
+// 1. Canonical filter keeps highlights, drops Alt Cast and Play Zone.
+test('parseHighlightFeed keeps canonical reels and drops Alt Cast and Play Zone', () => {
+  const entries = parseHighlightFeed(feed);
+  assert.equal(entries.length, 2);
+  assert.ok(entries.every((e) => e.url.startsWith('https://www.fifa.com/en/watch/')));
+  assert.ok(!entries.some((e) => e.url.includes('altCast')));
+  assert.ok(!entries.some((e) => e.url.includes('playZone')));
 });
 
-test('parseRecapFeed extracts id, title and url', () => {
-  const entry = parseRecapFeed(recapXml).find((e) => e.videoId === 'mexSud1111');
-  assert.equal(entry.url, 'https://www.youtube.com/watch?v=mexSud1111');
-  assert.match(entry.title, /MÉXICO 2 - 1 SUDÁFRICA/);
+// 2. Extracts entryId -> watch URL, kickoff ms (UTC, host-TZ independent), codes.
+test('parseHighlightFeed extracts watch URL, UTC kickoff ms and flag codes', () => {
+  const entry = parseHighlightFeed(feed).find((e) => e.url.endsWith('mexSudHighlight'));
+  assert.equal(entry.url, 'https://www.fifa.com/en/watch/mexSudHighlight');
+  assert.equal(entry.kickoffMs, Date.UTC(2026, 5, 11, 19, 0));
+  assert.deepEqual([...entry.codes].sort(), ['mx', 'za']);
 });
 
-test('matchRecap links a full-match recap to the right game', () => {
-  const entries = parseRecapFeed(recapXml);
-  assert.equal(matchRecap(mexicoMatch, entries), 'https://www.youtube.com/watch?v=mexSud1111');
+// 3. recapsFor keys a video to the right match by kickoff minute.
+test('recapsFor keys a video to the right match by kickoff minute', () => {
+  const recaps = recapsFor([mexicoMatch, canadaMatch], parseHighlightFeed(feed));
+  assert.equal(recaps.get(537327), 'https://www.fifa.com/en/watch/mexSudHighlight');
+  assert.equal(recaps.get(537328), 'https://www.fifa.com/en/watch/canQatHighlight');
 });
 
-test('matchRecap handles diacritics and Spanish exonyms (Canadá/Catar)', () => {
-  const entries = parseRecapFeed(recapXml);
-  assert.equal(matchRecap(canadaMatch, entries), 'https://www.youtube.com/watch?v=canQat0000');
+// 4. Seconds tolerance: a utcDate with non-zero seconds still keys to the minute.
+test('recapsFor tolerates non-zero seconds in football-data utcDate', () => {
+  const withSeconds = { ...mexicoMatch, utcDate: '2026-06-11T19:00:43Z' };
+  const recaps = recapsFor([withSeconds], parseHighlightFeed(feed));
+  assert.equal(recaps.get(537327), 'https://www.fifa.com/en/watch/mexSudHighlight');
 });
 
-test('matchRecap rejects a single-goal Short title (no recap suffix, dropped as a short)', () => {
-  // The goal Short "... | MÉXICO 2 SUDÁFRICA 1" lacks the "n - n" score and the recap suffix.
+// 5. Simultaneous kickoff disambiguated by flag code.
+test('recapsFor disambiguates simultaneous kickoffs by flag code', () => {
   const entries = [
-    {
-      videoId: 'x',
-      title: 'EL PRIMER GOL DEL MUNDIAL ... | MÉXICO 2 SUDÁFRICA 1',
-      url: 'https://www.youtube.com/watch?v=x',
-    },
+    { url: 'https://www.fifa.com/en/watch/aaa', kickoffMs: Date.UTC(2026, 5, 11, 19, 0), codes: ['mx', 'za'] },
+    { url: 'https://www.fifa.com/en/watch/bbb', kickoffMs: Date.UTC(2026, 5, 11, 19, 0), codes: ['fr', 'de'] },
   ];
-  assert.equal(matchRecap(mexicoMatch, entries), null);
+  const matchA = { id: 1, homeCode: 'mx', awayCode: 'za', utcDate: '2026-06-11T19:00:00Z' };
+  const matchB = { id: 2, homeCode: 'fr', awayCode: 'de', utcDate: '2026-06-11T19:00:00Z' };
+  const recaps = recapsFor([matchA, matchB], entries);
+  assert.equal(recaps.get(1), 'https://www.fifa.com/en/watch/aaa');
+  assert.equal(recaps.get(2), 'https://www.fifa.com/en/watch/bbb');
 });
 
-test('matchRecap does not attach when the score disagrees', () => {
-  const entries = parseRecapFeed(recapXml);
-  const wrongScore = { ...mexicoMatch, score: [3, 0] };
-  assert.equal(matchRecap(wrongScore, entries), null);
-});
-
-test('matchRecap returns null when no entry matches (late-night gap)', () => {
-  const entries = parseRecapFeed(recapXml);
-  const unplayed = { id: 9, home: 'Brazilia', away: 'Croația', score: [1, 1] };
-  assert.equal(matchRecap(unplayed, entries), null);
-});
-
-test('fetchRecaps maps match ids to recap urls via the injected fetch', async () => {
-  const fakeFetch = async () => ({ ok: true, status: 200, text: async () => recapXml });
-  const recaps = await fetchRecaps({ matches: [mexicoMatch, canadaMatch], fetchImpl: fakeFetch });
-  assert.equal(recaps.get(1), 'https://www.youtube.com/watch?v=mexSud1111');
-  assert.equal(recaps.get(2), 'https://www.youtube.com/watch?v=canQat0000');
-});
-
-test('fetchRecaps never throws on a feed error, returns an empty map', async () => {
-  const failing = async () => ({ ok: false, status: 503, text: async () => 'down' });
-  const recaps = await fetchRecaps({ matches: [mexicoMatch], fetchImpl: failing });
+// 6. A video matching no finished match is dropped.
+test('recapsFor drops a video whose kickoff matches no finished match', () => {
+  const orphan = [{ url: 'https://www.fifa.com/en/watch/zzz', kickoffMs: Date.UTC(2026, 5, 1, 12, 0), codes: ['br', 'hr'] }];
+  const recaps = recapsFor([mexicoMatch, canadaMatch], orphan);
   assert.equal(recaps.size, 0);
+});
+
+// 7. Still-ambiguous after the guard (incl. both-codes-null knockout placeholder) is dropped.
+test('recapsFor drops a video that stays ambiguous after the code guard', () => {
+  const entries = [
+    { url: 'https://www.fifa.com/en/watch/ccc', kickoffMs: Date.UTC(2026, 5, 11, 19, 0), codes: ['mx', 'za'] },
+  ];
+  // Two placeholder matches at the same minute, both codes null: nothing can confirm.
+  const placeholderA = { id: 10, homeCode: null, awayCode: null, utcDate: '2026-06-11T19:00:00Z' };
+  const placeholderB = { id: 11, homeCode: null, awayCode: null, utcDate: '2026-06-11T19:00:00Z' };
+  const recaps = recapsFor([placeholderA, placeholderB], entries);
+  assert.equal(recaps.size, 0);
+});
+
+// 8. At-most-one-per-match: first canonical item in feed order wins.
+test('recapsFor keeps the first feed-order entry when two resolve to the same match', () => {
+  const entries = [
+    { url: 'https://www.fifa.com/en/watch/first', kickoffMs: Date.UTC(2026, 5, 11, 19, 0), codes: ['mx', 'za'] },
+    { url: 'https://www.fifa.com/en/watch/reupload', kickoffMs: Date.UTC(2026, 5, 11, 19, 0), codes: ['mx', 'za'] },
+  ];
+  const recaps = recapsFor([mexicoMatch], entries);
+  assert.equal(recaps.get(537327), 'https://www.fifa.com/en/watch/first');
+});
+
+// 9. fetchRecaps retries transient failures then succeeds; soft-fails on permanent 404.
+test('fetchRecaps retries a 5xx then succeeds via injected fetch', async () => {
+  let calls = 0;
+  const body = JSON.stringify(feed);
+  const flaky = async () => {
+    calls += 1;
+    if (calls === 1) return { ok: false, status: 503, text: async () => 'down' };
+    return { ok: true, status: 200, text: async () => body };
+  };
+  const recaps = await fetchRecaps({ matches: [mexicoMatch, canadaMatch], fetchImpl: flaky });
+  assert.equal(calls, 2);
+  assert.equal(recaps.get(537327), 'https://www.fifa.com/en/watch/mexSudHighlight');
+});
+
+test('fetchRecaps retries a thrown network error then succeeds', async () => {
+  let calls = 0;
+  const body = JSON.stringify(feed);
+  const flaky = async () => {
+    calls += 1;
+    if (calls === 1) throw new Error('ECONNRESET');
+    return { ok: true, status: 200, text: async () => body };
+  };
+  const recaps = await fetchRecaps({ matches: [canadaMatch], fetchImpl: flaky });
+  assert.equal(calls, 2);
+  assert.equal(recaps.get(537328), 'https://www.fifa.com/en/watch/canQatHighlight');
+});
+
+test('fetchRecaps soft-fails to an empty map on a permanent 404', async () => {
+  const notFound = async () => ({ ok: false, status: 404, text: async () => 'nope' });
+  let recaps;
+  const warns = await withSilencedWarn(async () => {
+    recaps = await fetchRecaps({ matches: [mexicoMatch], fetchImpl: notFound });
+  });
+  assert.equal(recaps.size, 0);
+  assert.equal(warns.length, 1);
+});
+
+// 10. Per-item validation: empty entryId is skipped, no .../watch/undefined.
+test('parseHighlightFeed skips a canonical item with an empty entryId', () => {
+  const malformed = {
+    items: [
+      {
+        entryId: '',
+        title: `Bad Item${CANONICAL_SUFFIX}`,
+        semanticTags: [{ sourceCategory: 'Match', title: 'X v Y on 06/11/2026 19:00 UTC', id: '1' }],
+      },
+      {
+        entryId: 'goodOne',
+        title: `Good Item${CANONICAL_SUFFIX}`,
+        semanticTags: [
+          { sourceCategory: 'Match', title: 'X v Y on 06/11/2026 20:00 UTC', id: '2' },
+          { sourceCategory: 'Country', title: 'Mexico', id: 'MEX' },
+        ],
+      },
+    ],
+  };
+  const entries = parseHighlightFeed(malformed);
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].url, 'https://www.fifa.com/en/watch/goodOne');
+  assert.ok(!entries.some((e) => e.url.endsWith('/undefined')));
+});
+
+// 11. Tricode -> flag-code conversion through the feed (incl. sub-national; unknown -> dropped).
+test('parseHighlightFeed converts FIFA tricodes incl. sub-national, dropping unknown ones', () => {
+  const item = {
+    items: [
+      {
+        entryId: 'homeNations',
+        title: `England v Scotland${CANONICAL_SUFFIX}`,
+        semanticTags: [
+          { sourceCategory: 'Match', title: 'England v Scotland on 06/15/2026 18:00 UTC', id: '3' },
+          { sourceCategory: 'Country', title: 'England', id: 'ENG' },
+          { sourceCategory: 'Country', title: 'Scotland', id: 'SCO' },
+          { sourceCategory: 'Country', title: 'Nowhere', id: 'ZZZ' },
+        ],
+      },
+    ],
+  };
+  const entry = parseHighlightFeed(item)[0];
+  assert.deepEqual([...entry.codes].sort(), ['gb-eng', 'gb-sct']);
 });
