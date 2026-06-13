@@ -114,36 +114,23 @@ test('legacy digest without factsHash is trusted: prose reused, hash stamped', (
   assert.equal(after.factsHash, expectedHash);
 });
 
-const HIGHLIGHTS_ON = { HIGHLIGHTS_ENABLED: '1' };
-
-test('manifest carries per-day recap counts when highlights are enabled', () => {
+test('manifest carries per-day recap counts from the FIFA highlights feed', () => {
   const { fixtures, out } = freshDirs();
-  runPipeline({ fixtures, out, env: HIGHLIGHTS_ON });
+  runPipeline({ fixtures, out });
   const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.dates, [DATE]);
-  // The recaps.xml fixture links both finished matches.
+  // The highlights.json fixture keys both finished matches.
   assert.equal(manifest.recaps[DATE], 2);
 });
 
 test('manifest omits days with no recaps from the recaps map', () => {
   const { fixtures, out } = freshDirs();
-  // Drop the recap feed so no match is linked.
-  writeFileSync(path.join(fixtures, 'recaps.xml'), '<feed></feed>');
-  runPipeline({ fixtures, out, env: HIGHLIGHTS_ON });
+  // Empty the highlights feed so no match is linked.
+  writeFileSync(path.join(fixtures, 'highlights.json'), JSON.stringify({ items: [] }));
+  runPipeline({ fixtures, out });
   const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.dates, [DATE]);
   assert.equal(manifest.recaps[DATE], undefined);
-});
-
-test('highlights disabled by default: no links, no recap clause, no recaps map', () => {
-  const { fixtures, out } = freshDirs();
-  // recaps.xml is present in fixtures, but the feature is off unless opted in.
-  runPipeline({ fixtures, out });
-  const digest = readDigest(out);
-  assert.ok(digest.matches.every((m) => m.highlight === null), 'no match carries a highlight');
-  assert.ok(!/rezumat/.test(digest.teaser), 'teaser has no recap clause');
-  const manifest = JSON.parse(readFileSync(path.join(out, 'manifest.json'), 'utf8'));
-  assert.deepEqual(manifest.recaps, {}, 'recaps map is empty');
 });
 
 test('a backfill run for an older date does not clobber a newer latest.json', () => {
