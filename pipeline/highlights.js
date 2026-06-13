@@ -1,82 +1,155 @@
 /**
- * Match recaps from the El Gráfico YouTube channel, linked to a game as a fact.
+ * Official FIFA match highlights, linked to a finished game as a fact.
  *
- * The channel publishes full-match recaps with a fixed Spanish title shape:
- *   "{HOME} {h} - {a} {AWAY} | COPA MUNDIAL DE LA FIFA 2026"
- * We read its public RSS feed (no API key), keep only those recap titles, and
- * key each to a finished match by team names AND score. Per-goal Shorts, news
- * clips and the ceremony do not match the pattern and are dropped.
+ * FIFA publishes highlight reels on its public watch pages (no auth, no key)
+ * and exposes them through a section-news JSON feed. We read the feed, keep only
+ * canonical match reels, and key each to a finished match by kickoff minute and
+ * country code. Per-goal clips, Alt Cast reimaginings and Play Zone items fail
+ * the canonical suffix and are dropped.
  *
- * A recap URL is a fact, not voice: it is fetched here and merged in run.js,
- * never produced by the narration model. A feed outage must never fail the
- * digest, so fetchRecaps swallows errors and returns an empty map.
+ * A highlight URL is a fact, not voice: it is fetched here and merged in run.js,
+ * keyed by match id, never produced by the narration model. A feed outage must
+ * never fail the digest, so fetchRecaps soft-fails to an empty map.
  */
 
-import { spanishTeamName } from './teams.js';
+import { fifaTricodeToFlag } from './teams.js';
 
-const CHANNEL_ID = 'UCOM489bmNdFfcPvSxf7p_xQ';
-export const RECAP_FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+const SECTION_ID = '1klF18lgpe12FFtd1IoTSs';
+const LISTING_URL = `https://cxm-api.fifa.com/fifaplusweb/api/sections/news/${SECTION_ID}?locale=en&limit=50`;
 
-const RECAP_SUFFIX = 'COPA MUNDIAL DE LA FIFA 2026';
+export { SECTION_ID, LISTING_URL };
 
-/** Uppercase and strip diacritics so "México" and "MEXICO" compare equal. */
-function normalize(text) {
-  return text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toUpperCase();
+const CANONICAL_SUFFIX = ' | FIFA World Cup 2026™ | Highlights';
+export { CANONICAL_SUFFIX };
+
+const WATCH_BASE = 'https://www.fifa.com/en/watch/';
+
+const MAX_ATTEMPTS = 3;
+const RETRY_BASE_MS = 1000;
+
+/** Floors an epoch-ms value to the whole minute (FIFA carries minute precision). */
+function floorToMinute(ms) {
+  return Math.floor(ms / 60_000) * 60_000;
 }
 
-/** Parses the channel Atom feed into recap candidates, keeping only watch?v= videos. */
-export function parseRecapFeed(xml) {
+/**
+ * Parses "… on MM/DD/YYYY HH:mm UTC" into epoch ms via Date.UTC. Returns null
+ * when the suffix is absent or unparseable. Never uses Date.parse, whose
+ * MM/DD/YYYY handling is engine- and locale-dependent.
+ */
+function parseKickoffMs(matchTagTitle) {
+  const m = matchTagTitle?.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})\s+UTC$/);
+  if (!m) return null;
+  const [, mm, dd, yyyy, hh, min] = m;
+  return Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd), Number(hh), Number(min));
+}
+
+/**
+ * Parses the FIFA listing JSON into canonical highlight entries.
+ * Each entry is { url, kickoffMs, codes } where codes is an unordered array of
+ * our flag codes (length 1 or 2; null tricodes are dropped). Non-canonical items
+ * are dropped silently; canonical-but-malformed items are skipped individually.
+ */
+export function parseHighlightFeed(json) {
+  const items = Array.isArray(json?.items) ? json.items : [];
   const entries = [];
-  for (const block of xml.match(/<entry>[\s\S]*?<\/entry>/g) ?? []) {
-    const videoId = block.match(/<yt:videoId>([^<]+)<\/yt:videoId>/)?.[1];
-    const title = block.match(/<title>([^<]+)<\/title>/)?.[1];
-    const url = block.match(/<link rel="alternate" href="([^"]+)"/)?.[1];
-    if (!videoId || !title || !url || !url.includes('watch?v=')) continue;
-    entries.push({ videoId, title, url });
+  for (const item of items) {
+    const title = item?.title;
+    if (typeof title !== 'string' || !title.endsWith(CANONICAL_SUFFIX)) continue;
+
+    const entryId = item?.entryId;
+    if (typeof entryId !== 'string' || entryId.length === 0) continue;
+
+    const tags = Array.isArray(item?.semanticTags) ? item.semanticTags : [];
+    const matchTag = tags.find((t) => t?.sourceCategory === 'Match');
+    const kickoffMs = parseKickoffMs(matchTag?.title);
+    if (kickoffMs === null) continue;
+
+    const codes = tags
+      .filter((t) => t?.sourceCategory === 'Country')
+      .map((t) => fifaTricodeToFlag(t?.id))
+      .filter((code) => code !== null);
+
+    entries.push({ url: `${WATCH_BASE}${entryId}`, kickoffMs, codes });
   }
   return entries;
 }
 
-/** The recap URL for a finished match, or null when no feed entry matches it. */
-export function matchRecap(match, entries) {
-  const home = normalize(spanishTeamName(match.home));
-  const away = normalize(spanishTeamName(match.away));
-  const expected = `${home} ${match.score[0]} - ${match.score[1]} ${away}`;
-  for (const entry of entries) {
-    const title = normalize(entry.title);
-    if (title.includes(expected) && title.includes(RECAP_SUFFIX)) return entry.url;
-  }
-  return null;
+/** True when the entry's codes confirm the match (at least one side matches). */
+function codesConfirmMatch(entry, match) {
+  return entry.codes.some((code) => code === match.homeCode || code === match.awayCode);
 }
 
-/** Maps the ids of matches that have a recap entry to their recap URLs. */
+/**
+ * Maps finished-match ids to highlight URLs. Keys each entry by kickoff minute;
+ * when more than one finished match shares the minute (simultaneous group games)
+ * the country-code guard disambiguates. An entry resolving to zero or, after the
+ * guard, still more than one match is dropped (never guessed). First entry in
+ * array order wins per match.
+ */
 export function recapsFor(matches, entries) {
   const recaps = new Map();
-  for (const match of matches) {
-    const url = matchRecap(match, entries);
-    if (url) recaps.set(match.id, url);
+  for (const entry of entries) {
+    const sameMinute = matches.filter(
+      (m) => floorToMinute(Date.parse(m.utcDate)) === entry.kickoffMs,
+    );
+    const resolved =
+      sameMinute.length === 1 ? sameMinute : sameMinute.filter((m) => codesConfirmMatch(entry, m));
+    if (resolved.length !== 1) continue;
+    const match = resolved[0];
+    if (!recaps.has(match.id)) recaps.set(match.id, entry.url);
   }
   return recaps;
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function isTransientStatus(status) {
+  return status === 429 || status >= 500;
+}
+
 /**
- * Fetches the recap feed once and maps finished-match ids to recap URLs.
- * Never throws: a non-200, network error, or parse failure yields an empty map
- * so a YouTube outage cannot break the digest.
+ * Fetches the FIFA highlights feed once (with a short bounded retry on transient
+ * failures) and maps finished-match ids to watch URLs. Never throws: a permanent
+ * failure, a 404, or a body with no usable items shape soft-fails to an empty
+ * map so a FIFA outage cannot break the digest.
  */
 export async function fetchRecaps({ matches, fetchImpl = fetch }) {
-  try {
-    const response = await fetchImpl(RECAP_FEED_URL);
-    if (!response.ok) {
-      console.warn(`Recap feed returned ${response.status}; skipping highlights.`);
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+    let response;
+    try {
+      response = await fetchImpl(LISTING_URL);
+    } catch (error) {
+      if (attempt < MAX_ATTEMPTS) {
+        await sleep(RETRY_BASE_MS * attempt);
+        continue;
+      }
+      console.warn(`FIFA highlights feed unavailable; skipping highlights: ${error.message}`);
       return new Map();
     }
-    return recapsFor(matches, parseRecapFeed(await response.text()));
-  } catch (error) {
-    console.warn(`Recap feed unavailable; skipping highlights: ${error.message}`);
-    return new Map();
+
+    if (!response.ok) {
+      if (isTransientStatus(response.status) && attempt < MAX_ATTEMPTS) {
+        await sleep(RETRY_BASE_MS * attempt);
+        continue;
+      }
+      console.warn(`FIFA highlights feed returned ${response.status}; skipping highlights.`);
+      return new Map();
+    }
+
+    let json;
+    try {
+      json = JSON.parse(await response.text());
+    } catch (error) {
+      if (attempt < MAX_ATTEMPTS) {
+        await sleep(RETRY_BASE_MS * attempt);
+        continue;
+      }
+      console.warn(`FIFA highlights feed returned unparseable JSON; skipping highlights.`);
+      return new Map();
+    }
+
+    return recapsFor(matches, parseHighlightFeed(json));
   }
+  return new Map();
 }
