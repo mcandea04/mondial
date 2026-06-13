@@ -11,15 +11,26 @@
   <meta property="og:url" content="https://mcandea04.github.io/mondial/" />
   <meta property="og:type" content="website" />
   <!-- og:end -->
+  <script>
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
+  <header class="topbar" id="topbar"></header>
   <main id="app">
     <p class="empty-state">Se încarcă…</p>
   </main>
   <p style="margin-top: 1rem; text-align: center;">
     <a href="arhiva.html" style="font-size: 13px; color: var(--muted);">Arhiva dimineților →</a>
   </p>
+  <script type="module">
+    import { mountToggle } from './assets/theme.js';
+    mountToggle(document.getElementById('topbar'));
+  </script>
   <script type="module">
     import { renderDigest, loadDigest } from './assets/render.js';
     const app = document.getElementById('app');
