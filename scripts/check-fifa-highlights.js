@@ -22,8 +22,10 @@ import { fetchRecaps, LISTING_URL, CANONICAL_SUFFIX } from '../pipeline/highligh
 import { fifaTricodeToFlag } from '../pipeline/teams.js';
 
 const RECENT_NIGHT = [
-  { id: 537327, homeCode: 'mx', awayCode: 'za', utcDate: '2026-06-11T19:00:00Z' },
-  { id: 537328, homeCode: 'ca', awayCode: 'qa', utcDate: '2026-06-12T02:00:00Z' },
+  { id: 1, homeCode: 'mx', awayCode: 'za', utcDate: '2026-06-11T19:00:00Z' },
+  { id: 2, homeCode: 'kr', awayCode: 'cz', utcDate: '2026-06-12T02:00:00Z' },
+  { id: 3, homeCode: 'ca', awayCode: 'ba', utcDate: '2026-06-12T19:00:00Z' },
+  { id: 4, homeCode: 'us', awayCode: 'py', utcDate: '2026-06-13T01:00:00Z' },
 ];
 
 /**
