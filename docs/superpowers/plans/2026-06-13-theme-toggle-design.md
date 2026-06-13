@@ -96,6 +96,7 @@ Replace the entire `@media (prefers-color-scheme: dark) { :root { … } }` block
   display: flex;
   justify-content: flex-end;
   padding: 0 0 4px;
+  min-height: 36px; /* reserve button height so the bar doesn't grow when the module mounts */
 }
 
 /* ── Theme toggle button ── */
@@ -126,11 +127,34 @@ Replace the entire `@media (prefers-color-scheme: dark) { :root { … } }` block
 }
 ```
 
-- [ ] **Step 4: Verify the file still has a single trailing newline and no syntax errors**
+- [ ] **Step 4: Verify the two dark token blocks are byte-identical**
+
+The plan duplicates dark tokens across `:root[data-theme="dark"]` and `:root:not([data-theme="light"])`. Extract both blocks from `style.css` and assert they have the same content:
+
+```bash
+node -e "
+  import { readFileSync } from 'fs';
+  const css = readFileSync('site/assets/style.css', 'utf8');
+  // Extract inner content of each dark block
+  const forced = css.match(/:root\[data-theme=\"dark\"\]\s*\{([^}]+)\}/)[1].trim();
+  const media  = css.match(/:root:not\(\[data-theme=\"light\"\]\)\s*\{([^}]+)\}/)[1].trim();
+  if (forced !== media) {
+    console.error('MISMATCH between forced-dark and media-dark token blocks');
+    console.error('forced:', forced);
+    console.error('media: ', media);
+    process.exit(1);
+  }
+  console.log('OK: dark token blocks are identical');
+" --input-type module
+```
+
+If they differ, fix them before committing.
+
+- [ ] **Step 5: Verify the file still has a single trailing newline and no syntax errors**
 
 Open the file, confirm the last line is a newline after the closing `}` of `.theme-toggle:hover`.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add site/assets/style.css
