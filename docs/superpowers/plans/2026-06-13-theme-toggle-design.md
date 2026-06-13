@@ -88,7 +88,7 @@ Replace the entire `@media (prefers-color-scheme: dark) { :root { … } }` block
 }
 ```
 
-- [ ] **Step 3: Add `.topbar` and `.theme-toggle` rules at the end of `style.css` (before the final newline)**
+- [ ] **Step 3: Add `.topbar`, `.theme-toggle`, and `.meta > .theme-toggle` rules at the end of `style.css` (before the final newline)**
 
 ```css
 /* ── Theme topbar (index) ── */
@@ -118,6 +118,11 @@ Replace the entire `@media (prefers-color-scheme: dark) { :root { … } }` block
   color: var(--text);
   outline: 2px solid var(--border);
   outline-offset: 2px;
+}
+
+/* Keep the toggle flush-right in .meta without reordering the back-link */
+.meta > .theme-toggle {
+  margin-left: auto;
 }
 ```
 
@@ -339,9 +344,20 @@ Replace with:
 
 This call runs **before** the manifest-loading `try` block that follows, so a fetch failure cannot prevent the toggle from mounting.
 
-- [ ] **Step 3: Verify the existing `.meta` DOM element**
+- [ ] **Step 3: Verify the existing `.meta` DOM element and layout**
 
-Open `arhiva.html` and confirm the static `.meta` div (line 10) is present and is the first child of `<body>`. The toggle will be appended as a third child of `.meta` (after the two `<span>` elements already there). The bar is a `justify-content: space-between` flex row — the toggle will naturally land on the right.
+Open `arhiva.html` and confirm the static `.meta` div (line 10) is present and is the first child of `<body>`. The toggle will be appended as a third child of `.meta` after the two existing `<span>` elements ("Arhiva dimineților" and "← azi").
+
+**Layout note:** `.meta` uses `justify-content: space-between` (style.css:67-73). With three flex children, `space-between` distributes them as left / center / right — so appending the button without any layout adjustment would push the "← azi" link to the center of the bar. To prevent this reflow, add the following CSS rule to `style.css` in Task 1 Step 3 (alongside `.topbar` and `.theme-toggle`):
+
+```css
+/* Keep the toggle flush-right in .meta without reordering the back-link */
+.meta > .theme-toggle {
+  margin-left: auto;
+}
+```
+
+This collapses all the free space to the left of the toggle, so "Arhiva dimineților" stays left-aligned and "← azi" stays immediately next to it, with the toggle anchored at the right edge. No change to the existing two `<span>` elements or to `.meta`'s own rules is needed.
 
 - [ ] **Step 4: Commit**
 
