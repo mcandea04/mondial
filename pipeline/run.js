@@ -42,7 +42,7 @@ import {
 } from './fetch.js';
 import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
-import { fetchRecaps, parseRecapFeed, recapsFor } from './highlights.js';
+import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
 import { factsHash } from './facts-hash.js';
@@ -148,18 +148,15 @@ async function getNarration(facts, { fixtures, recentProse, steer }) {
 }
 
 /**
- * Maps finished-match ids to recap URLs. Disabled by default: the recap source
- * has unresolved publishing rights, so this returns an empty map unless
- * HIGHLIGHTS_ENABLED=1. Offline (--fixtures) it reads recaps.xml from the dir
- * when present and skips the network otherwise. Always returns a Map; never
- * throws, so a feed outage cannot fail the digest.
+ * Maps finished-match ids to FIFA highlight URLs. Offline (--fixtures) it reads
+ * highlights.json from the dir when present and skips the network otherwise.
+ * Always returns a Map; never throws, so a feed outage cannot fail the digest.
  */
 async function getRecaps(finished, { fixtures }) {
-  if (process.env.HIGHLIGHTS_ENABLED !== '1') return new Map();
   if (fixtures) {
-    const cannedPath = path.join(fixtures, 'recaps.xml');
+    const cannedPath = path.join(fixtures, 'highlights.json');
     if (!existsSync(cannedPath)) return new Map();
-    return recapsFor(finished, parseRecapFeed(await readFile(cannedPath, 'utf8')));
+    return recapsFor(finished, parseHighlightFeed(await readJson(cannedPath)));
   }
   return fetchRecaps({ matches: finished });
 }
