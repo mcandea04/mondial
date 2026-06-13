@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arhiva — Mondialul de dimineață</title>
+  <script>
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
@@ -22,6 +28,9 @@
   </main>
   <script type="module">
     import { renderDigest, loadDigest } from './assets/render.js';
+    import { mountToggle } from './assets/theme.js';
+
+    mountToggle(document.querySelector('.meta'));
 
     const list = document.getElementById('archive-list');
     const digestRoot = document.getElementById('digest');
