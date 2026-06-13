@@ -65,7 +65,7 @@ These come from the spec (`docs/superpowers/specs/2026-06-13-fifa-highlights-des
 - **Delete** `test/fixtures/recaps.xml`.
 - **Rewrite** `test/highlights.test.js` — all-offline cases against `highlights.json` + injected `fetchImpl`.
 - **Modify** `test/run.test.js:117-147` — drop `HIGHLIGHTS_ON` env, switch to `highlights.json`, delete the "disabled by default" test, keep manifest recap-count assertions.
-- **Create** `scripts/check-fifa-highlights.js` — manual live network check (not a `node --test` case).
+- **Create** `scripts/check-fifa-highlights.js` — manual live network check (not a `node --test` case); also audits live-feed tricodes against `FIFA_TRICODE_TO_FLAG`.
 
 ---
 
@@ -875,14 +875,24 @@ cd /Users/mcandea/personal/mondial-fifa-highlights-design && git add test/run.te
 
 This is NOT a `node --test` case (it would flake CI). It is a self-contained manual scenario: it hits the real FIFA feed and prints the keyed `matchId → url` map for a small hardcoded recent-night match list, so it needs no `FOOTBALL_DATA_TOKEN`. It exits non-zero only on a thrown error, not on an empty map.
 
+**Tricode audit (why this script also dumps observed tricodes):** the `FIFA_TRICODE_TO_FLAG` map in Task 1 is the load-bearing collision guard, but only `MEX`/`RSA` were ever observed in a captured sample — the other 46 rows are hand-authored from memory of FIFA's tricode conventions. If even one key is wrong (e.g. the feed emits `SAU` while the map has `KSA`, or `ALGE` vs `ALG`), that nation's tricode silently maps to `null`, the collision guard can't confirm its side, and on a simultaneous-kickoff group matchday the correct match can ship with no highlight — no error, no test signal (the offline fixture only exercises `MEX`/`RSA`/`CAN`/`QAT`). The soft-fail safety valve does NOT catch a wrong-but-plausible tricode. So this manual script, when run against a live multi-match feed, also collects every `Country` tag `id` it observes and diffs the set against the map keys, printing any tricode FIFA emits that the map does not cover. This turns the unverifiable hand-authored table into a one-command live audit before the table is trusted in production. It is still manual and non-gating — it surfaces drift for a human, it does not change pipeline behavior.
+
 - [ ] **Step 1: Write `scripts/check-fifa-highlights.js`**
 
 ```javascript
 /**
  * Manual live check (not a node --test case): fetches the real FIFA highlights
- * feed and prints the keyed matchId -> url map for a small hardcoded recent-night
- * match list. Self-contained: needs no FOOTBALL_DATA_TOKEN. Exits non-zero only
- * on a thrown error, never on an empty map.
+ * feed and (a) prints the keyed matchId -> url map for a small hardcoded
+ * recent-night match list and (b) audits every Country tricode the live feed
+ * emits against the FIFA_TRICODE_TO_FLAG map, printing any the map does not
+ * cover. Self-contained: needs no FOOTBALL_DATA_TOKEN. Exits non-zero only on a
+ * thrown error, never on an empty map or an unmapped-tricode finding.
+ *
+ * The tricode audit exists because the 48-row map is hand-authored from memory
+ * (only MEX/RSA were ever observed live); a wrong-but-plausible key maps a real
+ * nation to null and silently drops its highlight on a simultaneous-kickoff
+ * matchday, with no error and no test signal. Run this against a live
+ * multi-match feed before trusting the table.
  *
  * Run: node scripts/check-fifa-highlights.js
  *
@@ -890,21 +900,63 @@ This is NOT a `node --test` case (it would flake CI). It is a self-contained man
  * be minute-accurate against football-data, and the codes are our flag codes.
  */
 
-import { fetchRecaps } from '../pipeline/highlights.js';
+import { fetchRecaps, parseHighlightFeed, LISTING_URL, CANONICAL_SUFFIX } from '../pipeline/highlights.js';
+import { fifaTricodeToFlag } from '../pipeline/teams.js';
 
 const RECENT_NIGHT = [
   { id: 537327, homeCode: 'mx', awayCode: 'za', utcDate: '2026-06-11T19:00:00Z' },
   { id: 537328, homeCode: 'ca', awayCode: 'qa', utcDate: '2026-06-12T02:00:00Z' },
 ];
 
+/**
+ * Collects every Country tag id (FIFA tricode) on canonical items in the live
+ * feed and returns those the map does not cover (fifaTricodeToFlag -> null).
+ * Only canonical items are audited so Alt Cast / Play Zone noise tricodes do not
+ * raise false drift. Returns [] if the feed can't be read (this audit is
+ * best-effort and never throws on a feed problem).
+ */
+async function unmappedTricodes() {
+  let response;
+  try {
+    response = await fetch(LISTING_URL);
+    if (!response.ok) return [];
+  } catch {
+    return [];
+  }
+  let json;
+  try {
+    json = JSON.parse(await response.text());
+  } catch {
+    return [];
+  }
+  const items = Array.isArray(json?.items) ? json.items : [];
+  const observed = new Set();
+  for (const item of items) {
+    if (typeof item?.title !== 'string' || !item.title.endsWith(CANONICAL_SUFFIX)) continue;
+    const tags = Array.isArray(item?.semanticTags) ? item.semanticTags : [];
+    for (const tag of tags) {
+      if (tag?.sourceCategory === 'Country' && typeof tag.id === 'string') observed.add(tag.id);
+    }
+  }
+  return [...observed].filter((tricode) => fifaTricodeToFlag(tricode) === null).sort();
+}
+
 async function main() {
   const recaps = await fetchRecaps({ matches: RECENT_NIGHT });
   if (recaps.size === 0) {
     console.log('No highlights keyed (feed may not have published these reels yet).');
-    return;
+  } else {
+    for (const [id, url] of recaps) {
+      console.log(`${id} -> ${url}`);
+    }
   }
-  for (const [id, url] of recaps) {
-    console.log(`${id} -> ${url}`);
+
+  const unmapped = await unmappedTricodes();
+  if (unmapped.length === 0) {
+    console.log('Tricode audit: every Country tricode in the live feed is mapped.');
+  } else {
+    console.log(`Tricode audit: ${unmapped.length} unmapped tricode(s) in the live feed:`);
+    for (const tricode of unmapped) console.log(`  ${tricode} -> (no flag code; FIX FIFA_TRICODE_TO_FLAG)`);
   }
 }
 
@@ -922,7 +974,7 @@ Run:
 cd /Users/mcandea/personal/mondial-fifa-highlights-design && node scripts/check-fifa-highlights.js; echo "exit=$?"
 ```
 
-Expected: `exit=0`. With network it prints `id -> url` lines for any published reels; with no network or no published reels it prints the "No highlights keyed" line (or soft-fails the fetch to an empty map). Either way it must not throw.
+Expected: `exit=0`. With network it prints `id -> url` lines for any published reels plus a `Tricode audit:` line; with no network or no published reels it prints the "No highlights keyed" line and the audit reports nothing unmapped (the feed read soft-fails to no observed tricodes). Either way it must not throw, and the audit never changes the exit code — an unmapped tricode is reported for a human to fix, not a failure.
 
 - [ ] **Step 3: Commit**
 
@@ -1007,7 +1059,7 @@ Expected: working tree clean, commits for each task present.
 - **Timestamp parsing** — explicit regex into `Date.UTC`, never `Date.parse` on the FIFA string; test 2 asserts UTC ms host-TZ-independently. ✓
 - **Match resolution** — minute floor primary key (test 3), seconds tolerance (test 4), country-code collision guard (test 5), drop-never-guess incl. both-codes-null (test 6, 7). ✓
 - **At most one per match** — first feed-order entry wins via `!recaps.has` guard (test 8). ✓
-- **Tricode bridge** — hardcoded literal in `teams.js`, 48 rows, sub-national codes, unknown → null (Task 1, test 11). ✓
+- **Tricode bridge** — hardcoded literal in `teams.js`, 48 rows, sub-national codes, unknown → null (Task 1, test 11). The 46 unobserved rows are hand-authored; the live check script (Task 7) audits the real feed's Country tricodes against the map keys so a wrong-but-plausible key surfaces before production, instead of silently dropping a highlight. ✓
 - **Module structure** — `fetchRecaps`/`recapsFor` keep names + shapes; `parseHighlightFeed` added; `parseRecapFeed`/`matchRecap` removed (Task 2). `run.js` `getRecaps` name kept (Task 3). ✓
 - **run.js + .env.example** — gate removed, fixtures branch reads `highlights.json` via `parseHighlightFeed`+`recapsFor`, import updated, `.env.example` line removed (Task 3). ✓
 - **Error handling** — bounded short retry on 429/5xx/thrown/unparseable-JSON; soft-fail on permanent/404/no-items; noise dropped silently; per-item validation; no `/watch/undefined` (Task 2, tests 9, 10). ✓
