@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "entryId": "altCastMexRsa",
+      "title": "Alt Cast Highlights: Mexico v South Africa | FIFA World Cup 2026",
+      "semanticTags": [
+        { "sourceCategory": "Match", "title": "Mexico v South Africa on 06/11/2026 19:00 UTC", "id": "400021443" },
+        { "sourceCategory": "Country", "title": "Mexico", "id": "MEX" }
+      ]
+    },
+    {
+      "entryId": "mexSudHighlight",
+      "title": "Mexico v South Africa | Group A | FIFA World Cup 2026™ | Highlights",
+      "semanticTags": [
+        { "sourceCategory": "Match", "title": "Mexico v South Africa on 06/11/2026 19:00 UTC", "id": "400021443" },
+        { "sourceCategory": "Country", "title": "Mexico", "id": "MEX" },
+        { "sourceCategory": "Country", "title": "South Africa", "id": "RSA" }
+      ]
+    },
+    {
+      "entryId": "canQatHighlight",
+      "title": "Canada v Qatar | Group B | FIFA World Cup 2026™ | Highlights",
+      "semanticTags": [
+        { "sourceCategory": "Match", "title": "Canada v Qatar on 06/12/2026 02:00 UTC", "id": "400021444" },
+        { "sourceCategory": "Country", "title": "Canada", "id": "CAN" }
+      ]
+    },
+    {
+      "entryId": "playZoneNoise",
+      "title": "Mexico v South Africa | Play Zone",
+      "semanticTags": [
+        { "sourceCategory": "Match", "title": "Mexico v South Africa on 06/11/2026 19:00 UTC", "id": "400021443" }
+      ]
+    }
+  ]
+}
