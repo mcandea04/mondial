@@ -39,7 +39,10 @@ All endpoints return plain JSON, no auth, no key.
 
 **Listing** — one call returns the recent played-match highlights, fully keyed:
 
-    GET https://cxm-api.fifa.com/fifaplusweb/api/sections/news/<SECTION_ID>?locale=en&limit=<N>
+    GET https://cxm-api.fifa.com/fifaplusweb/api/sections/news/<SECTION_ID>?locale=en&limit=50
+
+`limit=50` is baked into the `LISTING_URL` constant (a night's finished matches
+sit near the head of the feed; 50 covers them with margin after filtering).
 
 `<SECTION_ID>` is the highlights section id (`1klF18lgpe12FFtd1IoTSs` at time of
 writing). Response shape:
@@ -128,9 +131,12 @@ regex does not match, the item has no usable kickoff and is skipped.
 
 ### At most one highlight per match
 
-Iterate items in feed order; the **first** canonical item that resolves to a
-given match id wins. A later duplicate or re-upload for the same match is
-ignored (deterministic, not last-write-wins).
+Iterate items in `json.items[]` array order; the **first** canonical item that
+resolves to a given match id wins. A later duplicate or re-upload for the same
+match is ignored (deterministic, not last-write-wins). "First" means array index,
+no re-sorting. The order only matters when two items key to the same match
+(re-upload), which is what test 8 exercises; the result is stable for a given
+response.
 
 ### Tricode bridge
 
@@ -143,25 +149,44 @@ sub-national home nations:
     ENG → gb-eng, SCO → gb-sct, USA → us, KOR → kr, ...
 
 An unknown tricode maps to `null`, which just means that side can't be used to
-confirm a collision. The full 48-row list is produced during implementation from
-the tournament's confirmed participants.
+confirm a collision. The map is a **hardcoded literal** in `teams.js` (like the
+existing name/flag maps — not generated or fetched at runtime); the implementer
+hand-authors the 48 rows from the confirmed finalists while building it.
 
 ## Module structure
 
 Keep `pipeline/highlights.js` as the module and keep the two functions that
 external code uses, so the digest assembly, teaser, and render are unaffected:
 
-- `fetchRecaps({ matches, fetchImpl })` → `Promise<Map<matchId, url>>`.
+- `fetchRecaps({ matches, fetchImpl = fetch })` → `Promise<Map<matchId, url>>`.
+  The default `fetchImpl` is the global `fetch`; `run.js` calls it with no
+  `fetchImpl` (`run.js:164`), so the default must survive the rewrite. The retry
+  loop wraps `fetchImpl` (the injected one), so test 9 can drive retries through
+  an injected impl.
 - `recapsFor(matches, entries)` → `Map<matchId, url>` (pure; used by tests and
-  the offline-fixtures path).
+  the offline-fixtures path). `entries` is the parsed array from
+  `parseHighlightFeed`.
+
+The `run.js` local wrapper keeps its name `getRecaps`, and all downstream recap
+vocabulary (`recapByMatch`, `recapCount`, the manifest `recaps` map) is left
+unchanged. Only the El-Gráfico-era internals are renamed; the integration
+surface keeps its current names so downstream stays untouched.
 
 Internal functions change (the YouTube-era `parseRecapFeed` and `matchRecap` are
 removed, not kept as aliases):
 
 - `parseHighlightFeed(json)` → `[{ url, kickoffMs, codes }]` where `codes` is an
   unordered array of our flag codes (length 1 or 2; the keying only ever asks
-  "does any code match home or away", so home/away order is irrelevant). Applies
-  the canonical filter and per-item validation; malformed items are skipped.
+  "does any code match home or away", so home/away order is irrelevant).
+  `parseHighlightFeed` does the FIFA-tricode → flag-code conversion itself (it
+  imports the bridge from `teams.js`), so its output is already in our codes.
+  It applies the canonical filter and per-item validation; malformed items are
+  skipped.
+- `recapsFor(matches, entries)` takes the **parsed** array from
+  `parseHighlightFeed` (i.e. `[{ url, kickoffMs, codes }]`), not raw JSON, and
+  does the kickoff+code resolution below. Both the live path (`fetchRecaps` →
+  `parseHighlightFeed` → `recapsFor`) and the offline fixtures path funnel
+  through `recapsFor`, so keying is identical online and offline.
 - The kickoff+code resolution above replaces title+score matching.
 
 Document `LISTING_URL` and `SECTION_ID` as named constants at the top of the
@@ -179,8 +204,13 @@ Changes:
 - **Remove the `HIGHLIGHTS_ENABLED` gate** and its stale "unresolved publishing
   rights" comment. FIFA watch links are public; the feature is on by default,
   with soft-fail as the only safety valve.
-- Fixtures branch reads `highlights.json` and calls `parseHighlightFeed`.
+- Fixtures branch reads `highlights.json`, calls `parseHighlightFeed`, and pipes
+  its output through `recapsFor` (same as the live path).
 - Update the import to drop `parseRecapFeed` and add `parseHighlightFeed`.
+
+**Also remove the gate from `.env.example`** (`.env.example:15`
+`HIGHLIGHTS_ENABLED=` plus its "unresolved rights" comment). The knob is gone, so
+the example must not document it.
 
 Everything downstream is unchanged: the `highlight` field on each match stays a
 URL string or `null` (`run.js:279`), `teaser.js` recap-count, the manifest recap
@@ -198,17 +228,26 @@ out of scope here.)
 
 ## Error handling
 
-- **Transient fetch failures retry.** Mirror `narrate.js`: retry on a 429 or 5xx
-  (small bounded number of attempts with a short backoff). A match-night load
-  spike returning a one-off 503 should not blank the whole night's highlights.
-- **Permanent failures soft-fail.** After retries are exhausted, or on a 404 /
-  non-JSON body / unparseable top-level shape, log a warn and return an empty
-  `Map`. The digest proceeds with no highlights; it never fails on a highlight
-  problem.
+- **Transient failures retry.** A transient failure is a 429, a 5xx, **or a
+  thrown network error** (the `fetchImpl` rejects — ECONNRESET, DNS, timeout).
+  Retry a small bounded number of times (2-3 attempts) with a **short** backoff
+  (order of 1-3s, not narrate.js's 20/60/120s — highlights are optional and the
+  run is cron-timed, so it must not spend minutes retrying). This is the same
+  *idea* as narrate.js's transient retry, but deliberately shorter.
+- **Permanent failures soft-fail.** After retries are exhausted, or on a 404 or a
+  body that parses but has no usable `items` shape, log a warn and return an
+  empty `Map`. A body that fails `JSON.parse` is treated as transient (it gets
+  the bounded retry) and then, if still failing, soft-fails like the rest. The
+  digest proceeds with no highlights; it never fails on a highlight problem.
+- **Expected noise vs malformed are different.** Non-canonical items (Alt Cast,
+  Play Zone — anything failing the canonical suffix) are *expected noise* and are
+  dropped **silently**, no warn. They are not errors.
 - **Per-item validation, not all-or-nothing.** Within a successfully parsed
-  feed, a malformed item (missing/empty `entryId`, no canonical title, no
-  parseable Match-tag timestamp) is skipped individually; the remaining good
-  items are still keyed. A single bad item never blanks the night.
+  feed, a canonical item that is nonetheless malformed (missing/empty `entryId`,
+  or a canonical title whose Match-tag timestamp won't parse) is skipped
+  individually; the remaining good items are still keyed. A single bad item never
+  blanks the night. (Whether a single malformed-canonical item warrants a warn is
+  fine either way, but it must not be noisy enough to dirty test output.)
 - **No `undefined` URLs.** An item with a missing/empty `entryId` is skipped
   before any URL is formed, so `fifa.com/en/watch/undefined` can never be
   produced. This preserves the "never a wrong link" property.
@@ -235,10 +274,23 @@ Offline run stays fully offline: `node pipeline/run.js --fixtures test/fixtures
 
 ## Testing
 
-Rewrite `test/highlights.test.js` wholesale (it currently imports the removed
-`parseRecapFeed`/`matchRecap` and loads `recaps.xml` at top level — both go away
-in the same change, or the file throws at import). All cases run offline against
-the canned `highlights.json` and an injected `fetchImpl`:
+Two existing test files must change in lockstep with the source/fixtures, or
+`npm test` (the only gate before the nightly cron publishes) breaks:
+
+- **`test/highlights.test.js`** — rewrite wholesale. It currently imports the
+  removed `parseRecapFeed`/`matchRecap` and loads `recaps.xml` at top level; both
+  go away in the same change, or the file throws at import.
+- **`test/run.test.js`** — migrate (`test/run.test.js:117-146`). It defines
+  `HIGHLIGHTS_ON = { HIGHLIGHTS_ENABLED: '1' }`, writes/reads `recaps.xml`, and
+  asserts `manifest.recaps[DATE] === 2` plus a "disabled by default → all
+  `highlight === null`" test. With the gate removed and the feature on by
+  default, drop the `HIGHLIGHTS_ON` env override, switch the fixtures to
+  `highlights.json`, delete the "disabled by default" test (the premise no longer
+  exists), and keep the manifest recap-count assertions pointed at the new
+  fixture. This file is a hard build-breaker if left as-is.
+
+All new `highlights.test.js` cases run offline against the canned
+`highlights.json` and an injected `fetchImpl`:
 
 1. `parseHighlightFeed` keeps canonical `… | FIFA World Cup 2026™ | Highlights`
    items and drops `Alt Cast` and `Play Zone`.
@@ -256,9 +308,9 @@ the canned `highlights.json` and an injected `fetchImpl`:
    including the both-codes-null knockout-placeholder case.
 8. At-most-one-per-match: two canonical items resolving to the same match → the
    first in feed order wins, deterministically.
-9. `fetchRecaps` retries a 429/5xx then succeeds (injected `fetchImpl`); and
-   returns an empty Map on a permanent 404 and on malformed JSON, without
-   throwing.
+9. `fetchRecaps` retries a 429/5xx then succeeds (injected `fetchImpl`); retries
+   a thrown network error then succeeds; and returns an empty Map after exhausting
+   retries on a permanent 404, without throwing.
 10. Per-item validation: a feed with one malformed item (empty `entryId`) and
     one good item yields exactly one keyed URL and no `…/watch/undefined`.
 11. Tricode → flag-code conversion: known tricodes map (incl. `ENG`→`gb-eng`,
@@ -267,9 +319,14 @@ the canned `highlights.json` and an injected `fetchImpl`:
 Test output must stay clean — no spurious warns from the soft-fail/retry paths
 leaking into passing-test output (suppress or assert on them).
 
-The live network check is **not** a `node --test` case (it would flake CI). It is
-a standalone script (e.g. `node scripts/check-fifa-highlights.js`, network
-required) used as a manual verification scenario only.
+The live network check is **not** a `node --test` case (it would flake CI). It
+lives under `scripts/` (not `test/`) so `node --test test/` never runs it:
+`node scripts/check-fifa-highlights.js` fetches the real FIFA feed and prints the
+keyed `matchId → url` map for the most recent night, exiting non-zero only on a
+thrown error (not on an empty map). It needs no `FOOTBALL_DATA_TOKEN` if it keys
+against a small hardcoded recent-night match list embedded in the script; keep it
+self-contained. It is a **manual** scenario and does **not** gate merge — the
+offline scenarios (1 and 3) are sufficient for "done" in a hands-off run.
 
 ## Verification (scenarios, run before declaring done)
 
