@@ -85,3 +85,28 @@ test('an Opus bad-output failure also falls back to Gemini', async (t) => {
   const { narrator } = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], claudeEngine });
   assert.equal(narrator, 'gemini-fallback');
 });
+
+test('NARRATOR=opus-polish marks narrator "opus-polish" when the polish succeeds', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'opus-polish';
+  const polishEngine = async () => ({ narration: OPUS_OUT, polished: true });
+  const { narration, narrator } = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], polishEngine });
+  assert.equal(narrator, 'opus-polish');
+  assert.equal(narration.headline, 'Titlu scris de Opus');
+});
+
+test('NARRATOR=opus-polish degrades to "opus" when only the polish stage fails', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'opus-polish';
+  const polishEngine = async () => ({ narration: OPUS_OUT, polished: false });
+  const { narrator } = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], polishEngine });
+  assert.equal(narrator, 'opus', 'a failed polish ships the draft, not a Gemini fallback');
+});
+
+test('NARRATOR=opus-polish falls back to Gemini when the draft itself fails', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'opus-polish';
+  const polishEngine = async () => { const e = new Error('auth failure'); e.auth = true; throw e; };
+  const { narrator } = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], polishEngine });
+  assert.equal(narrator, 'gemini-fallback');
+});
