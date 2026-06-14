@@ -102,6 +102,18 @@ async function writeIfChanged(filePath, content) {
   await writeFile(filePath, content);
 }
 
+/**
+ * Picks the highlight URL for one match, preferring a freshly fetched link and
+ * falling back to the stored link, then null. So a stored link is never
+ * overwritten by null when a FIFA feed outage soft-fails to an empty map.
+ *
+ * Relies on recapByMatch holding only truthy URL strings (a missing reel is an
+ * absent key, not a stored null) — a falsy value would defeat monotonicity.
+ */
+export function mergeHighlight(matchId, recapByMatch, existingHighlightById) {
+  return recapByMatch.get(matchId) ?? existingHighlightById.get(matchId) ?? null;
+}
+
 function requireEnv(name) {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not set`);
@@ -238,10 +250,11 @@ async function main() {
   // Freeze: when the stored digest was built from the same facts, reuse its
   // prose instead of regenerating. A stored digest without factsHash predates
   // this mechanism and is trusted as-is (the hash gets stamped on rewrite).
+  const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
+
   let narration = null;
   let reused = false;
   if (!args.reNarrate) {
-    const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
     if (existing && (!existing.factsHash || existing.factsHash === hash)) {
       narration = reuseNarration(existing, facts);
       reused = narration != null;
@@ -264,6 +277,12 @@ async function main() {
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
   const narrationByFixture = new Map(narration.tonight.map((m) => [m.id, m]));
 
+  // Monotonic merge: a highlight link, once stored, is never overwritten by null
+  // when a later FIFA feed outage yields no link for that match.
+  const existingHighlightById = new Map(
+    (existing?.matches ?? []).map((m) => [m.id, m.highlight]),
+  );
+
   const digest = {
     date,
     factsHash: hash,
@@ -273,7 +292,7 @@ async function main() {
       ...m,
       pill: narrationByMatch.get(m.id)?.pill ?? '',
       drama: narrationByMatch.get(m.id)?.drama ?? 1,
-      highlight: recapByMatch.get(m.id) ?? null,
+      highlight: mergeHighlight(m.id, recapByMatch, existingHighlightById),
     })),
     groups: standings.filter((g) => groupsThatPlayed.has(g.name)),
     tonight: facts.tonight.map((m) => ({
@@ -289,14 +308,33 @@ async function main() {
     teaser: buildTeaser({
       headline: narration.headline,
       matchCount: facts.finished.length,
-      recapCount: recapByMatch.size,
       siteUrl,
     }),
   };
 
+  const ogPath = path.join(dataDir, 'og', `${date}.png`);
+
+  // Publish-only-on-change gate (under --require-complete): when the rebuilt
+  // digest is byte-identical to the stored one and the OG image already exists,
+  // this run has nothing new to deploy. This is the "keep running until every
+  // highlight link arrives, then stop" signal from issue #9. The byte compare
+  // spans every published field, so a late scorer/card/standings correction
+  // (which factsHash omits) still deploys. Comparing against `existing` (the
+  // prior run's stored digest, read before any write) lets a post-crash repair
+  // run still rebuild latest.json / manifest.json / the OG image when one is
+  // missing or stale, since the gate trips only after the OG image exists too.
+  if (args.requireComplete) {
+    const storedBytes = existing ? JSON.stringify(existing, null, 2) : null;
+    const newBytes = JSON.stringify(digest, null, 2);
+    if (storedBytes === newBytes && existsSync(ogPath)) {
+      console.log('nothing changed; already published');
+      await setOutput('published', 'false');
+      return;
+    }
+  }
+
   await mkdir(path.join(dataDir, 'og'), { recursive: true });
 
-  const ogPath = path.join(dataDir, 'og', `${date}.png`);
   if (!reused || !existsSync(ogPath)) {
     const png = await renderOgImage({
       date,

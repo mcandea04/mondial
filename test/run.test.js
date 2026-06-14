@@ -143,3 +143,79 @@ test('a backfill run for an older date does not clobber a newer latest.json', ()
   const latest = JSON.parse(readFileSync(path.join(out, 'latest.json'), 'utf8'));
   assert.equal(latest.date, '2026-06-13');
 });
+
+import { mergeHighlight } from '../pipeline/run.js';
+
+test('monotonic merge: stored link survives a feed outage (empty recapByMatch)', () => {
+  const stored = new Map([[537327, 'https://www.fifa.com/en/watch/mexSudHighlight']]);
+  const fresh = new Map(); // simulated outage
+  assert.equal(mergeHighlight(537327, fresh, stored), 'https://www.fifa.com/en/watch/mexSudHighlight');
+});
+
+test('monotonic merge: fresh link wins over stored link (correction)', () => {
+  const stored = new Map([[537327, 'https://www.fifa.com/en/watch/oldLink']]);
+  const fresh = new Map([[537327, 'https://www.fifa.com/en/watch/newLink']]);
+  assert.equal(mergeHighlight(537327, fresh, stored), 'https://www.fifa.com/en/watch/newLink');
+});
+
+test('monotonic merge: no stored, no fresh -> null', () => {
+  const stored = new Map();
+  const fresh = new Map();
+  assert.equal(mergeHighlight(537327, fresh, stored), null);
+});
+
+const oneHighlightFeed = JSON.stringify({
+  items: [
+    {
+      entryId: 'mexSudHighlight',
+      title: 'Mexico v South Africa | Group A | FIFA World Cup 2026™ | Highlights',
+      semanticTags: [
+        { sourceCategory: 'Match', title: 'Mexico v South Africa on 06/11/2026 19:00 UTC', id: '400021443' },
+        { sourceCategory: 'Country', title: 'Mexico', id: 'MEX' },
+        { sourceCategory: 'Country', title: 'South Africa', id: 'RSA' },
+      ],
+    },
+  ],
+});
+
+test('--require-complete: identical second run skips deploy (published=false in log)', () => {
+  const { fixtures, out } = freshDirs();
+  // First run: no stored digest, always publishes.
+  const firstLog = runPipeline({ fixtures, out, extra: ['--require-complete'] });
+  assert.match(firstLog, /Done:/);
+
+  // Second run: same fixtures, same stored digest -> gate skips deploy.
+  const secondLog = runPipeline({ fixtures, out, extra: ['--require-complete'] });
+  assert.match(secondLog, /nothing changed; already published/);
+});
+
+test('--require-complete: run after a new highlight link still deploys', () => {
+  const { fixtures, out } = freshDirs();
+  // Cover only 1 of 2 finished matches.
+  writeFileSync(path.join(fixtures, 'highlights.json'), oneHighlightFeed);
+  runPipeline({ fixtures, out, extra: ['--require-complete'] });
+  const firstDigest = readDigest(out);
+  assert.equal(firstDigest.matches.filter((m) => m.highlight).length, 1);
+
+  // Now add the second highlight (default fixture covers both).
+  cpSync(path.join(ROOT, 'test', 'fixtures', 'highlights.json'), path.join(fixtures, 'highlights.json'));
+  const secondLog = runPipeline({ fixtures, out, extra: ['--require-complete'] });
+  // Digest changed (new link added) -> must deploy, not skip.
+  assert.doesNotMatch(secondLog, /nothing changed; already published/);
+  const secondDigest = readDigest(out);
+  assert.equal(secondDigest.matches.filter((m) => m.highlight).length, 2);
+});
+
+test('--require-complete: outage after a stored link keeps the link and skips deploy', () => {
+  const { fixtures, out } = freshDirs();
+  // Cover only 1 of 2 finished matches, publish it.
+  writeFileSync(path.join(fixtures, 'highlights.json'), oneHighlightFeed);
+  runPipeline({ fixtures, out, extra: ['--require-complete'] });
+  assert.equal(readDigest(out).matches.filter((m) => m.highlight).length, 1);
+
+  // Simulated feed outage: empty feed must not wipe the stored link.
+  writeFileSync(path.join(fixtures, 'highlights.json'), JSON.stringify({ items: [] }));
+  const log = runPipeline({ fixtures, out, extra: ['--require-complete'] });
+  assert.equal(readDigest(out).matches.filter((m) => m.highlight).length, 1);
+  assert.match(log, /nothing changed; already published/);
+});
