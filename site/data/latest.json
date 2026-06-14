@@ -1,9 +1,9 @@
 {
   "date": "2026-06-14",
   "factsHash": "28c38d441037910f4cff72ce1c85a77d798a5418566ed143c02905503f3b7f7d",
-  "narrator": "opus",
-  "headline": "Elveția uită să închidă, Brazilia uită să câștige",
-  "summary": "Elveția conducea prin Embolo până când Muheim a egalat în minutul 90+4, iar Grupa B a rămas un patrulater perfect, cu un punct de fiecare. Brazilia a fost prinsă pe picior greșit de Maroc și abia Vinícius a scos-o din încurcătură, în timp ce Scoția conduce Grupa C după golul lui McGinn la Haiti.",
+  "narrator": "opus-polish",
+  "headline": "Qatar fură un punct în prelungiri, Brazilia se bâlbâie iar",
+  "summary": "Totul s-a decis în prelungiri, unde Muheim a salvat un punct pentru Qatar. Scoția și Australia au luat cele trei puncte fără emoții.",
   "matches": [
     {
       "id": 537334,
@@ -31,7 +31,7 @@
       "decidedOnPenalties": false,
       "group": "B",
       "utcDate": "2026-06-13T19:00:00Z",
-      "pill": "Embolo a deschis scorul pentru Elveția în minutul 17 și elvețienii păreau că au rezolvat seara. Muheim i-a pedepsit în minutul 90+4 și a smuls un punct pentru gazde. Grupa B e acum un patrulater perfect: patru remize și câte un punct de fiecare.",
+      "pill": "Embolo a deschis scorul pentru Elveția în minutul 17 și meciul părea închis, până când Muheim a egalat în 90+4. Grupa B e o fotografie de grup: toate cele patru echipe cu un punct și golaveraj zero, perfect simetrică. Elveția se mulțumește cu egalul, Qatarul răsuflă.",
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/NdoxOQqn5cnkmfioABvsL"
     },
@@ -61,7 +61,7 @@
       "decidedOnPenalties": false,
       "group": "C",
       "utcDate": "2026-06-13T22:00:00Z",
-      "pill": "Saibari a băgat Marocul în avantaj în minutul 21, iar Brazilia a avut nevoie de Vinícius Júnior unsprezece minute mai târziu ca să nu intre în panică. Un egal care lasă Brazilia pe trei în Grupa C, în spatele Scoției. Marocul închide bine și pleacă mulțumit cu punctul.",
+      "pill": "Saibari a amuțit stadionul în minutul 21, iar Vinícius Júnior a egalat în 32 cât să nu se facă Brazilia de râs de tot. Selecta începe Mondialul cu un punct și cu semne de întrebare, cu zâmbetul pe buze doar la Maroc. Brazilia privește deja de jos la Scoția în Grupa C.",
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/1e8ayUzYWGZDbZUEU42bgQ"
     },
@@ -86,7 +86,7 @@
       "decidedOnPenalties": false,
       "group": "C",
       "utcDate": "2026-06-14T01:00:00Z",
-      "pill": "John McGinn a rezolvat tot ce avea de rezolvat Scoția în minutul 28, iar restul a fost administrare curată. Scoția conduce Grupa C cu trei puncte, Haiti pleacă acasă cu zero și un gol primit. Debutul exact cum și-l doreau scoțienii.",
+      "pill": "John McGinn a marcat în minutul 28 și atât i-a trebuit Scoției ca să plece cu tot din Haiti. Un 0-1 mai strâns decât pare scorul, fiindcă haitienii au mușcat până la final. Scoția conduce Grupa C, Haiti pleacă cu mâna goală.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/1amePIIN9Rt7kvMwQGMPke"
     },
@@ -116,7 +116,7 @@
       "decidedOnPenalties": false,
       "group": "D",
       "utcDate": "2026-06-14T04:00:00Z",
-      "pill": "Irankunda a deschis scorul în minutul 27, Metcalfe l-a dublat în 75 și Australia a controlat fără emoții. Trei puncte care o urcă pe doi în Grupa D, în spatele Statelor Unite la golaveraj. Turcia pleacă cu zero puncte și destule întrebări.",
+      "pill": "Irankunda a deschis scorul în minutul 27, iar Metcalfe a făcut 2-0 în 75. Turcia n-a nimerit poarta toată seara și pornește la drum cu zero puncte. Australia urcă pe doi în Grupa D, în spatele SUA.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/6qvmyR3k0BcpuPrSmer7Mf"
     }
@@ -279,7 +279,7 @@
       "awayCode": "cw",
       "kickoffEEST": "20:00",
       "alarm": "citești dimineața",
-      "why": "Germania intră în Grupa E ca favorită fără drept de apel în fața debutantei Curaçao, la 20:00 — o privești comod sau o ratezi fără remușcări."
+      "why": "Germania deschide Grupa E la ora opt seara, o oră la care nu pierzi nimic dacă te uiți, dar nici nu sacrifici somnul pentru Curaçao."
     },
     {
       "id": 537357,
@@ -289,7 +289,7 @@
       "awayCode": "jp",
       "kickoffEEST": "23:00",
       "alarm": "stai treaz",
-      "why": "Olanda și Japonia deschid Grupa F la 23:00, singurul meci al serii care chiar merită amânarea somnului."
+      "why": "Olanda contra Japonia la unsprezece noaptea, singurul meci al serii care chiar merită să stai treaz."
     },
     {
       "id": 537352,
@@ -299,7 +299,7 @@
       "awayCode": "ec",
       "kickoffEEST": "02:00",
       "alarm": "citești dimineața",
-      "why": "Coasta de Fildeș și Ecuador se bat pentru capul Grupei E la 02:00, oră la care rezistă doar pasionații."
+      "why": "Coasta de Fildeș și Ecuador se joacă la două dimineața în Grupa E, o oră numai bună de citit pe telefon a doua zi."
     },
     {
       "id": 537358,
@@ -309,8 +309,8 @@
       "awayCode": "tn",
       "kickoffEEST": "05:00",
       "alarm": "citești dimineața",
-      "why": "Suedia și Tunisia închid Grupa F la 05:00, când doar cafeaua mai ține ochii deschiși."
+      "why": "Suedia și Tunisia închid programul la cinci dimineața, când doar insomnia mai ține pasul cu Grupa F."
     }
   ],
-  "teaser": "⚽ Elveția uită să închidă, Brazilia uită să câștige · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Qatar fură un punct în prelungiri, Brazilia se bâlbâie iar · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
