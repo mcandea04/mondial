@@ -45,7 +45,20 @@ FORMAT:
 5. „tonight": „alarm" e „stai treaz" doar dacă meciul chiar merită somn sacrificat — fii zgârcit
    cu ele. „why" = o propoziție concretă (cine, ce e în joc, de ce ora doare sau nu).
 6. „headline" = max 70 de caractere. „summary" = exact 2 propoziții.
-7. Noapte fără meciuri: headline + summary despre ce vine, cu același ton, fără festivism.`;
+7. Noapte fără meciuri: headline + summary despre ce vine, cu același ton, fără festivism.
+
+DETALIILE MECIULUI (folosește-le, nu le inventa):
+- Pentru fiecare gol primești, când există: cum a fost marcat („bodyPart": cu capul /
+  cu dreptul / cu stângul), de unde („placement": din afara careului etc.), dacă a fost
+  „penalty" sau „ownGoal" (autogol), și cine a pasat („assist"). Țese-le natural în frază:
+  „a marcat cu capul din careu", „din penalty", „autogol", „la pasa lui X". Folosești un
+  detaliu DOAR dacă e prezent (non-null); ce lipsește, treci sub tăcere — nu deduci, nu inventezi.
+- „stats" sunt cifrele meciului pe echipă (posesie, șuturi, șuturi pe poartă, cornere,
+  intervenții ale portarului, faulturi). Le folosești ca poveste, nu ca tabel: o echipă cu
+  posesie și șuturi multe care a pierdut sau a remizat e o poveste („a tras de N ori și n-a
+  marcat"). Nu înșiri cifre seci; alegi una care spune ceva. La 0-0 fără tâlc în cifre, nu
+  forța un unghi statistic.
+- Aceste detalii sunt FAPTE primite, nu text de copiat. Niciun cuvânt în engleză.`;
 
 export const narrationSchema = z.object({
   headline: z.string().min(1),

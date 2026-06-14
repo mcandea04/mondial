@@ -144,7 +144,33 @@ test('a backfill run for an older date does not clobber a newer latest.json', ()
   assert.equal(latest.date, '2026-06-13');
 });
 
-import { mergeHighlight } from '../pipeline/run.js';
+import { mergeHighlight, mergeEnrichment } from '../pipeline/run.js';
+
+test('mergeEnrichment: a blackout poll keeps prior scorers/events/stats', () => {
+  const stored = new Map([[1, {
+    id: 1,
+    scorers: [{ name: 'Lozano', minute: '88', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }],
+    events: [{ name: 'Mokoena', minute: '79', team: 'away', reason: null }],
+    stats: { home: { possessionPct: '55.0' }, away: { possessionPct: '45.0' } },
+  }]]);
+  const blackout = { id: 1, score: [2, 1], scorers: [], events: [], stats: null };
+  const merged = mergeEnrichment(blackout, stored);
+  assert.deepEqual(merged.scorers, stored.get(1).scorers);
+  assert.deepEqual(merged.events, stored.get(1).events);
+  assert.deepEqual(merged.stats, stored.get(1).stats);
+  assert.deepEqual(merged.score, [2, 1]); // score is always fresh
+});
+
+test('mergeEnrichment: a fresh enriched poll is left untouched (no downgrade case)', () => {
+  const stored = new Map([[1, { id: 1, scorers: [{ name: 'Old' }], events: [], stats: null }]]);
+  const fresh = { id: 1, score: [1, 0], scorers: [{ name: 'New', minute: '5' }], events: [], stats: null };
+  assert.equal(mergeEnrichment(fresh, stored), fresh);
+});
+
+test('mergeEnrichment: no prior entry returns the match as-is', () => {
+  const empty = { id: 9, scorers: [], events: [], stats: null };
+  assert.equal(mergeEnrichment(empty, new Map()), empty);
+});
 
 test('monotonic merge: stored link survives a feed outage (empty recapByMatch)', () => {
   const stored = new Map([[537327, 'https://www.fifa.com/en/watch/mexSudHighlight']]);

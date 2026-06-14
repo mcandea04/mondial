@@ -166,15 +166,16 @@ test('parseMatch with full detail: team-attributed scorers, red cards, minutes w
   const parsed = parseMatch(match);
   assert.deepEqual(parsed.score, [1, 2]);
   assert.deepEqual(parsed.scorers, [
-    { name: 'Gnabry', minute: '33', team: 'home' },
-    { name: 'Doan', minute: '90+2', team: 'away' },
+    { name: 'Gnabry', minute: '33', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null },
+    { name: 'Doan', minute: '90+2', team: 'away', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null },
   ]);
   assert.deepEqual(parsed.events, [
-    { name: 'Rüdiger', minute: '79', team: 'home' },
-    { name: 'Endo', minute: '88', team: 'away' },
+    { name: 'Rüdiger', minute: '79', team: 'home', reason: null },
+    { name: 'Endo', minute: '88', team: 'away', reason: null },
   ]);
   assert.equal(parsed.decidedOnPenalties, false);
   assert.equal(parsed.group, 'E');
+  assert.equal(parsed.stats, null);
 });
 
 test('parseMatch sets decidedOnPenalties and keeps it out of events', () => {
@@ -189,7 +190,7 @@ test('parseMatch sets decidedOnPenalties and keeps it out of events', () => {
   };
   const parsed = parseMatch(match);
   assert.equal(parsed.decidedOnPenalties, true);
-  assert.deepEqual(parsed.events, [{ name: 'X', minute: '70', team: 'home' }]);
+  assert.deepEqual(parsed.events, [{ name: 'X', minute: '70', team: 'home', reason: null }]);
 });
 
 test('parseMatch leaves team null when goals/bookings carry no team (offline fixtures)', () => {
@@ -204,8 +205,8 @@ test('parseMatch leaves team null when goals/bookings carry no team (offline fix
     bookings: [{ minute: '49', card: 'RED', player: { name: 'Sithole' } }],
   };
   const parsed = parseMatch(match);
-  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: null }]);
-  assert.deepEqual(parsed.events, [{ name: 'Sithole', minute: '49', team: null }]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: null, penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }]);
+  assert.deepEqual(parsed.events, [{ name: 'Sithole', minute: '49', team: null, reason: null }]);
 });
 
 test('parseMatch degrades gracefully without goals/bookings detail', () => {

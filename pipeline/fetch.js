@@ -178,6 +178,13 @@ export function parseMatch(match) {
     name: g.scorer?.name ?? '?',
     minute: String(g.minute),
     team: teamSide(g.team),
+    // Normalize every enrichment field to a value or null, so a match with no
+    // ESPN detail (offline, or an enrichment outage) still has a uniform shape.
+    penalty: g.penalty ?? false,
+    ownGoal: g.ownGoal ?? false,
+    assist: g.assist ?? null,
+    bodyPart: g.bodyPart ?? null,
+    placement: g.placement ?? null,
   }));
   const events = (match.bookings ?? [])
     .filter((b) => b.card === 'RED' || b.card === 'YELLOW_RED')
@@ -185,6 +192,10 @@ export function parseMatch(match) {
       name: b.player?.name ?? '?',
       minute: String(b.minute),
       team: teamSide(b.team),
+      // Reasons are parsed for all bookings but only surface here, on dismissals —
+      // a sending-off is where the reason carries drama. Widening to plain yellows
+      // is later work; this filter is intentionally unchanged.
+      reason: b.reason ?? null,
     }));
   return {
     id: match.id,
@@ -195,6 +206,7 @@ export function parseMatch(match) {
     score: [match.score.fullTime.home, match.score.fullTime.away],
     scorers,
     events,
+    stats: match.matchStats ?? null,
     decidedOnPenalties: Boolean(match.score?.penalties),
     group: (match.group ?? '').replace('GROUP_', ''),
     utcDate: match.utcDate,

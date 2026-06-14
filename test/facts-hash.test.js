@@ -43,10 +43,56 @@ test('a changed standings table does NOT change the hash', () => {
   assert.equal(factsHash(base), factsHash(shifted));
 });
 
-test('a late scorer name does NOT change the hash', () => {
-  const withScorer = structuredClone(base);
-  withScorer.finished[0].scorers.push('Buchanan 90+2');
-  assert.equal(factsHash(base), factsHash(withScorer));
+// Richer projection: scorers (with manner/assist) and dismissals (with reason)
+// are now drama facts in the hash; stats are deliberately excluded.
+const rich = {
+  date: '2026-06-12',
+  finished: [
+    {
+      id: 1,
+      home: 'Mexic',
+      away: 'Africa de Sud',
+      score: [2, 1],
+      scorers: [
+        { name: 'Lozano', minute: '88', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null },
+        { name: 'Giménez', minute: '12', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null },
+      ],
+      events: [{ name: 'Mokoena', minute: '79', team: 'away', reason: null }],
+      stats: { home: { possessionPct: '55.0' }, away: { possessionPct: '45.0' } },
+      group: 'A',
+      utcDate: '2026-06-11T19:00:00Z',
+    },
+  ],
+  tonight: [{ id: 3, home: 'Brazilia', away: 'Maroc', kickoffEEST: '21:00', utcDate: '2026-06-12T18:00:00Z' }],
+  standings: [],
+};
+
+test('adding a scorer changes the hash (new narration material)', () => {
+  const extra = structuredClone(rich);
+  extra.finished[0].scorers.push({ name: 'Buchanan', minute: '90+2', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null });
+  assert.notEqual(factsHash(rich), factsHash(extra));
+});
+
+test('a late assist or card reason changes the hash', () => {
+  const withAssist = structuredClone(rich);
+  withAssist.finished[0].scorers[0].assist = 'Giménez';
+  assert.notEqual(factsHash(rich), factsHash(withAssist));
+
+  const withReason = structuredClone(rich);
+  withReason.finished[0].events[0].reason = 'pentru un fault dur';
+  assert.notEqual(factsHash(rich), factsHash(withReason));
+});
+
+test('reordering scorers does NOT change the hash', () => {
+  const reordered = structuredClone(rich);
+  reordered.finished[0].scorers.reverse();
+  assert.equal(factsHash(rich), factsHash(reordered));
+});
+
+test('a changed stat does NOT change the hash (stats excluded from projection)', () => {
+  const shifted = structuredClone(rich);
+  shifted.finished[0].stats.home.possessionPct = '60.0';
+  assert.equal(factsHash(rich), factsHash(shifted));
 });
 
 test('a changed tonight kickoff changes the hash', () => {

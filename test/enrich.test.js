@@ -4,6 +4,9 @@ import {
   eventsToFootballData,
   matchEvent,
   enrichFinishedMatches,
+  parseGoalManner,
+  parseCardReason,
+  teamStats,
 } from '../pipeline/enrich.js';
 import { parseMatch } from '../pipeline/fetch.js';
 
@@ -15,9 +18,105 @@ test('eventsToFootballData maps scoring plays to goals with scorer, minute, and 
   const homeAwayById = { '203': 'home', '467': 'away' };
   const { goals } = eventsToFootballData(keyEvents, homeAwayById);
   assert.deepEqual(goals, [
-    { minute: '9', scorer: { name: 'Quiñones' }, team: 'home' },
-    { minute: '67', scorer: { name: 'Jiménez' }, team: 'away' },
+    { minute: '9', scorer: { name: 'Quiñones' }, team: 'home', penalty: false, ownGoal: false, assist: 'Lira' },
+    { minute: '67', scorer: { name: 'Jiménez' }, team: 'away', penalty: false, ownGoal: false, assist: null },
   ]);
+});
+
+test('parseGoalManner maps body part and placement to Romanian tokens', () => {
+  assert.deepEqual(
+    parseGoalManner('Ismael Saibari (Morocco) right footed shot from outside the box to the centre of the goal.'),
+    { bodyPart: 'dreptul', placement: 'din afara careului' },
+  );
+  assert.deepEqual(
+    parseGoalManner('Left footed shot from the centre of the box.'),
+    { bodyPart: 'stângul', placement: 'din careu' },
+  );
+  assert.deepEqual(parseGoalManner('Header from the left side of the box.'), {
+    bodyPart: 'cu capul',
+    placement: 'din stânga careului',
+  });
+  assert.equal(parseGoalManner('Right footed shot from the right side of the box.').placement, 'din dreapta careului');
+  assert.equal(parseGoalManner('Scored direct free kick.').placement, 'din lovitură liberă');
+  assert.equal(parseGoalManner('Finished with the head.').bodyPart, 'cu capul');
+});
+
+test('parseGoalManner returns empty object for unknown or empty text', () => {
+  assert.deepEqual(parseGoalManner('some unknown description'), {});
+  assert.deepEqual(parseGoalManner(''), {});
+});
+
+test('parseCardReason maps known reasons and returns null otherwise', () => {
+  assert.equal(parseCardReason('Casemiro (Brazil) is shown the yellow card for a bad foul.'), 'pentru un fault dur');
+  assert.equal(parseCardReason('Player is shown the red card for a professional foul.'), 'pentru fault tactic');
+  assert.equal(parseCardReason('Player is shown the yellow card for dissent.'), 'pentru proteste');
+  assert.equal(parseCardReason('Abunada (Qatar) is shown the yellow card.'), null);
+  assert.equal(parseCardReason('Player is shown the yellow card for time-wasting.'), null);
+});
+
+test('eventsToFootballData: penalty has penalty=true and no assist', () => {
+  const { goals } = eventsToFootballData(
+    [{ team: { id: '1' }, clock: { displayValue: "45'" }, type: { text: 'Penalty - Scored' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Embolo' } }] }],
+    { '1': 'home' },
+  );
+  assert.equal(goals[0].penalty, true);
+  assert.equal(goals[0].ownGoal, false);
+  assert.equal(goals[0].assist, null);
+});
+
+test('eventsToFootballData: own goal has ownGoal=true and participants[1] is NOT read as assist', () => {
+  const { goals } = eventsToFootballData(
+    [{ team: { id: '1' }, clock: { displayValue: "60'" }, type: { text: 'Own Goal' }, scoringPlay: true, participants: [{ athlete: { displayName: 'Muheim' } }, { athlete: { displayName: 'Ahmed' } }] }],
+    { '1': 'home' },
+  );
+  assert.equal(goals[0].ownGoal, true);
+  assert.equal(goals[0].penalty, false);
+  assert.equal(goals[0].assist, null);
+});
+
+test('eventsToFootballData: plain Goal carries manner and assist from text/participants', () => {
+  const { goals } = eventsToFootballData(
+    [{
+      team: { id: '1' }, clock: { displayValue: "21'" }, type: { text: 'Goal' }, scoringPlay: true,
+      participants: [{ athlete: { displayName: 'Saibari' } }, { athlete: { displayName: 'Díaz' } }],
+      text: 'Saibari right footed shot from outside the box. Assisted by Díaz.',
+    }],
+    { '1': 'away' },
+  );
+  assert.equal(goals[0].assist, 'Díaz');
+  assert.equal(goals[0].bodyPart, 'dreptul');
+  assert.equal(goals[0].placement, 'din afara careului');
+});
+
+test('eventsToFootballData: bookings carry a parsed reason or null', () => {
+  const { bookings } = eventsToFootballData(
+    [
+      { team: { id: '1' }, clock: { displayValue: "17'" }, type: { text: 'Red Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'A' } }], text: 'A is shown the red card for a bad foul.' },
+      { team: { id: '1' }, clock: { displayValue: "30'" }, type: { text: 'Yellow Card' }, scoringPlay: false, participants: [{ athlete: { displayName: 'B' } }], text: 'B is shown the yellow card.' },
+    ],
+    { '1': 'home' },
+  );
+  assert.equal(bookings[0].reason, 'pentru un fault dur');
+  assert.equal(bookings[1].reason, null);
+});
+
+test('teamStats projects six stats per side, null unless both sides resolve', () => {
+  const summary = {
+    boxscore: {
+      teams: [
+        { team: { id: '1' }, statistics: [{ name: 'possessionPct', displayValue: '51.4' }, { name: 'totalShots', displayValue: '12' }] },
+        { team: { id: '2' }, statistics: [{ name: 'possessionPct', displayValue: '48.6' }, { name: 'saves', displayValue: '5' }] },
+      ],
+    },
+  };
+  const map = new Map([['1', 'home'], ['2', 'away']]);
+  assert.deepEqual(teamStats(summary, map), {
+    home: { possessionPct: '51.4', totalShots: '12' },
+    away: { possessionPct: '48.6', saves: '5' },
+  });
+  // One side unresolved → null (no half-populated block reaches narration).
+  assert.equal(teamStats(summary, new Map([['1', 'home']])), null);
+  assert.equal(teamStats({}, map), null);
 });
 
 test('eventsToFootballData keeps stoppage-time minute as "90+2"', () => {
@@ -46,9 +145,9 @@ test('eventsToFootballData maps red cards (incl. second yellow) and drops plain 
   ];
   const { bookings } = eventsToFootballData(keyEvents, { '203': 'home', '467': 'away' });
   assert.deepEqual(bookings, [
-    { minute: '17', card: 'YELLOW', player: { name: 'Mokoena' }, team: 'away' },
-    { minute: '49', card: 'RED', player: { name: 'Sithole' }, team: 'away' },
-    { minute: '84', card: 'RED', player: { name: 'Zwane' }, team: 'home' },
+    { minute: '17', card: 'YELLOW', player: { name: 'Mokoena' }, team: 'away', reason: null },
+    { minute: '49', card: 'RED', player: { name: 'Sithole' }, team: 'away', reason: null },
+    { minute: '84', card: 'RED', player: { name: 'Zwane' }, team: 'home', reason: null },
   ]);
 });
 
@@ -88,8 +187,8 @@ test('output feeds parseMatch to produce team-attributed scorers and events', ()
     bookings,
   };
   const parsed = parseMatch(match);
-  assert.deepEqual(parsed.scorers, [{ name: 'Gnabry', minute: '33', team: 'home' }]);
-  assert.deepEqual(parsed.events, [{ name: 'Rüdiger', minute: '79', team: 'home' }]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Gnabry', minute: '33', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }]);
+  assert.deepEqual(parsed.events, [{ name: 'Rüdiger', minute: '79', team: 'home', reason: null }]);
 });
 
 test('matchEvent pairs a football-data match to the ESPN event with the same kickoff', () => {
@@ -163,8 +262,8 @@ test('enrichFinishedMatches attaches goals/bookings from the ESPN summary', asyn
 
   const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
   const parsed = parseMatch(enriched[0]);
-  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: 'home' }]);
-  assert.deepEqual(parsed.events, [{ name: 'Sithole', minute: '49', team: 'away' }]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }]);
+  assert.deepEqual(parsed.events, [{ name: 'Sithole', minute: '49', team: 'away', reason: null }]);
   assert.ok(calls.some((u) => u.includes('dates=20260611')), 'queries the kickoff date in UTC');
 });
 
@@ -234,7 +333,7 @@ test('enrichFinishedMatches finds an after-midnight UTC match on the US-Eastern 
   };
   const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
   const parsed = parseMatch(enriched[0]);
-  assert.deepEqual(parsed.scorers, [{ name: 'Son', minute: '30', team: 'home' }]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Son', minute: '30', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }]);
   assert.ok(queried.includes('20260611'), `expected the ET day to be queried, got ${JSON.stringify(queried)}`);
 });
 
@@ -261,7 +360,7 @@ test('enrichFinishedMatches leaves team null when the summary has no header', as
   };
   const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
   const parsed = parseMatch(enriched[0]);
-  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: null }]);
+  assert.deepEqual(parsed.scorers, [{ name: 'Quiñones', minute: '9', team: null, penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }]);
 });
 
 test('enrichFinishedMatches passes a match through when no ESPN event pairs', async () => {
@@ -278,6 +377,36 @@ test('enrichFinishedMatches passes a match through when no ESPN event pairs', as
   assert.deepEqual(parsed.scorers, []);
   assert.deepEqual(parsed.events, []);
   assert.ok(logs.some((m) => m.includes('no ESPN')), `expected a no-match log, got ${JSON.stringify(logs)}`);
+});
+
+test('enrichFinishedMatches attaches matchStats from the boxscore', async () => {
+  const rawMatches = [
+    { id: 1, utcDate: '2026-06-11T19:00:00Z', homeTeam: { name: 'Mexico' }, awayTeam: { name: 'South Africa' }, score: { fullTime: { home: 2, away: 0 } } },
+  ];
+  const fetchImpl = async (url) => {
+    if (url.includes('/scoreboard?')) {
+      return jsonResponse({ events: [{ id: '760415', date: '2026-06-11T19:00Z', competitions: [{ competitors: [{ team: { displayName: 'Mexico' } }, { team: { displayName: 'South Africa' } }] }] }] });
+    }
+    if (url.includes('/summary?event=760415')) {
+      return jsonResponse({
+        header: { competitions: [{ competitors: [{ homeAway: 'home', team: { id: '203' } }, { homeAway: 'away', team: { id: '467' } }] }] },
+        keyEvents: [],
+        boxscore: {
+          teams: [
+            { team: { id: '203' }, statistics: [{ name: 'possessionPct', displayValue: '55.0' }, { name: 'totalShots', displayValue: '14' }] },
+            { team: { id: '467' }, statistics: [{ name: 'possessionPct', displayValue: '45.0' }, { name: 'saves', displayValue: '6' }] },
+          ],
+        },
+      });
+    }
+    throw new Error(`unexpected url ${url}`);
+  };
+  const enriched = await enrichFinishedMatches(rawMatches, { fetchImpl, delayMs: 0 });
+  assert.deepEqual(enriched[0].matchStats, {
+    home: { possessionPct: '55.0', totalShots: '14' },
+    away: { possessionPct: '45.0', saves: '6' },
+  });
+  assert.equal(parseMatch(enriched[0]).stats.home.possessionPct, '55.0');
 });
 
 function jsonResponse(body) {

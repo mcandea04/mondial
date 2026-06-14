@@ -117,6 +117,34 @@ export function mergeHighlight(matchId, recapByMatch, existingHighlightById) {
   return recapByMatch.get(matchId) ?? existingHighlightById.get(matchId) ?? null;
 }
 
+/** True when a parsed match carries no ESPN-sourced detail at all. */
+function hasNoEnrichment(match) {
+  return (match.scorers?.length ?? 0) === 0
+    && (match.events?.length ?? 0) === 0
+    && match.stats == null;
+}
+
+/**
+ * Monotonic enrichment: a finished match that ESPN once enriched is never
+ * downgraded to bare facts by a later poll where the ESPN summary failed. When
+ * the fresh parse has no scorers, events, or stats but a stored digest already
+ * carried them for this id, the stored detail is restored. Mirrors
+ * `mergeHighlight`: a transient outage can't strip detail (or flip the hash and
+ * re-narrate) off a match that already had it. The score itself comes from
+ * football-data and is always fresh, so it is left untouched.
+ */
+export function mergeEnrichment(match, existingByMatch) {
+  const prior = existingByMatch.get(match.id);
+  if (!prior || !hasNoEnrichment(match)) return match;
+  if (hasNoEnrichment(prior)) return match;
+  return {
+    ...match,
+    scorers: prior.scorers ?? match.scorers,
+    events: prior.events ?? match.events,
+    stats: prior.stats ?? match.stats,
+  };
+}
+
 function requireEnv(name) {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not set`);
@@ -283,16 +311,22 @@ async function main() {
   const facts = await gatherFacts({ date, fixtures: args.fixtures });
   const standings = classifyStandings(facts.standings);
 
+  // Read the stored digest first: it both supplies prior enrichment (so a failed
+  // ESPN poll can't strip detail off an already-rich match) and powers the freeze.
+  const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
+  const existingByMatch = new Map((existing?.matches ?? []).map((m) => [m.id, m]));
+  facts.finished = facts.finished.map((m) => mergeEnrichment(m, existingByMatch));
+
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
   const factsForNarration = { date, finished: facts.finished, tonight: facts.tonight, standings };
+  // Hashed AFTER mergeEnrichment so a transient outage doesn't flip the hash.
   const hash = factsHash(factsForNarration);
 
   // Freeze: when the stored digest was built from the same facts, reuse its
   // prose instead of regenerating. A stored digest without factsHash predates
   // this mechanism and is trusted as-is (the hash gets stamped on rewrite).
-  const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
 
   let narration = null;
   let narrator = null;
