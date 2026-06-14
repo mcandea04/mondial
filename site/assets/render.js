@@ -89,10 +89,7 @@ function renderMatchCard(match) {
 
   if (match.pill) {
     const pill = el('div', 'pill');
-    pill.append(
-      el('p', 'pill-label', 'Pastila de consecințe'),
-      el('p', 'pill-text', match.pill),
-    );
+    pill.append(el('p', 'pill-text', match.pill));
     card.append(pill);
   }
 

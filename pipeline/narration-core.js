@@ -53,11 +53,20 @@ DETALIILE MECIULUI (folosește-le, nu le inventa):
   „penalty" sau „ownGoal" (autogol), și cine a pasat („assist"). Țese-le natural în frază:
   „a marcat cu capul din careu", „din penalty", „autogol", „la pasa lui X". Folosești un
   detaliu DOAR dacă e prezent (non-null); ce lipsește, treci sub tăcere — nu deduci, nu inventezi.
+- PICIORUL (cu dreptul / cu stângul) e cel mai puțin interesant detaliu. Îl menționezi
+  cel mult O DATĂ pe tot meciul — fie în summary, fie în pastila acelui meci, niciodată de
+  două ori — și numai când chiar piciorul e povestea (un șut formidabil cu piciorul slab,
+  un voleu de la distanță). La un cap, un penalty, o împingere din doi metri sau orice gol
+  obișnuit, piciorul e zgomot: taci. „Cu capul" NU intră la limita asta — schimbă imaginea
+  golului, nu e zgomot ca stângul/dreptul, deci două capete pot fi amândouă „cu capul".
 - „stats" sunt cifrele meciului pe echipă (posesie, șuturi, șuturi pe poartă, cornere,
-  intervenții ale portarului, faulturi). Le folosești ca poveste, nu ca tabel: o echipă cu
-  posesie și șuturi multe care a pierdut sau a remizat e o poveste („a tras de N ori și n-a
-  marcat"). Nu înșiri cifre seci; alegi una care spune ceva. La 0-0 fără tâlc în cifre, nu
-  forța un unghi statistic.
+  intervenții ale portarului, faulturi). Sunt ultima soluție, nu prima: pentru un meci dat
+  citezi cel mult O cifră (fie în summary, fie în pastilă, nu aceeași de două ori) și numai
+  când cifra CONTRAZICE rezultatul — o echipă care a dominat și a pierdut sau a remizat, un
+  portar care a ținut singur un punct. Când scorul spune deja totul, nicio cifră. Nu înșiri
+  tabele și nu calchia engleza: în loc de „posesia n-a plătit nimic" (traducere proastă)
+  spui „degeaba a ținut mingea, că tot acasă a plecat" sau „posesia n-a contat". La 0-0 fără
+  tâlc în cifre, nu forța un unghi statistic.
 - Aceste detalii sunt FAPTE primite, nu text de copiat. Niciun cuvânt în engleză.`;
 
 export const narrationSchema = z.object({
@@ -140,7 +149,11 @@ NU rescrii tu textul. NU comentezi faptele (scoruri, marcatori, minute) — alea
 și fixe. NU comentezi umorul sau structura glumelor — alea rămân. Te uiți DOAR la limbă:
 - construcții eliptice care cer un obiect („a deschis" în loc de „a deschis scorul")
 - calcuri („un cap de X" în loc de „o lovitură de cap a lui X", „poarta intactă" în loc de
-  „poarta neatinsă", „a restabilit egalitatea" în loc de „a egalat")
+  „poarta neatinsă", „a restabilit egalitatea" în loc de „a egalat", „posesia n-a plătit /
+  n-a plătit nimic" în loc de „degeaba a ținut mingea" sau „posesia n-a contat", „victorie
+  limpede" în loc de „victorie fără emoții" sau „a câștigat fără să tremure")
+- construcții eliptice la portar („a scos de N ori" cere un obiect; spui „a avut N
+  intervenții" sau „a scos N mingi")
 - topică nefirească („toate patru echipele" în loc de „toate cele patru echipe"),
   prepoziții greșite, anglicisme
 - orice ar suna ciudat spus cu voce tare la o cafea între prieteni
