@@ -43,6 +43,7 @@ import {
 import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
 import { callClaude } from './claude-engine.js';
+import { polishedNarration } from './narration-polish.js';
 import { SYSTEM_PROMPT, buildUserMessage } from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
@@ -167,27 +168,32 @@ function geminiNarration(facts, { fixtures, recentProse, steer }) {
 }
 
 /**
- * Picks the narrator by the NARRATOR env var ("gemini" default, or "opus") and
- * returns { narration, narrator }, where narrator records which engine actually
- * produced the prose so a silent fallback is visible in the day's JSON.
+ * Picks the narrator by the NARRATOR env var and returns { narration, narrator },
+ * where narrator records which engine actually produced the prose so a silent
+ * fallback is visible in the day's JSON. Values:
+ *   unset / "gemini" — Gemini.
+ *   "opus"           — single-pass headless Opus (the benchmark winner).
+ *   "opus-polish"    — Opus draft -> idiom critique -> rewrite. When the polish
+ *                      stage fails the validated draft ships, marked "opus".
  *
- * "opus" shells out to the headless claude CLI (the benchmark winner). ANY Opus
- * failure — expired/invalid OAuth token, or bad output after its retries — logs
- * a warning and falls back to Gemini, marked "gemini-fallback". The digest must
- * never miss a morning over a narration-engine problem. The Claude engine is
- * injectable so the fallback can be unit-tested without the CLI.
+ * Any Opus *draft* failure — expired/invalid OAuth token, or bad output after
+ * its retries — logs a warning and falls back to Gemini, marked
+ * "gemini-fallback". The digest must never miss a morning over a
+ * narration-engine problem. The Claude engine is injectable for testing.
  */
-export async function getNarration(facts, { fixtures, recentProse, steer, claudeEngine = callClaude } = {}) {
-  if (process.env.NARRATOR !== 'opus') {
+export async function getNarration(facts, { fixtures, recentProse, steer, claudeEngine = callClaude, polishEngine = polishedNarration } = {}) {
+  const mode = process.env.NARRATOR;
+  if (mode !== 'opus' && mode !== 'opus-polish') {
     return { narration: await geminiNarration(facts, { fixtures, recentProse, steer }), narrator: 'gemini' };
   }
+  const model = process.env.CLAUDE_MODEL || 'opus';
+  const userMessage = buildUserMessage(facts, recentProse, steer);
   try {
-    const narration = await claudeEngine({
-      model: process.env.CLAUDE_MODEL || 'opus',
-      userMessage: buildUserMessage(facts, recentProse, steer),
-      systemPrompt: SYSTEM_PROMPT,
-    });
-    return { narration, narrator: 'opus' };
+    if (mode === 'opus-polish') {
+      const { narration, polished } = await polishEngine({ model, userMessage, draftEngine: claudeEngine });
+      return { narration, narrator: polished ? 'opus-polish' : 'opus' };
+    }
+    return { narration: await claudeEngine({ model, userMessage, systemPrompt: SYSTEM_PROMPT }), narrator: 'opus' };
   } catch (error) {
     const cause = error.auth ? 'auth failure' : 'bad output after retries';
     console.warn(`Opus narration failed (${cause}): ${error.message}. Falling back to Gemini.`);

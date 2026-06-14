@@ -42,6 +42,24 @@ function defaultRunCli({ model, userMessage, systemPrompt }) {
 
 const AUTH_SIGNAL = /invalid api key|unauthorized|please run \/login|not logged in|authentication|oauth/i;
 
+/**
+ * Runs the CLI and returns the parsed result text. Re-tags an auth failure with
+ * `err.auth` preserved so run.js can fall back to Gemini immediately rather than
+ * burn retries; any other CLI/spawn failure propagates unchanged.
+ */
+async function runCliForText({ model, userMessage, systemPrompt, runCli }) {
+  try {
+    return parseEnvelope(await runCli({ model, userMessage, systemPrompt }));
+  } catch (error) {
+    if (error.auth) {
+      const e = new Error(`claude auth failure: ${error.message}`);
+      e.auth = true;
+      throw e;
+    }
+    throw error;
+  }
+}
+
 function parseEnvelope({ exitCode, stdout }) {
   let envelope;
   try {
@@ -72,17 +90,9 @@ export async function callClaude({ model, userMessage, systemPrompt, runCli = de
   let lastError;
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
-    let resultText;
-    try {
-      resultText = parseEnvelope(await runCli({ model, userMessage: message, systemPrompt: sys }));
-    } catch (error) {
-      if (error.auth) {
-        const e = new Error(`claude auth failure: ${error.message}`);
-        e.auth = true;
-        throw e;
-      }
-      throw error; // CLI/spawn failure: not a bad-output case
-    }
+    // CLI/spawn and auth failures propagate (not bad-output cases); only a
+    // failed parse/validation below is retried.
+    const resultText = await runCliForText({ model, userMessage: message, systemPrompt: sys, runCli });
     try {
       return narrationSchema.parse(JSON.parse(extractNarrationText(resultText)));
     } catch (error) {
@@ -93,4 +103,13 @@ export async function callClaude({ model, userMessage, systemPrompt, runCli = de
     }
   }
   throw new Error(`claude failed to produce valid narration: ${lastError}`);
+}
+
+/**
+ * Generates plain text via the headless claude CLI (no JSON instruction, no
+ * schema) — used for the idiom critique, whose output is guidance fed verbatim
+ * into the rewrite, not structured data. Auth failures are terminal (err.auth).
+ */
+export async function callClaudeText({ model, userMessage, systemPrompt, runCli = defaultRunCli }) {
+  return runCliForText({ model, userMessage, systemPrompt, runCli });
 }

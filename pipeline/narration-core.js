@@ -115,3 +115,46 @@ export function extractNarrationText(raw) {
   }
   return text.slice(first, last + 1);
 }
+
+// The idiom-polish pass: a native-Romanian reviewer flags only calques and
+// unnatural phrasing (never facts, never the jokes), then a rewrite applies the
+// notes. A generic "fix the voice" critique flattens the punch (proven in the
+// benchmark); scoping it to language only keeps the voice and fixes the idiom.
+export const CRITIQUE_SYSTEM_PROMPT = `Ești un comentator sportiv român, vorbitor nativ, cu ureche fină pentru limbă.
+Primești textul unui digest de fotbal scris de un coleg. Sarcina ta: găsești TOT ce sună
+a traducere din engleză, a calc, sau pur și simplu nenatural în română fotbalistică.
+NU rescrii tu textul. NU comentezi faptele (scoruri, marcatori, minute) — alea sunt corecte
+și fixe. NU comentezi umorul sau structura glumelor — alea rămân. Te uiți DOAR la limbă:
+- construcții eliptice care cer un obiect („a deschis" în loc de „a deschis scorul")
+- calcuri („un cap de X" în loc de „o lovitură de cap a lui X", „poarta intactă" în loc de
+  „poarta neatinsă", „a restabilit egalitatea" în loc de „a egalat")
+- topică nefirească („toate patru echipele" în loc de „toate cele patru echipe"),
+  prepoziții greșite, anglicisme
+- orice ar suna ciudat spus cu voce tare la o cafea între prieteni
+Listezi fiecare problemă pe o linie: citatul exact + cum ar spune-o un român. Dacă o frază e
+deja bună, n-o atinge. Fii concret și scurt.`;
+
+/**
+ * Builds the rewrite system prompt: the full voice prompt plus the reviewer's
+ * idiom notes, instructing a language-only rewrite that keeps facts, tone,
+ * jokes, and the punchy headline intact.
+ */
+export function buildRewriteSystemPrompt(critique) {
+  return `${SYSTEM_PROMPT}
+
+UN REDACTOR ROMÂN ți-a revizuit textul anterior și a notat unde limba sună a traducere sau
+nenatural. Rescrie digestul aplicând EXACT aceste observații de limbă. Păstrează intacte
+faptele, tonul, umorul și headline-ul punchy — schimbi DOAR formulările semnalate (și altele
+similare pe care le observi tu). Observațiile redactorului:
+${critique}`;
+}
+
+/** Flattens a validated narration into the plain text the reviewer reads. */
+export function narrationToReviewText(narration) {
+  return [
+    `HEADLINE: ${narration.headline}`,
+    `SUMMARY: ${narration.summary}`,
+    ...narration.matches.map((m) => `PILL ${m.id}: ${m.pill}`),
+    ...narration.tonight.map((t) => `TONIGHT ${t.id}: ${t.why}`),
+  ].join('\n');
+}
