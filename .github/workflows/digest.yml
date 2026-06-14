@@ -97,8 +97,21 @@ jobs:
         with:
           path: site
 
+      # GitHub Pages deployment occasionally returns a transient 504 on the
+      # create call (server-side, self-heals). The commit has already landed by
+      # this point, so a failed deploy would leave the site stale until the next
+      # nightly run. Attempt once, and on failure wait and try a second time.
       - id: deployment
         if: steps.build.outputs.published == 'true'
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+
+      - name: Wait before deploy retry
+        if: steps.build.outputs.published == 'true' && steps.deployment.outcome == 'failure'
+        run: sleep 30
+
+      - id: deployment_retry
+        if: steps.build.outputs.published == 'true' && steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
 
       - name: Email digest ready
