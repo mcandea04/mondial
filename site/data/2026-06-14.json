@@ -1,9 +1,9 @@
 {
   "date": "2026-06-14",
-  "factsHash": "28c38d441037910f4cff72ce1c85a77d798a5418566ed143c02905503f3b7f7d",
+  "factsHash": "7f72e6e1fc83e46da7dc63af86d5c014828018de7aac90bbcdb5992dcbeb8cf4",
   "narrator": "opus-polish",
-  "headline": "Qatar fură un punct în prelungiri, Brazilia se bâlbâie iar",
-  "summary": "Totul s-a decis în prelungiri, unde Muheim a salvat un punct pentru Qatar. Scoția și Australia au luat cele trei puncte fără emoții.",
+  "headline": "Muheim i-a dăruit Qatarului un punct, în propria poartă",
+  "summary": "O noapte în care posesia n-a plătit nimic: Elveția a tras de 26 de ori și Turcia de 30, fără să câștige ceva. Scoția a luat singura victorie limpede, prin McGinn, în timp ce Brazilia s-a mulțumit cu un egal la debut.",
   "matches": [
     {
       "id": 537334,
@@ -19,19 +19,47 @@
         {
           "name": "Breel Embolo",
           "minute": "17",
-          "team": "away"
+          "team": "away",
+          "penalty": true,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": null
         },
         {
           "name": "Miro Muheim",
           "minute": "90+4",
-          "team": "home"
+          "team": "home",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
         }
       ],
       "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "12",
+          "wonCorners": "3",
+          "saves": "5",
+          "possessionPct": "32",
+          "totalShots": "6",
+          "shotsOnTarget": "3"
+        },
+        "away": {
+          "foulsCommitted": "11",
+          "wonCorners": "10",
+          "saves": "3",
+          "possessionPct": "68",
+          "totalShots": "26",
+          "shotsOnTarget": "7"
+        }
+      },
       "decidedOnPenalties": false,
       "group": "B",
       "utcDate": "2026-06-13T19:00:00Z",
-      "pill": "Embolo a deschis scorul pentru Elveția în minutul 17 și meciul părea închis, până când Muheim a egalat în 90+4. Grupa B e o fotografie de grup: toate cele patru echipe cu un punct și golaveraj zero, perfect simetrică. Elveția se mulțumește cu egalul, Qatarul răsuflă.",
+      "pill": "Elveția a tras de 26 de ori și a condus prin lovitura de pedeapsă a lui Embolo, dar tot un punct a strâns. Muheim și-a trimis mingea în propria poartă în minutul 90+4 și a salvat Qatarul. În Grupa B toate cele patru echipe au câte un punct.",
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/NdoxOQqn5cnkmfioABvsL"
     },
@@ -49,19 +77,47 @@
         {
           "name": "Ismael Saibari",
           "minute": "21",
-          "team": "away"
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Brahim Díaz",
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
         },
         {
           "name": "Vinícius Júnior",
           "minute": "32",
-          "team": "home"
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Bruno Guimarães",
+          "bodyPart": "dreptul",
+          "placement": "din stânga careului"
         }
       ],
       "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "16",
+          "wonCorners": "6",
+          "saves": "2",
+          "possessionPct": "51.4",
+          "totalShots": "12",
+          "shotsOnTarget": "5"
+        },
+        "away": {
+          "foulsCommitted": "14",
+          "wonCorners": "2",
+          "saves": "4",
+          "possessionPct": "48.6",
+          "totalShots": "14",
+          "shotsOnTarget": "3"
+        }
+      },
       "decidedOnPenalties": false,
       "group": "C",
       "utcDate": "2026-06-13T22:00:00Z",
-      "pill": "Saibari a amuțit stadionul în minutul 21, iar Vinícius Júnior a egalat în 32 cât să nu se facă Brazilia de râs de tot. Selecta începe Mondialul cu un punct și cu semne de întrebare, cu zâmbetul pe buze doar la Maroc. Brazilia privește deja de jos la Scoția în Grupa C.",
+      "pill": "Maroc a deschis scorul prin Saibari, cu dreptul din afara careului, la pasa lui Brahim Díaz. Vinícius a egalat în minutul 32, tot cu dreptul, din stânga careului. Brazilia pleacă cu un egal la debut și stă, ca și Maroc, la un punct în spatele Scoției.",
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/1e8ayUzYWGZDbZUEU42bgQ"
     },
@@ -79,14 +135,37 @@
         {
           "name": "John McGinn",
           "minute": "28",
-          "team": "away"
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": "din careu"
         }
       ],
       "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "23",
+          "wonCorners": "4",
+          "saves": "1",
+          "possessionPct": "53.7",
+          "totalShots": "15",
+          "shotsOnTarget": "2"
+        },
+        "away": {
+          "foulsCommitted": "21",
+          "wonCorners": "3",
+          "saves": "2",
+          "possessionPct": "46.3",
+          "totalShots": "9",
+          "shotsOnTarget": "2"
+        }
+      },
       "decidedOnPenalties": false,
       "group": "C",
       "utcDate": "2026-06-14T01:00:00Z",
-      "pill": "John McGinn a marcat în minutul 28 și atât i-a trebuit Scoției ca să plece cu tot din Haiti. Un 0-1 mai strâns decât pare scorul, fiindcă haitienii au mușcat până la final. Scoția conduce Grupa C, Haiti pleacă cu mâna goală.",
+      "pill": "John McGinn a marcat cu stângul din careu în minutul 28 și atât a fost nevoie. Haiti a tras de 15 ori, dar doar două au prins poarta, și rămâne cu zero puncte. Scoția conduce Grupa C.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/1amePIIN9Rt7kvMwQGMPke"
     },
@@ -104,19 +183,47 @@
         {
           "name": "Nestory Irankunda",
           "minute": "27",
-          "team": "home"
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Paul Okon-Engstler",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
         },
         {
           "name": "Connor Metcalfe",
           "minute": "75",
-          "team": "home"
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": "din afara careului"
         }
       ],
       "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "12",
+          "wonCorners": "5",
+          "saves": "8",
+          "possessionPct": "28.4",
+          "totalShots": "9",
+          "shotsOnTarget": "4"
+        },
+        "away": {
+          "foulsCommitted": "4",
+          "wonCorners": "8",
+          "saves": "2",
+          "possessionPct": "71.6",
+          "totalShots": "30",
+          "shotsOnTarget": "8"
+        }
+      },
       "decidedOnPenalties": false,
       "group": "D",
       "utcDate": "2026-06-14T04:00:00Z",
-      "pill": "Irankunda a deschis scorul în minutul 27, iar Metcalfe a făcut 2-0 în 75. Turcia n-a nimerit poarta toată seara și pornește la drum cu zero puncte. Australia urcă pe doi în Grupa D, în spatele SUA.",
+      "pill": "Turcia a avut 71,6% posesie și 30 de șuturi, dintre care 8 pe poartă, și a pierdut cu 2-0. Irankunda a deschis scorul în minutul 27, Metcalfe a închis tabela cu stângul din afara careului în minutul 75, iar portarul australian a scos de opt ori. Posesia nu se trece în clasament.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/6qvmyR3k0BcpuPrSmer7Mf"
     }
@@ -279,7 +386,7 @@
       "awayCode": "cw",
       "kickoffEEST": "20:00",
       "alarm": "citești dimineața",
-      "why": "Germania deschide Grupa E la ora opt seara, o oră la care nu pierzi nimic dacă te uiți, dar nici nu sacrifici somnul pentru Curaçao."
+      "why": "La 20:00 nu sacrifici nicio noapte; Germania își începe drumul în Grupa E contra unui Curaçao ajuns prima oară la turneu."
     },
     {
       "id": 537357,
@@ -289,7 +396,7 @@
       "awayCode": "jp",
       "kickoffEEST": "23:00",
       "alarm": "stai treaz",
-      "why": "Olanda contra Japonia la unsprezece noaptea, singurul meci al serii care chiar merită să stai treaz."
+      "why": "Olanda contra Japoniei la 23:00, deschiderea Grupei F între două echipe care vor primul loc — singurul meci pentru care merită amânat somnul."
     },
     {
       "id": 537352,
@@ -299,7 +406,7 @@
       "awayCode": "ec",
       "kickoffEEST": "02:00",
       "alarm": "citești dimineața",
-      "why": "Coasta de Fildeș și Ecuador se joacă la două dimineața în Grupa E, o oră numai bună de citit pe telefon a doua zi."
+      "why": "La 02:00, Coasta de Fildeș și Ecuador sunt apropiate valoric în Grupa E, dar ora cere un sacrificiu pe care puțini îl merită."
     },
     {
       "id": 537358,
@@ -309,8 +416,8 @@
       "awayCode": "tn",
       "kickoffEEST": "05:00",
       "alarm": "citești dimineața",
-      "why": "Suedia și Tunisia închid programul la cinci dimineața, când doar insomnia mai ține pasul cu Grupa F."
+      "why": "Suedia și Tunisia închid programul la 05:00, când doar somnambulii mai numără cornere."
     }
   ],
-  "teaser": "⚽ Qatar fură un punct în prelungiri, Brazilia se bâlbâie iar · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Muheim i-a dăruit Qatarului un punct, în propria poartă · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
