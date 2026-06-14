@@ -52,6 +52,24 @@ jobs:
 
       - run: npm ci
 
+      # The Opus narrator (NARRATOR=opus) shells out to `claude -p`, which spends
+      # the Pro subscription via CLAUDE_CODE_OAUTH_TOKEN. Cache the global install
+      # keyed on the pinned version so a green run does not reinstall it. Skipped
+      # for free when NARRATOR is unset/gemini — the install is cheap either way.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm-global
+          key: claude-code-${{ env.CLAUDE_CODE_VERSION }}
+      - name: Install Claude Code CLI
+        run: |
+          npm config set prefix "$HOME/.npm-global"
+          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+          if [ ! -x "$HOME/.npm-global/bin/claude" ]; then
+            npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+          fi
+        env:
+          CLAUDE_CODE_VERSION: 2.1.177
+
       - name: Build digest
         id: build
         # Scheduled polls gate on completeness; a manual run without "force"
@@ -70,6 +88,12 @@ jobs:
           # Unset by default so narrate.js DEFAULT_MODEL stays the single source of
           # truth; set the GEMINI_MODEL repo variable only to override it.
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          # NARRATOR is a repo *variable* (gemini default, or opus) so the engine
+          # is flipped from the GitHub settings UI without editing this file. The
+          # Opus path authenticates with the OAuth token; CLAUDE_CODE_USE_BEDROCK
+          # is deliberately NOT set, so the CLI uses the subscription token path.
+          NARRATOR: ${{ vars.NARRATOR }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           SITE_URL: https://mcandea04.github.io/mondial/
 
       - name: Commit digest data
@@ -134,3 +158,6 @@ jobs:
             Citește digestul: https://mcandea04.github.io/mondial/
 
             Nu-ți place proza? Regenerează: https://github.com/mcandea04/mondial/issues/new?title=re-narrate&labels=re-narrate&body=%3C%21--%20scrie%20aici%2C%20op%C8%9Bional%2C%20ce%20vrei%20schimbat%20la%20ton%20sau%20glume%20--%3E
+
+            ---
+            Proză: ${{ steps.build.outputs.narrator }} (dacă scrie „gemini-fallback", tokenul Opus a expirat — rulează din nou claude setup-token și actualizează secretul CLAUDE_CODE_OAUTH_TOKEN)

@@ -42,6 +42,8 @@ import {
 } from './fetch.js';
 import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
+import { callClaude } from './claude-engine.js';
+import { SYSTEM_PROMPT, buildUserMessage } from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
@@ -146,7 +148,12 @@ async function gatherFacts({ date, fixtures }) {
   return fetchDigestData({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
 }
 
-async function getNarration(facts, { fixtures, recentProse, steer }) {
+/**
+ * Gemini narration. Offline (--fixtures) it returns the canned narration.json
+ * when present, so a fixtures run never touches the network; this also makes it
+ * the offline stand-in when the Opus path falls back.
+ */
+function geminiNarration(facts, { fixtures, recentProse, steer }) {
   if (fixtures) {
     const cannedPath = path.join(fixtures, 'narration.json');
     if (existsSync(cannedPath)) return readJson(cannedPath);
@@ -157,6 +164,35 @@ async function getNarration(facts, { fixtures, recentProse, steer }) {
     recentProse,
     steer,
   });
+}
+
+/**
+ * Picks the narrator by the NARRATOR env var ("gemini" default, or "opus") and
+ * returns { narration, narrator }, where narrator records which engine actually
+ * produced the prose so a silent fallback is visible in the day's JSON.
+ *
+ * "opus" shells out to the headless claude CLI (the benchmark winner). ANY Opus
+ * failure — expired/invalid OAuth token, or bad output after its retries — logs
+ * a warning and falls back to Gemini, marked "gemini-fallback". The digest must
+ * never miss a morning over a narration-engine problem. The Claude engine is
+ * injectable so the fallback can be unit-tested without the CLI.
+ */
+export async function getNarration(facts, { fixtures, recentProse, steer, claudeEngine = callClaude } = {}) {
+  if (process.env.NARRATOR !== 'opus') {
+    return { narration: await geminiNarration(facts, { fixtures, recentProse, steer }), narrator: 'gemini' };
+  }
+  try {
+    const narration = await claudeEngine({
+      model: process.env.CLAUDE_MODEL || 'opus',
+      userMessage: buildUserMessage(facts, recentProse, steer),
+      systemPrompt: SYSTEM_PROMPT,
+    });
+    return { narration, narrator: 'opus' };
+  } catch (error) {
+    const cause = error.auth ? 'auth failure' : 'bad output after retries';
+    console.warn(`Opus narration failed (${cause}): ${error.message}. Falling back to Gemini.`);
+    return { narration: await geminiNarration(facts, { fixtures, recentProse, steer }), narrator: 'gemini-fallback' };
+  }
 }
 
 /**
@@ -253,23 +289,24 @@ async function main() {
   const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
 
   let narration = null;
+  let narrator = null;
   let reused = false;
-  if (!args.reNarrate) {
-    if (existing && (!existing.factsHash || existing.factsHash === hash)) {
-      narration = reuseNarration(existing, facts);
-      reused = narration != null;
-    }
+  if (!args.reNarrate && existing && (!existing.factsHash || existing.factsHash === hash)) {
+    narration = reuseNarration(existing, facts);
+    reused = narration != null;
   }
 
   if (reused) {
+    // Reused prose keeps whoever wrote it; pre-marker digests are taken as Gemini.
+    narrator = existing.narrator ?? 'gemini';
     console.log('facts unchanged, prose reused');
   } else {
     const recentProse = args.fixtures ? [] : await recentProseBefore(dataDir, date);
-    narration = await getNarration(factsForNarration, {
+    ({ narration, narrator } = await getNarration(factsForNarration, {
       fixtures: args.fixtures,
       recentProse,
       steer: args.steer,
-    });
+    }));
   }
 
   const recapByMatch = await getRecaps(facts.finished, { fixtures: args.fixtures });
@@ -286,6 +323,7 @@ async function main() {
   const digest = {
     date,
     factsHash: hash,
+    narrator,
     headline: narration.headline,
     summary: narration.summary,
     matches: facts.finished.map((m) => ({
@@ -389,6 +427,7 @@ async function main() {
   await setOutput('date', date);
   await setOutput('headline', narration.headline);
   await setOutput('match_count', String(digest.matches.length));
+  await setOutput('narrator', narrator);
 }
 
 const isDirectRun =
