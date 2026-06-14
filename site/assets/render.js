@@ -234,12 +234,13 @@ function renderShareBar(digest) {
   waLink.href = `https://wa.me/?text=${encodeURIComponent(digest.teaser)}`;
   waLink.target = '_blank';
   waLink.rel = 'noopener';
-  if (navigator.share) {
-    waLink.addEventListener('click', (event) => {
+  waLink.addEventListener('click', (event) => {
+    window.goatcounter?.count?.({ path: 'share-whatsapp', title: 'WhatsApp share', event: true });
+    if (navigator.share) {
       event.preventDefault();
       navigator.share({ text: digest.teaser }).catch(() => {});
-    });
-  }
+    }
+  });
   bar.append(waLink);
   return bar;
 }
