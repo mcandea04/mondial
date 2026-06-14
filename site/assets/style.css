@@ -166,12 +166,6 @@ td .team .team-name { font-size: 13px; font-weight: 400; }
   padding: 10px 14px;
   margin-top: 12px;
 }
-.pill-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--pill-head);
-  margin-bottom: 2px;
-}
 .pill-text { font-size: 13px; color: var(--pill-txt); line-height: 1.5; }
 
 .highlight {
