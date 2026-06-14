@@ -125,8 +125,8 @@
       "name": "B",
       "table": [
         {
-          "team": "Bosnia și Herțegovina",
-          "code": "ba",
+          "team": "Elveția",
+          "code": "ch",
           "p": 1,
           "w": 0,
           "d": 1,
@@ -158,8 +158,8 @@
           "status": "în cărți"
         },
         {
-          "team": "Elveția",
-          "code": "ch",
+          "team": "Bosnia și Herțegovina",
+          "code": "ba",
           "p": 1,
           "w": 0,
           "d": 1,
@@ -185,8 +185,8 @@
           "status": "în cărți"
         },
         {
-          "team": "Brazilia",
-          "code": "br",
+          "team": "Maroc",
+          "code": "ma",
           "p": 1,
           "w": 0,
           "d": 1,
@@ -196,8 +196,8 @@
           "status": "în cărți"
         },
         {
-          "team": "Maroc",
-          "code": "ma",
+          "team": "Brazilia",
+          "code": "br",
           "p": 1,
           "w": 0,
           "d": 1,
