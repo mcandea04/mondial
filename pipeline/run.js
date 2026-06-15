@@ -224,6 +224,15 @@ export async function getNarration(facts, {
 
   // Gemini idiom-polish: draft -> critique -> rewrite, all on Gemini. Offline
   // (fixtures) there is no live polish, so fall through to the canned narration.
+  //
+  // No try/catch fallback here (unlike the Opus path, which degrades TO Gemini):
+  // gemini-polish has no lower tier to fall to — the draft already rides the
+  // primary->2.5-flash model ladder in narrate.js, so a draft failure means a
+  // total Gemini outage that single-pass could not survive either. A polish-STAGE
+  // failure is already swallowed inside polishedNarration (ships the draft,
+  // polished=false -> 'gemini'). A draft failure propagates so the run exits
+  // non-zero and the next 15-min --require-complete poll retries — same contract
+  // as the plain single-pass gemini path.
   if (mode === 'gemini-polish' && !fixtures) {
     const model = process.env.GEMINI_MODEL || undefined;
     const userMessage = buildUserMessage(facts, recentProse, steer);

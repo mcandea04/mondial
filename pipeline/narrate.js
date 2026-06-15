@@ -19,11 +19,16 @@ const DEFAULT_MODEL = 'gemini-3-flash-preview';
 // or stalls. gemini-2.5-flash is the stable GA model — weaker prose, but not
 // preview-throttled, so it is the safety net when the primary is down.
 const FALLBACK_MODEL = 'gemini-2.5-flash';
-const PRIMARY_MAX_ATTEMPTS = 7;
-const FALLBACK_MAX_ATTEMPTS = 4;
+// Attempt counts are deliberately modest: the digest workflow polls every 15 min
+// with --require-complete, so that poll loop is the real outer retry. A run that
+// can't reach Gemini should fail fast and let the next poll try again, not burn a
+// whole 15-min window on one call. gemini-polish makes 3 calls (draft/critique/
+// rewrite); these counts keep its worst case bounded well under the poll cadence.
+const PRIMARY_MAX_ATTEMPTS = 4;
+const FALLBACK_MAX_ATTEMPTS = 3;
 // Abort a stalled request so a hung socket on a flapping endpoint surfaces as a
 // retryable error instead of blocking the whole nightly run forever.
-const REQUEST_TIMEOUT_MS = 90_000;
+const REQUEST_TIMEOUT_MS = 60_000;
 
 // Gemini structured-output schema (OpenAPI subset) mirroring narrationSchema.
 export const responseSchema = {
@@ -159,6 +164,11 @@ async function callModelWithBackoff({ apiKey, model, systemPrompt, userMessage, 
  * goes through, so each gets the full ladder independently.
  */
 export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, systemPrompt, userMessage, schema = null, sleep = realSleep }) {
+  // `schema` is the Gemini server-side response schema; when present the output is
+  // a narration and is validated client-side against narrationSchema. The two are
+  // a pair (responseSchema mirrors narrationSchema), not independent — this is the
+  // narration transport, not a general-purpose Gemini client. A null schema means
+  // a plain-text call (the idiom critique), returned unvalidated.
   const validate = schema ? (text) => narrationSchema.parse(JSON.parse(text)) : null;
   try {
     return await callModelWithBackoff({ apiKey, model, systemPrompt, userMessage, schema, validate, maxAttempts: PRIMARY_MAX_ATTEMPTS, sleep });
