@@ -110,3 +110,34 @@ test('NARRATOR=opus-polish falls back to Gemini when the draft itself fails', as
   const { narrator } = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], polishEngine });
   assert.equal(narrator, 'gemini-fallback');
 });
+
+test('NARRATOR=gemini-polish runs the Gemini polish pipeline and marks "gemini-polish"', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'gemini-polish';
+  let received;
+  // No fixtures: gemini-polish only runs live. The polishEngine is injected so
+  // no network is touched; assert it receives the Gemini engines, not Claude.
+  const polishEngine = async (args) => { received = args; return { narration: OPUS_OUT, polished: true }; };
+  const { narration, narrator } = await getNarration(facts, { recentProse: [], polishEngine });
+  assert.equal(narrator, 'gemini-polish');
+  assert.equal(narration.headline, 'Titlu scris de Opus');
+  assert.equal(typeof received.draftEngine, 'function', 'a Gemini draft engine was passed');
+  assert.equal(typeof received.critiqueEngine, 'function', 'a Gemini critique engine was passed');
+});
+
+test('NARRATOR=gemini-polish degrades to "gemini" when only the polish stage fails', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'gemini-polish';
+  const polishEngine = async () => ({ narration: OPUS_OUT, polished: false });
+  const { narrator } = await getNarration(facts, { recentProse: [], polishEngine });
+  assert.equal(narrator, 'gemini', 'a failed polish ships the draft, marked plain gemini');
+});
+
+test('NARRATOR=gemini-polish offline (fixtures) falls through to canned Gemini', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'gemini-polish';
+  // With fixtures present there is no live polish; it returns the canned narration.
+  const { narration, narrator } = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [] });
+  assert.equal(narrator, 'gemini');
+  assert.equal(narration.headline, cannedHeadline);
+});

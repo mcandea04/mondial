@@ -59,6 +59,79 @@ export function romanianTeamName(name) {
   return ROMANIAN_NAMES[name] ?? name;
 }
 
+// FIFA men's world ranking, keyed by the same canonical English names. Snapshot
+// from the June 2026 FIFA/Coca-Cola ranking (source: ESPN top-50 + BBC for
+// 51+). Rankings move at most monthly and are effectively frozen during the
+// tournament, so a static snapshot is a fact, not a live dependency. Refresh by
+// hand if a new ranking lands mid-event. Unknown names (knockout placeholders)
+// return null via fifaRank() — the prompt then simply omits the strength angle.
+const FIFA_RANKING = {
+  'Argentina': 1,
+  'Spain': 2,
+  'France': 3,
+  'England': 4,
+  'Portugal': 5,
+  'Brazil': 6,
+  'Morocco': 7,
+  'Netherlands': 8,
+  'Belgium': 9,
+  'Germany': 10,
+  'Croatia': 11,
+  'Colombia': 13,
+  'Mexico': 14,
+  'Senegal': 15,
+  'Uruguay': 16,
+  'United States': 17,
+  'Japan': 18,
+  'Switzerland': 19,
+  'Iran': 20,
+  'Turkey': 22,
+  'Ecuador': 23,
+  'Austria': 24,
+  'South Korea': 25,
+  'Australia': 27,
+  'Algeria': 28,
+  'Egypt': 29,
+  'Canada': 30,
+  'Norway': 31,
+  'Ivory Coast': 33,
+  'Panama': 34,
+  'Sweden': 38,
+  'Czechia': 40,
+  'Paraguay': 41,
+  'Scotland': 42,
+  'Tunisia': 45,
+  'Congo DR': 46,
+  'Uzbekistan': 50,
+  'Qatar': 56,
+  'Iraq': 57,
+  'South Africa': 60,
+  'Saudi Arabia': 61,
+  'Jordan': 63,
+  'Bosnia-Herzegovina': 64,
+  'Cape Verde Islands': 67,
+  'Ghana': 73,
+  'Curaçao': 82,
+  'Haiti': 83,
+  'New Zealand': 85,
+};
+
+// Romanian exonym → canonical English name, so fifaRank() resolves a rank when
+// it is handed a Romanian name (e.g. reconstructed facts from a stored digest).
+const ENGLISH_BY_ROMANIAN = Object.fromEntries(
+  Object.entries(ROMANIAN_NAMES).map(([english, romanian]) => [romanian, english]),
+);
+
+/**
+ * FIFA world rank for a team. Accepts the canonical English name OR the Romanian
+ * exonym (reconstructed facts carry Romanian names). Returns null for
+ * unknown/placeholder names so callers can omit the strength angle rather than
+ * fabricate one.
+ */
+export function fifaRank(name) {
+  return FIFA_RANKING[name] ?? FIFA_RANKING[ENGLISH_BY_ROMANIAN[name]] ?? null;
+}
+
 /**
  * flag-icons codes keyed by the same canonical English names ROMANIAN_NAMES
  * uses. Lowercase ISO 3166-1 alpha-2, except the home nations which use

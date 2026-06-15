@@ -3,7 +3,7 @@
  * Free tier: ~10 req/min, so calls are serialized with a delay.
  */
 
-import { romanianTeamName, flagCode } from './teams.js';
+import { romanianTeamName, flagCode, fifaRank } from './teams.js';
 import { enrichFinishedMatches } from './enrich.js';
 
 const API_BASE = 'https://api.football-data.org/v4';
@@ -203,6 +203,8 @@ export function parseMatch(match) {
     away: romanianTeamName(match.awayTeam.name),
     homeCode: flagCode(match.homeTeam.name),
     awayCode: flagCode(match.awayTeam.name),
+    homeRank: fifaRank(match.homeTeam.name),
+    awayRank: fifaRank(match.awayTeam.name),
     score: [match.score.fullTime.home, match.score.fullTime.away],
     scorers,
     events,
@@ -220,6 +222,8 @@ export function parseFixture(match) {
     away: romanianTeamName(match.awayTeam.name),
     homeCode: flagCode(match.homeTeam.name),
     awayCode: flagCode(match.awayTeam.name),
+    homeRank: fifaRank(match.homeTeam.name),
+    awayRank: fifaRank(match.awayTeam.name),
     group: (match.group ?? '').replace('GROUP_', ''),
     utcDate: match.utcDate,
     kickoffEEST: kickoffEEST(match.utcDate),
