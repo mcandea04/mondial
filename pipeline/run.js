@@ -43,6 +43,7 @@ import {
 import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
 import { callClaude } from './claude-engine.js';
+import { callGeminiNarration, callGeminiText } from './gemini-engine.js';
 import { polishedNarration } from './narration-polish.js';
 import { SYSTEM_PROMPT, buildUserMessage } from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
@@ -199,18 +200,48 @@ function geminiNarration(facts, { fixtures, recentProse, steer }) {
  * Picks the narrator by the NARRATOR env var and returns { narration, narrator },
  * where narrator records which engine actually produced the prose so a silent
  * fallback is visible in the day's JSON. Values:
- *   unset / "gemini" — Gemini.
- *   "opus"           — single-pass headless Opus (the benchmark winner).
- *   "opus-polish"    — Opus draft -> idiom critique -> rewrite. When the polish
- *                      stage fails the validated draft ships, marked "opus".
+ *   unset / "gemini"  — Gemini single-pass.
+ *   "gemini-polish"   — Gemini draft -> idiom critique -> rewrite. When the
+ *                       polish stage fails the validated draft ships, marked
+ *                       "gemini".
+ *   "opus"            — single-pass headless Opus.
+ *   "opus-polish"     — Opus draft -> idiom critique -> rewrite. When the polish
+ *                       stage fails the validated draft ships, marked "opus".
  *
  * Any Opus *draft* failure — expired/invalid OAuth token, or bad output after
  * its retries — logs a warning and falls back to Gemini, marked
  * "gemini-fallback". The digest must never miss a morning over a
- * narration-engine problem. The Claude engine is injectable for testing.
+ * narration-engine problem. Engines are injectable for testing.
  */
-export async function getNarration(facts, { fixtures, recentProse, steer, claudeEngine = callClaude, polishEngine = polishedNarration } = {}) {
+export async function getNarration(facts, {
+  fixtures, recentProse, steer,
+  claudeEngine = callClaude,
+  polishEngine = polishedNarration,
+  geminiDraftEngine = callGeminiNarration,
+  geminiCritiqueEngine = callGeminiText,
+} = {}) {
   const mode = process.env.NARRATOR;
+
+  // Gemini idiom-polish: draft -> critique -> rewrite, all on Gemini. Offline
+  // (fixtures) there is no live polish, so fall through to the canned narration.
+  //
+  // No try/catch fallback here (unlike the Opus path, which degrades TO Gemini):
+  // gemini-polish has no lower tier to fall to — the draft already rides the
+  // primary->2.5-flash model ladder in narrate.js, so a draft failure means a
+  // total Gemini outage that single-pass could not survive either. A polish-STAGE
+  // failure is already swallowed inside polishedNarration (ships the draft,
+  // polished=false -> 'gemini'). A draft failure propagates so the run exits
+  // non-zero and the next 15-min --require-complete poll retries — same contract
+  // as the plain single-pass gemini path.
+  if (mode === 'gemini-polish' && !fixtures) {
+    const model = process.env.GEMINI_MODEL || undefined;
+    const userMessage = buildUserMessage(facts, recentProse, steer);
+    const { narration, polished } = await polishEngine({
+      model, userMessage, draftEngine: geminiDraftEngine, critiqueEngine: geminiCritiqueEngine,
+    });
+    return { narration, narrator: polished ? 'gemini-polish' : 'gemini' };
+  }
+
   if (mode !== 'opus' && mode !== 'opus-polish') {
     return { narration: await geminiNarration(facts, { fixtures, recentProse, steer }), narrator: 'gemini' };
   }

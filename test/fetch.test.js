@@ -251,9 +251,11 @@ test('parseMatch attaches home/away flag codes from English names', () => {
   const parsed = parseMatch(match);
   assert.equal(parsed.homeCode, 'mx');
   assert.equal(parsed.awayCode, 'za');
+  assert.equal(parsed.homeRank, 14);
+  assert.equal(parsed.awayRank, 60);
 });
 
-test('parseMatch leaves codes null for knockout placeholder names', () => {
+test('parseMatch leaves codes and ranks null for knockout placeholder names', () => {
   const match = {
     id: 2,
     homeTeam: { name: 'Winner Group A' },
@@ -264,9 +266,11 @@ test('parseMatch leaves codes null for knockout placeholder names', () => {
   const parsed = parseMatch(match);
   assert.equal(parsed.homeCode, null);
   assert.equal(parsed.awayCode, null);
+  assert.equal(parsed.homeRank, null);
+  assert.equal(parsed.awayRank, null);
 });
 
-test('parseFixture attaches home/away flag codes', () => {
+test('parseFixture attaches home/away flag codes and FIFA ranks', () => {
   const fixture = {
     id: 3,
     homeTeam: { name: 'Brazil' },
@@ -277,6 +281,8 @@ test('parseFixture attaches home/away flag codes', () => {
   const parsed = parseFixture(fixture);
   assert.equal(parsed.homeCode, 'br');
   assert.equal(parsed.awayCode, 'ma');
+  assert.equal(parsed.homeRank, 6);
+  assert.equal(parsed.awayRank, 7);
 });
 
 test('parseStandings attaches a flag code per row from the English name', () => {

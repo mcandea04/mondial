@@ -1,8 +1,70 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildUserMessage, normalizeSteer } from '../pipeline/narrate.js';
+import { buildUserMessage, normalizeSteer, narrate } from '../pipeline/narrate.js';
 
 const facts = { date: '2026-06-12', finished: [], tonight: [], standings: [] };
+
+const VALID_NARRATION = {
+  headline: 'h',
+  summary: 's',
+  matches: [],
+  tonight: [],
+};
+
+/** A fetch stub: 503 for the primary model, 200 (valid narration) for fallback. */
+function modelRoutedFetch({ fallback, onCall }) {
+  return async (url) => {
+    const isFallback = String(url).includes(fallback);
+    onCall(isFallback ? fallback : 'primary');
+    if (!isFallback) {
+      return { ok: false, status: 503, text: async () => 'high demand' };
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(VALID_NARRATION) }] } }] }),
+    };
+  };
+}
+
+// The fallback path logs warnings by design (visible in prod Actions logs);
+// silence them here so test output stays clean.
+function silencingWarn() {
+  const realWarn = console.warn;
+  console.warn = () => {};
+  return () => { console.warn = realWarn; };
+}
+
+test('narrate falls back to gemini-2.5-flash when the primary is exhausted', async () => {
+  const realFetch = globalThis.fetch;
+  const restoreWarn = silencingWarn();
+  const calls = [];
+  globalThis.fetch = modelRoutedFetch({ fallback: 'gemini-2.5-flash', onCall: (m) => calls.push(m) });
+  try {
+    const result = await narrate(facts, { apiKey: 'x', sleep: async () => {} });
+    assert.deepEqual(result, VALID_NARRATION);
+    assert.ok(calls.includes('gemini-2.5-flash'), 'fallback model was called');
+    assert.ok(calls.filter((m) => m === 'primary').length >= 2, 'primary was retried before falling back');
+  } finally {
+    globalThis.fetch = realFetch;
+    restoreWarn();
+  }
+});
+
+test('narrate throws when both primary and fallback fail', async () => {
+  const realFetch = globalThis.fetch;
+  const restoreWarn = silencingWarn();
+  globalThis.fetch = async () => ({ ok: false, status: 503, text: async () => 'down' });
+  try {
+    await assert.rejects(
+      narrate(facts, { apiKey: 'x', sleep: async () => {} }),
+      /failed on both/,
+    );
+  } finally {
+    globalThis.fetch = realFetch;
+    restoreWarn();
+  }
+});
 
 test('steer note is appended to the prompt', () => {
   const message = buildUserMessage(facts, [], 'mai puține metafore cu urși');

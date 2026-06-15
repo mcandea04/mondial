@@ -88,10 +88,14 @@ jobs:
           # Unset by default so narrate.js DEFAULT_MODEL stays the single source of
           # truth; set the GEMINI_MODEL repo variable only to override it.
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
-          # NARRATOR is a repo *variable* (gemini default, or opus) so the engine
-          # is flipped from the GitHub settings UI without editing this file. The
-          # Opus path authenticates with the OAuth token; CLAUDE_CODE_USE_BEDROCK
-          # is deliberately NOT set, so the CLI uses the subscription token path.
+          # NARRATOR is a repo *variable* so the engine is flipped from the
+          # GitHub settings UI without editing this file. Values:
+          #   gemini-polish — Gemini draft -> idiom critique -> rewrite (intended
+          #                   production default; set the repo variable to this).
+          #   unset/gemini  — Gemini single-pass.
+          #   opus/opus-polish — headless Claude (needs the OAuth token below).
+          # Every Gemini path rides the primary->2.5-flash fallback ladder in
+          # narrate.js, so a preview-model outage degrades, never fails the night.
           NARRATOR: ${{ vars.NARRATOR }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           SITE_URL: https://mcandea04.github.io/mondial/
