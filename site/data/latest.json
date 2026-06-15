@@ -1,9 +1,9 @@
 {
   "date": "2026-06-15",
-  "factsHash": "5c45e7a7e0ed130ebbea6fe7a1f19e3f4f3d231c3ad071ca1b78f02fd3a9bb58",
-  "narrator": "opus-polish",
-  "headline": "Germania a numărat până la șapte, Curaçao a pierdut socoteala",
-  "summary": "Germania a pus șapte în poarta lui Curaçao, iar Amad Diallo a furat trei puncte de la Ecuador în ultimul minut. Olanda și Japonia s-au despărțit la egalitate după două goluri cu capul, în timp ce Suedia a măturat Tunisia.",
+  "factsHash": "975a9a7b5e52995344692f9a6c7a241efbf36bf11142d87fb711f401cba6ff2f",
+  "narrator": "opus",
+  "headline": "Germania bagă șapte, Olanda uită să închidă ușa",
+  "summary": "Germania a trecut cu 7-1 peste Curaçao și conduce detașat Grupa E, iar Suedia a făcut și ea instrucție cu Tunisia. Olanda părea că o scoate la capăt cu Japonia, dar Kamada a egalat în minutul 89 și a lăsat Grupa F fără un lider liniștit.",
   "matches": [
     {
       "id": 537351,
@@ -119,7 +119,7 @@
       "decidedOnPenalties": false,
       "group": "E",
       "utcDate": "2026-06-14T17:00:00Z",
-      "pill": "Germania a luat startul cu mâna pe grupă, șapte goluri și o singură palmă încasată, de la Comenencia. Curaçao rămâne ultima și pleacă acasă cu o lecție. Havertz a marcat de două ori, întâi din penalty.",
+      "pill": "Șapte goluri și o defensivă care a uitat de Comenencia în minutul 21 — Germania conduce Grupa E cu un golaveraj de plus șase. Havertz a punctat de două ori, ultima la pasa lui Undav, iar Curaçao pleacă măcar cu mândria unui gol în plasă.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/3MSlsbd2rcnTGlcG4jhpdR"
     },
@@ -197,57 +197,9 @@
       "decidedOnPenalties": false,
       "group": "F",
       "utcDate": "2026-06-14T20:00:00Z",
-      "pill": "Olanda credea că adusese golul decisiv tot cu capul prin van Dijk, dar Kamada i-a răspuns în minutul 89, tot cu capul. Două puncte scăpate pe final, iar grupa F rămâne strânsă.",
+      "pill": "Van Dijk a deschis scorul cu capul, Summerville a întors-o la 2-1 și totul mirosea a victorie olandeză. Kamada a egalat tot cu capul în minutul 89 și a lăsat Olanda cu un singur punct în Grupa F.",
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/hfEd1R54PslEMX4Rqb0EP"
-    },
-    {
-      "id": 537352,
-      "home": "Coasta de Fildeș",
-      "away": "Ecuador",
-      "homeCode": "ci",
-      "awayCode": "ec",
-      "score": [
-        1,
-        0
-      ],
-      "scorers": [
-        {
-          "name": "Amad Diallo",
-          "minute": "90",
-          "team": "home",
-          "penalty": false,
-          "ownGoal": false,
-          "assist": "Wilfried Singo",
-          "bodyPart": "stângul",
-          "placement": "din careu"
-        }
-      ],
-      "events": [],
-      "stats": {
-        "home": {
-          "foulsCommitted": "10",
-          "wonCorners": "3",
-          "saves": "1",
-          "possessionPct": "48.4",
-          "totalShots": "15",
-          "shotsOnTarget": "4"
-        },
-        "away": {
-          "foulsCommitted": "13",
-          "wonCorners": "6",
-          "saves": "3",
-          "possessionPct": "51.6",
-          "totalShots": "12",
-          "shotsOnTarget": "1"
-        }
-      },
-      "decidedOnPenalties": false,
-      "group": "E",
-      "utcDate": "2026-06-14T23:00:00Z",
-      "pill": "Amad Diallo a transformat o seară anostă în trei puncte fix în minutul 90. Ecuador a ținut mai mult mingea, dar degeaba posesia, când nu faci nimic cu ea. Coasta de Fildeș urcă a doua în grupă.",
-      "drama": 4,
-      "highlight": "https://www.fifa.com/en/watch/4P79SuyJHO3ZGVuRYxjots"
     },
     {
       "id": 537358,
@@ -343,7 +295,7 @@
       "decidedOnPenalties": false,
       "group": "F",
       "utcDate": "2026-06-15T02:00:00Z",
-      "pill": "Suedia a deschis scorul în minutul 7 prin Ayari și tot el a închis-o în prelungiri. Isak a marcat și a pasat de două ori, iar Tunisia s-a ales doar cu golul de onoare al lui Rekik. Suedezii conduc grupa F.",
+      "pill": "Isak a pasat la două goluri și a mai marcat și el, iar Ayari a prins dubla cu o execuție din afara careului în 90+6. Suedia urcă singură în fruntea Grupei F, în timp ce Tunisia se consolează doar cu capul lui Rekik.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/1xJ82g9ocfLQaweWUFgFMw"
     }
@@ -457,7 +409,7 @@
       "awayCode": "cv",
       "kickoffEEST": "19:00",
       "alarm": "citești dimineața",
-      "why": "Spania intră în turneu cu Capul Verde la 19:00, te uiți fără să-ți răpească seara."
+      "why": "Spania deschide Grupa H cu Capul Verde la 19:00, o prinzi pe lumină fără să-ți strici programul."
     },
     {
       "id": 537363,
@@ -467,7 +419,7 @@
       "awayCode": "eg",
       "kickoffEEST": "22:00",
       "alarm": "citești dimineața",
-      "why": "Belgia și Egipt deschid grupa G la 22:00, o oră la care încă mai poți urmări fără regrete."
+      "why": "Belgia își începe turneul cu Egipt la 22:00, meci de văzut din fotoliu, nu de pândit noaptea."
     },
     {
       "id": 537370,
@@ -476,8 +428,8 @@
       "homeCode": "sa",
       "awayCode": "uy",
       "kickoffEEST": "01:00",
-      "alarm": "stai treaz",
-      "why": "Uruguay debutează cu Arabia Saudită la 01:00, primul test serios al unei echipe care vine cu pretenții."
+      "alarm": "citești dimineața",
+      "why": "Uruguay intră în scenă cu Arabia Saudită la 01:00, interesant, dar nu cât să-ți pui ceas."
     },
     {
       "id": 537364,
@@ -487,8 +439,8 @@
       "awayCode": "nz",
       "kickoffEEST": "04:00",
       "alarm": "citești dimineața",
-      "why": "Iran și Noua Zeelandă închid programul la 04:00, o oră la care scorul îl afli mai bine cu cafeaua."
+      "why": "Iran și Noua Zeelandă închid noaptea la 04:00, ora la care afli scorul odată cu prima cafea."
     }
   ],
-  "teaser": "⚽ Germania a numărat până la șapte, Curaçao a pierdut socoteala · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Germania bagă șapte, Olanda uită să închidă ușa · 3 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
