@@ -1,9 +1,9 @@
 {
   "date": "2026-06-15",
-  "factsHash": "5c45e7a7e0ed130ebbea6fe7a1f19e3f4f3d231c3ad071ca1b78f02fd3a9bb58",
+  "factsHash": "975a9a7b5e52995344692f9a6c7a241efbf36bf11142d87fb711f401cba6ff2f",
   "narrator": "opus-polish",
-  "headline": "Șapte la Germania, un punct furat de Japonia în minutul 89",
-  "summary": "Germania a turnat șapte peste Curaçao, iar Suedia a făcut instrucție cu Tunisia, 5-1 — favoritele și-au văzut de treabă fără emoții. Japonia a egalat la Olanda în minutul 89 și Amad Diallo a adus Coasta de Fildeș la trei puncte în ultimul moment, două lovituri date pe ultima sută.",
+  "headline": "Nemții au pus șapte, suedezii cinci, japonezii un gol în 89",
+  "summary": "Germania și Suedia au făcut instrucție în fața lui Curaçao și a Tunisiei, 7-1 și 5-1 fără să transpire. Singura dramă a serii a adus-o Olanda, care a condus de două ori cu Japonia și a fost egalată de Kamada în minutul 89.",
   "matches": [
     {
       "id": 537351,
@@ -119,8 +119,8 @@
       "decidedOnPenalties": false,
       "group": "E",
       "utcDate": "2026-06-14T17:00:00Z",
-      "pill": "Germania a turnat șapte și Curaçao pleacă acasă cu un golaveraj de coșmar. Havertz a semnat o dublă, iar Schlotterbeck a punctat cu capul, totul cu un pas mare spre calificare deja făcut. Comenencia a marcat singurul gol al oaspeților, la 1-7 doar un amănunt.",
-      "drama": 1,
+      "pill": "Comenencia a egalat în minutul 21 și Curaçao a apucat să spere vreun sfert de oră, după care Germania a băgat încă șase. Havertz a marcat de două ori, iar Curaçao pleacă din grupa E cu -6 la golaveraj și un singur gol de povestit acasă.",
+      "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/3MSlsbd2rcnTGlcG4jhpdR"
     },
     {
@@ -197,57 +197,9 @@
       "decidedOnPenalties": false,
       "group": "F",
       "utcDate": "2026-06-14T20:00:00Z",
-      "pill": "Kamada a egalat cu capul în minutul 89 și a smuls Japoniei un punct pe ultima sută. Van Dijk deschisese tot cu capul, Summerville întorsese pentru Olanda, dar niponii arată că n-au venit doar să facă figurație. Grupa F rămâne deschisă, cu olandezii nevoiți să muncească pentru calificare.",
+      "pill": "Olanda a condus de două ori și de două ori a fost prinsă, ultima oară de lovitura de cap a lui Kamada în minutul 89. A tras de șase ori pe poartă și tot a împărțit punctele cu Japonia, așa că grupa F rămâne fără stăpân în urma Suediei.",
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/hfEd1R54PslEMX4Rqb0EP"
-    },
-    {
-      "id": 537352,
-      "home": "Coasta de Fildeș",
-      "away": "Ecuador",
-      "homeCode": "ci",
-      "awayCode": "ec",
-      "score": [
-        1,
-        0
-      ],
-      "scorers": [
-        {
-          "name": "Amad Diallo",
-          "minute": "90",
-          "team": "home",
-          "penalty": false,
-          "ownGoal": false,
-          "assist": "Wilfried Singo",
-          "bodyPart": "stângul",
-          "placement": "din careu"
-        }
-      ],
-      "events": [],
-      "stats": {
-        "home": {
-          "foulsCommitted": "10",
-          "wonCorners": "3",
-          "saves": "1",
-          "possessionPct": "48.4",
-          "totalShots": "15",
-          "shotsOnTarget": "4"
-        },
-        "away": {
-          "foulsCommitted": "13",
-          "wonCorners": "6",
-          "saves": "3",
-          "possessionPct": "51.6",
-          "totalShots": "12",
-          "shotsOnTarget": "1"
-        }
-      },
-      "decidedOnPenalties": false,
-      "group": "E",
-      "utcDate": "2026-06-14T23:00:00Z",
-      "pill": "Amad Diallo a spart egalitatea fix în minutul 90 și a dus Coasta de Fildeș la trei puncte. În Grupa E, africanii și Germania conduc, iar ceilalți doi trebuie deja să alerge după ei. Degeaba a ținut Ecuador mingea, că tot acasă a plecat.",
-      "drama": 4,
-      "highlight": "https://www.fifa.com/en/watch/4P79SuyJHO3ZGVuRYxjots"
     },
     {
       "id": 537358,
@@ -343,7 +295,7 @@
       "decidedOnPenalties": false,
       "group": "F",
       "utcDate": "2026-06-15T02:00:00Z",
-      "pill": "Suedia a făcut instrucție cu Tunisia, Isak și Gyökeres și-au pasat golurile între ei, iar Ayari a semnat o dublă. Rekik a marcat cu capul pentru tunisieni, dar la 1-5 rămâne o simplă paranteză. Suedia conduce Grupa F cu un golaveraj care contează.",
+      "pill": "Ayari a deschis scorul în minutul 7 și a închis tabela în 90+6, iar între ei Isak și Gyökeres au marcat pe rând. Tunisia a respirat o clipă după lovitura de cap a lui Rekik, apoi a mai luat trei și pleacă din grupa F cu -4.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/1xJ82g9ocfLQaweWUFgFMw"
     }
@@ -456,8 +408,8 @@
       "homeCode": "es",
       "awayCode": "cv",
       "kickoffEEST": "19:00",
-      "alarm": "citești dimineața",
-      "why": "Spania intră în turneu cu Capul Verde la 19:00, o oră blândă la care te uiți fără să-ți strici programul."
+      "alarm": "stai treaz",
+      "why": "Spania își începe turneul în grupa H la oră de cină, cu Capul Verde drept primă piedică, așa că o vezi fără să pierzi un minut de somn."
     },
     {
       "id": 537363,
@@ -466,8 +418,8 @@
       "homeCode": "be",
       "awayCode": "eg",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "Belgia la 22:00, vezi contra Egiptului dacă africanii mai au colți, dar nu-ți pierzi somnul pentru asta."
+      "alarm": "stai treaz",
+      "why": "Belgia și Egiptul deschid grupa G la 22:00, o oră la care încă poți să te uiți fără să-ți pară rău dimineața."
     },
     {
       "id": 537370,
@@ -477,7 +429,7 @@
       "awayCode": "uy",
       "kickoffEEST": "01:00",
       "alarm": "citești dimineața",
-      "why": "Uruguay pornește favorit cu Arabia Saudită la 01:00, o miză care nu cere să sacrifici somnul."
+      "why": "Uruguay intră în grupa H abia la 01:00 contra Arabiei Saudite, așa că poți dormi liniștit și afla scorul mâine."
     },
     {
       "id": 537364,
@@ -487,8 +439,8 @@
       "awayCode": "nz",
       "kickoffEEST": "04:00",
       "alarm": "citești dimineața",
-      "why": "Iran și Noua Zeelandă deschid Grupa G la 04:00, o oră la care patul câștigă detașat."
+      "why": "Iran și Noua Zeelandă închid programul la 04:00, ora la care doar cafeaua mai justifică un ecran aprins."
     }
   ],
-  "teaser": "⚽ Șapte la Germania, un punct furat de Japonia în minutul 89 · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Nemții au pus șapte, suedezii cinci, japonezii un gol în 89 · 3 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
