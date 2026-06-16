@@ -194,7 +194,7 @@ export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, syste
  * falling back to the stable GA model — the preview primary has no SLA and
  * 503-flaps under load. `sleep` is injectable so tests skip the real backoff waits.
  */
-export async function narrate(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null, sleep = realSleep } = {}) {
-  const userMessage = buildUserMessage(facts, recentProse, steer);
+export async function narrate(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null, gold = [], sleep = realSleep } = {}) {
+  const userMessage = buildUserMessage(facts, recentProse, steer, gold);
   return callGeminiResilient({ apiKey, model, systemPrompt: SYSTEM_PROMPT, userMessage, schema: responseSchema, sleep });
 }

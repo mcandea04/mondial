@@ -151,7 +151,18 @@ test('a backfill run for an older date does not clobber a newer latest.json', ()
   assert.equal(latest.date, '2026-06-13');
 });
 
-import { mergeHighlight, mergeEnrichment } from '../pipeline/run.js';
+import { mergeHighlight, mergeEnrichment, withoutGold } from '../pipeline/run.js';
+
+test('withoutGold removes promoted lines from the avoid-list', () => {
+  const recent = ['o frază veche', 'linia de aur', 'altă frază'];
+  const gold = [{ field: 'pill', text: 'linia de aur' }];
+  assert.deepEqual(withoutGold(recent, gold), ['o frază veche', 'altă frază']);
+});
+
+test('withoutGold is a no-op when gold is empty', () => {
+  const recent = ['a', 'b'];
+  assert.deepEqual(withoutGold(recent, []), ['a', 'b']);
+});
 
 test('mergeEnrichment: a blackout poll keeps prior scorers/events; stats left for mergeStats', () => {
   const stored = new Map([[1, {

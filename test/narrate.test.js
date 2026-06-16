@@ -102,3 +102,24 @@ test('normalizeSteer collapses empty and comment-only input to null', () => {
   assert.equal(normalizeSteer('<!-- only a comment -->'), null);
   assert.equal(normalizeSteer('real note'), 'real note');
 });
+
+test('narrate threads gold into the user message', async () => {
+  const realFetch = globalThis.fetch;
+  let sentBody = null;
+  globalThis.fetch = async (url, opts) => {
+    sentBody = JSON.parse(opts.body);
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(VALID_NARRATION) }] } }] }),
+    };
+  };
+  try {
+    await narrate(facts, { apiKey: 'x', gold: [{ field: 'pill', text: 'aur' }], sleep: async () => {} });
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+  const userText = sentBody.contents[0].parts[0].text;
+  assert.match(userText, /EXEMPLE DE TON REUȘIT/);
+  assert.match(userText, /PILL: aur/);
+});

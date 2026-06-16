@@ -47,10 +47,12 @@ import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
 import { factsHash } from './facts-hash.js';
 import { reuseNarration } from './prose-reuse.js';
+import { loadGold } from './gold.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SITE_DIR = path.join(ROOT, 'site');
 const DATA_DIR = path.join(SITE_DIR, 'data');
+const GOLD_PATH = path.join(ROOT, 'pipeline', 'gold.json');
 
 function parseArgs(argv) {
   const args = { date: null, fixtures: null, requireComplete: false, out: null, reNarrate: false, steer: null };
@@ -203,7 +205,7 @@ async function gatherFacts({ date, fixtures }) {
  * when present, so a fixtures run never touches the network; this also makes it
  * the offline stand-in when the Opus path falls back.
  */
-function geminiNarration(facts, { fixtures, recentProse, steer }) {
+function geminiNarration(facts, { fixtures, recentProse, steer, gold }) {
   if (fixtures) {
     const cannedPath = path.join(fixtures, 'narration.json');
     if (existsSync(cannedPath)) return readJson(cannedPath);
@@ -213,6 +215,7 @@ function geminiNarration(facts, { fixtures, recentProse, steer }) {
     model: process.env.GEMINI_MODEL || undefined,
     recentProse,
     steer,
+    gold,
   });
 }
 
@@ -234,7 +237,7 @@ function geminiNarration(facts, { fixtures, recentProse, steer }) {
  * narration-engine problem. Engines are injectable for testing.
  */
 export async function getNarration(facts, {
-  fixtures, recentProse, steer,
+  fixtures, recentProse, steer, gold = [],
   claudeEngine = callClaude,
   polishEngine = polishedNarration,
   geminiDraftEngine = callGeminiNarration,
@@ -255,7 +258,7 @@ export async function getNarration(facts, {
   // as the plain single-pass gemini path.
   if (mode === 'gemini-polish' && !fixtures) {
     const model = process.env.GEMINI_MODEL || undefined;
-    const userMessage = buildUserMessage(facts, recentProse, steer);
+    const userMessage = buildUserMessage(facts, recentProse, steer, gold);
     const { narration, polished } = await polishEngine({
       model, userMessage, draftEngine: geminiDraftEngine, critiqueEngine: geminiCritiqueEngine,
     });
@@ -263,10 +266,10 @@ export async function getNarration(facts, {
   }
 
   if (mode !== 'opus' && mode !== 'opus-polish') {
-    return { narration: await geminiNarration(facts, { fixtures, recentProse, steer }), narrator: 'gemini' };
+    return { narration: await geminiNarration(facts, { fixtures, recentProse, steer, gold }), narrator: 'gemini' };
   }
   const model = process.env.CLAUDE_MODEL || 'opus';
-  const userMessage = buildUserMessage(facts, recentProse, steer);
+  const userMessage = buildUserMessage(facts, recentProse, steer, gold);
   try {
     if (mode === 'opus-polish') {
       const { narration, polished } = await polishEngine({ model, userMessage, draftEngine: claudeEngine });
@@ -276,7 +279,7 @@ export async function getNarration(facts, {
   } catch (error) {
     const cause = error.auth ? 'auth failure' : 'bad output after retries';
     console.warn(`Opus narration failed (${cause}): ${error.message}. Falling back to Gemini.`);
-    return { narration: await geminiNarration(facts, { fixtures, recentProse, steer }), narrator: 'gemini-fallback' };
+    return { narration: await geminiNarration(facts, { fixtures, recentProse, steer, gold }), narrator: 'gemini-fallback' };
   }
 }
 
@@ -316,6 +319,23 @@ async function recentProseBefore(dataDir, date, days = 3) {
     for (const t of digest.tonight ?? []) prose.push(t.why);
   }
   return prose.filter(Boolean);
+}
+
+/** Drops avoid-list lines that are now blessed gold, so a promoted line is taught, not forbidden. */
+export function withoutGold(recentProse, gold) {
+  if (!gold.length) return recentProse;
+  const goldTexts = new Set(gold.map((g) => g.text));
+  return recentProse.filter((line) => !goldTexts.has(line));
+}
+
+/** Loads the gold archive, degrading to no-gold (never failing the run) on a corrupt file. */
+async function loadGoldSafe() {
+  try {
+    return await loadGold(GOLD_PATH);
+  } catch (error) {
+    console.warn(`gold.json unreadable (${error.message}); proceeding without gold.`);
+    return [];
+  }
 }
 
 /** Replaces the OG block in index.html between the og:start/og:end markers. */
@@ -396,11 +416,15 @@ async function main() {
     narrator = existing.narrator ?? 'gemini';
     console.log('facts unchanged, prose reused');
   } else {
-    const recentProse = args.fixtures ? [] : await recentProseBefore(dataDir, date);
+    const gold = await loadGoldSafe();
+    const recentProse = args.fixtures
+      ? []
+      : withoutGold(await recentProseBefore(dataDir, date), gold);
     ({ narration, narrator } = await getNarration(factsForNarration, {
       fixtures: args.fixtures,
       recentProse,
       steer: args.steer,
+      gold,
     }));
   }
 

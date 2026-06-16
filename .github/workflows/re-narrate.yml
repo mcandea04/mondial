@@ -1,9 +1,14 @@
 name: Re-narrate digest
 
-# Thin trigger: an issue labeled "re-narrate" opened by the repo owner
-# dispatches the digest workflow with force=true (which implies re-narration)
-# and the issue body as a one-shot steering note. The fresh digest email is the
-# confirmation.
+# Two thin triggers, both gated on the repo owner opening a labeled issue:
+#   label "re-narrate" -> dispatch digest.yml force=true with the issue body as a
+#     one-shot steering note (fix today's prose).
+#   label "gold"       -> append the issue body's lines to pipeline/gold.json, push,
+#     then dispatch digest.yml force=true so today is re-narrated WITH the new gold
+#     (which is now on main) and the existing deploy + email run. The fresh digest
+#     email is the confirmation.
+# Joined to the digest concurrency group so a gold push never collides with the
+# nightly digest's push.
 
 on:
   issues:
@@ -12,9 +17,14 @@ on:
 permissions:
   issues: write
   actions: write
+  contents: write
+
+concurrency:
+  group: digest
+  cancel-in-progress: false
 
 jobs:
-  trigger:
+  re-narrate:
     if: >
       contains(github.event.issue.labels.*.name, 're-narrate') &&
       github.event.issue.user.login == 'mcandea04'
@@ -23,17 +33,56 @@ jobs:
       - name: Dispatch digest workflow
         env:
           GH_TOKEN: ${{ github.token }}
-          # Issue body must travel via env, never inline in the script:
-          # direct interpolation of issue content into `run:` is shell injection.
           STEER: ${{ github.event.issue.body }}
         run: |
           gh workflow run digest.yml --repo "$GITHUB_REPOSITORY" \
             -f force=true -f steer="$STEER"
-
       - name: Confirm and close issue
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" \
             --body "Regenerare pornită — vei primi un email nou cu titlul proaspăt. Progres: https://github.com/$GITHUB_REPOSITORY/actions/workflows/digest.yml"
+          gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY"
+
+  gold:
+    if: >
+      contains(github.event.issue.labels.*.name, 'gold') &&
+      github.event.issue.user.login == 'mcandea04'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Append the promoted line(s) to gold.json
+        env:
+          # Issue body travels via env, never inline in the script (shell injection).
+          GOLD_ISSUE_BODY: ${{ github.event.issue.body }}
+        run: node pipeline/gold.js add-from-issue
+      - name: Commit and push gold.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pipeline/gold.json
+          if git diff --cached --quiet; then
+            echo "No new gold (duplicate or empty); skipping commit."
+          else
+            git commit -m "gold: promote line(s) from issue #${{ github.event.issue.number }}"
+            git pull --rebase origin main
+            git push
+          fi
+      - name: Re-narrate today with the new gold, then deploy + email
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # gold.json is now on main, so the dispatched digest run checks it out and
+        # the fresh prose sees the new gold. force=true => re-narrate + email.
+        run: |
+          gh workflow run digest.yml --repo "$GITHUB_REPOSITORY" -f force=true
+      - name: Confirm and close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" \
+            --body "Fraza a fost salvată în gold și am pornit regenerarea de azi cu ea. Vei primi un email. Progres: https://github.com/$GITHUB_REPOSITORY/actions/workflows/digest.yml"
           gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY"

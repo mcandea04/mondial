@@ -73,8 +73,10 @@ FORMAT:
        recomanzi noaptea decât dacă chiar se anunță o surpriză. Dacă lipsește rangul (null),
        nu inventa o ierarhie — judeci doar după oră și ce e în joc în grupă.
        Rangul e UNEALTĂ DE JUDECATĂ, nu text de afișat: NU scrie „pe locul N mondial" sau
-       „(locul N)" în „why" — traduci diferența în cuvinte („mare favorită", „cu mult peste",
-       „două forțe egale"). Cifra rămâne în culise.
+       „(locul N)" în „why". ASCUNZI CIFRA, NU ECHIPELE — fiecare „why" numește mereu cine
+       joacă (ambele echipe pe nume); traduci diferența de valoare în cuvinte („mare favorită",
+       „cu mult peste", „două forțe egale"), niciodată într-un număr. O propoziție fără numele
+       echipelor („un meci între două forțe") e un eșec — rescrie-o cu cine intră pe teren.
    Abia apoi: „stai treaz" = meci care e ȘI târziu (de pe la 00:00 încolo) ȘI chiar merită
    sacrificiul după criteriul de mai sus. Dacă e devreme, e „citești dimineața" indiferent cât
    e de bun (oricum îl vezi la oră normală). Dacă e târziu dar slab sau dezechilibrat, tot
@@ -141,11 +143,14 @@ export function normalizeSteer(raw) {
   return (raw ?? '').replace(/<!--[\s\S]*?-->/g, '').trim() || null;
 }
 
+const GOLD_ORDER = ['headline', 'summary', 'pill', 'tonight'];
+
 /**
  * Builds the user message: the day's facts, the previous days' prose to avoid
- * recycling jokes, and an optional one-shot steering note from the editor.
+ * recycling jokes, an optional one-shot steering note from the editor, and an
+ * optional gold few-shot block of example lines that set the target tone.
  */
-export function buildUserMessage(facts, recentProse, rawSteer) {
+export function buildUserMessage(facts, recentProse, rawSteer, gold = []) {
   let message = `FAPTELE DE AZI (JSON):\n${JSON.stringify(facts, null, 2)}`;
   if (recentProse?.length) {
     const avoid = recentProse.map((line) => `- ${line}`).join('\n');
@@ -160,6 +165,20 @@ ${avoid}`;
     message += `
 
 NOTĂ DE LA EDITOR (se aplică doar la această regenerare): ${steer}`;
+  }
+  if (gold?.length) {
+    const lines = [];
+    for (const field of GOLD_ORDER) {
+      for (const entry of gold.filter((e) => e.field === field)) {
+        lines.push(`${field.toUpperCase()}: ${entry.text}`);
+      }
+    }
+    message += `
+
+EXEMPLE DE TON REUȘIT — așa sună o frază bună din ALTE zile (ritm, înțepătură, concret).
+NU copia conținutul și nu împrumuta numele/cifrele din ele — sunt din alte meciuri.
+Potrivește ACEST nivel de umor și de precizie la faptele de AZI:
+${lines.join('\n')}`;
   }
   return message;
 }
@@ -194,7 +213,17 @@ NU rescrii tu textul. NU comentezi faptele (scoruri, marcatori, minute) — alea
 - calcuri („un cap de X" în loc de „o lovitură de cap a lui X", „poarta intactă" în loc de
   „poarta neatinsă", „a restabilit egalitatea" în loc de „a egalat", „posesia n-a plătit /
   n-a plătit nimic" în loc de „degeaba a ținut mingea" sau „posesia n-a contat", „victorie
-  limpede" în loc de „victorie fără emoții" sau „a câștigat fără să tremure")
+  limpede" în loc de „victorie fără emoții" sau „a câștigat fără să tremure", „a fost prinsă"
+  pentru un egal târziu în loc de „a fost egalată" sau „a fost ajunsă din urmă", „i-a întins
+  cuiva egalarea" în loc de „a egalat" sau „a adus egalarea", „o echipă s-a adunat la N puncte"
+  în loc de „N echipe au ajuns la N puncte")
+- construcții imposibile logic: „a deschis scorul de două ori" (scorul se deschide o
+  singură dată — a doua oară „a marcat din nou" sau „a punctat iar"); „chiar au cu ce"
+  (nenatural — spui „au valoare", „au cu cine", „nu vin de florile mărului")
+- nume de țară ciuntite: „Coasta" pentru „Coasta de Fildeș", „Capul" pentru „Capul Verde" —
+  scrii întotdeauna numele întreg al echipei
+- imagini care nu există în română: „o vezi relaxat lângă masă", „plătești cu somn"
+  (spui „sacrifici somnul"), „de N ori" fără obiect (spui „de N ori la poartă")
 - construcții eliptice la portar („a scos de N ori" cere un obiect; spui „a avut N
   intervenții" sau „a scos N mingi")
 - topică nefirească („toate patru echipele" în loc de „toate cele patru echipe"),
@@ -214,7 +243,11 @@ export function buildRewriteSystemPrompt(critique) {
 UN REDACTOR ROMÂN ți-a revizuit textul anterior și a notat unde limba sună a traducere sau
 nenatural. Rescrie digestul aplicând EXACT aceste observații de limbă. Păstrează intacte
 faptele, tonul, umorul și headline-ul punchy — schimbi DOAR formulările semnalate (și altele
-similare pe care le observi tu). Observațiile redactorului:
+similare pe care le observi tu).
+
+Dacă mesajul cu faptele conține EXEMPLE DE TON REUȘIT, acelea rămân ținta de ton: păstrează
+acel nivel de umor, ritm și concret — nu coborî sub el când corectezi limba. Observațiile
+redactorului:
 ${critique}`;
 }
 

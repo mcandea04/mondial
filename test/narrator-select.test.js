@@ -141,3 +141,46 @@ test('NARRATOR=gemini-polish offline (fixtures) falls through to canned Gemini',
   assert.equal(narrator, 'gemini');
   assert.equal(narration.headline, cannedHeadline);
 });
+
+test('getNarration passes gold into the gemini-polish draft user message', async () => {
+  const prev = process.env.NARRATOR;
+  process.env.NARRATOR = 'gemini-polish';
+  let seenMessage = null;
+  const polishEngine = async ({ userMessage }) => {
+    seenMessage = userMessage;
+    return { narration: { headline: 'h', summary: 's', matches: [], tonight: [] }, polished: true };
+  };
+  try {
+    await getNarration(
+      { date: '2026-06-16', finished: [], tonight: [], standings: [] },
+      { recentProse: [], steer: null, gold: [{ field: 'headline', text: 'aur' }], polishEngine },
+    );
+  } finally {
+    if (prev === undefined) delete process.env.NARRATOR; else process.env.NARRATOR = prev;
+  }
+  assert.match(seenMessage, /HEADLINE: aur/);
+});
+
+test('getNarration passes gold into the single-pass gemini path', async () => {
+  const prev = process.env.NARRATOR;
+  delete process.env.NARRATOR; // unset → plain gemini single-pass
+  const prevKey = process.env.GEMINI_API_KEY;
+  process.env.GEMINI_API_KEY = 'x';
+  const realFetch = globalThis.fetch;
+  let sentBody = null;
+  globalThis.fetch = async (url, opts) => {
+    sentBody = JSON.parse(opts.body);
+    return { ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: '{"headline":"h","summary":"s","matches":[],"tonight":[]}' }] } }] }) };
+  };
+  try {
+    await getNarration(
+      { date: '2026-06-16', finished: [], tonight: [], standings: [] },
+      { recentProse: [], steer: null, gold: [{ field: 'pill', text: 'aur2' }] },
+    );
+  } finally {
+    globalThis.fetch = realFetch;
+    if (prev === undefined) delete process.env.NARRATOR; else process.env.NARRATOR = prev;
+    if (prevKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = prevKey;
+  }
+  assert.match(sentBody.contents[0].parts[0].text, /PILL: aur2/);
+});

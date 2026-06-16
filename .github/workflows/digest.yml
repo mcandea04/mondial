@@ -142,9 +142,14 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Email digest ready
-        # Only when fresh prose was generated — not on a highlight-link or
-        # stats-only update, which still commit + deploy but carry reused prose.
-        if: steps.commit.outputs.committed == 'true' && steps.build.outputs.narrationChanged == 'true'
+        # Nightly: only when fresh prose was generated — not on a highlight-link
+        # or stats-only update, which still commit + deploy but carry reused prose.
+        # Forced (re-narrate/gold) run: always email, even with no change, so the
+        # owner gets confirmation.
+        if: >
+          steps.build.outputs.published == 'true' &&
+          ((steps.commit.outputs.committed == 'true' && steps.build.outputs.narrationChanged == 'true') ||
+           (github.event_name == 'workflow_dispatch' && inputs.force == 'true'))
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -158,11 +163,13 @@ jobs:
           body: |
             ${{ steps.build.outputs.headline }}
 
-            ${{ steps.build.outputs.match_count }} meciuri azi-noapte.
+            ${{ steps.build.outputs.match_count }} meciuri azi-noapte.${{ steps.commit.outputs.committed == 'true' && ' ' || ' (regenerat, proza neschimbată) ' }}
 
             Citește digestul: https://mcandea04.github.io/mondial/
 
             Nu-ți place proza? Regenerează: https://github.com/mcandea04/mondial/issues/new?title=re-narrate&labels=re-narrate&body=%3C%21--%20scrie%20aici%2C%20op%C8%9Bional%2C%20ce%20vrei%20schimbat%20la%20ton%20sau%20glume%20--%3E
+
+            Ți-a plăcut o frază? Salveaz-o pentru data viitoare: https://github.com/mcandea04/mondial/issues/new?title=gold&labels=gold&body=%3C%21--%20Lipe%C8%99te%20o%20linie%20pe%20r%C3%A2nd.%20Op%C8%9Bional%20pune%20%C3%AEn%20fa%C8%9B%C4%83%20headline%3A%20summary%3A%20pill%3A%20tonight%3A%20-%20altfel%20e%20pill.%20Po%C8%9Bi%20s%C4%83%20o%20rescrii%20%C3%AEn%20cuvintele%20tale.%20--%3E
 
             ---
             Proză: ${{ steps.build.outputs.narrator }} (dacă scrie „gemini-fallback", tokenul Opus a expirat — rulează din nou claude setup-token și actualizează secretul CLAUDE_CODE_OAUTH_TOKEN)
