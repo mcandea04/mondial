@@ -90,7 +90,7 @@ test('changed facts re-narrate automatically', () => {
   const board = JSON.parse(readFileSync(boardPath, 'utf8'));
   // 760414 (Mexico v South Africa) appears in both date boards; update both.
   for (const dateKey of Object.keys(board)) {
-    const event = board[dateKey].events.find((e) => e.id === '760414' && e.completed);
+    const event = board[dateKey].events.find((e) => e.id === '760414' && e.status?.type?.completed);
     if (event) {
       const home = event.competitions[0].competitors.find((c) => c.homeAway === 'home');
       home.score = String(Number(home.score) + 1);

@@ -35,11 +35,13 @@ test('activeDigestDate: poll at 21:00 UTC belongs to the next day', () => {
   assert.equal(activeDigestDate(new Date('2026-06-12T15:59:00Z')), '2026-06-12');
 });
 
-test('isOver returns true only for completed===true', () => {
-  assert.equal(isOver({ completed: true }),  true);
-  assert.equal(isOver({ completed: false }), false);
-  assert.equal(isOver({}),                   false);
-  assert.equal(isOver({ completed: true, status: { type: { state: 'in' } } }), true);
+test('isOver is true only when ESPN nests status.type.completed===true', () => {
+  assert.equal(isOver({ status: { type: { completed: true,  state: 'post' } } }), true);
+  assert.equal(isOver({ status: { type: { completed: false, state: 'post' } } }), false);
+  assert.equal(isOver({ status: { type: { state: 'in' } } }), false);
+  assert.equal(isOver({}), false);
+  // Real ESPN has NO top-level `completed`; a stray top-level flag must not count.
+  assert.equal(isOver({ completed: true }), false);
 });
 
 import {
@@ -65,7 +67,7 @@ test('parseMatch maps an ESPN-shaped completed event to the FD output shape', ()
   const event = {
     id: '760414',
     date: '2026-06-11T19:00:00Z',
-    completed: true,
+    status: { type: { state: 'post', completed: true } },
     competitions: [{ competitors: [
       { homeAway: 'home', score: '2', team: { id: '203', displayName: 'Mexico' } },
       { homeAway: 'away', score: '1', team: { id: '467', displayName: 'South Africa' } },
@@ -90,7 +92,7 @@ test('parseMatch leaves score [null, null] when score strings are absent', () =>
   const event = {
     id: '760999',
     date: '2026-06-12T19:00:00Z',
-    completed: false,
+    status: { type: { state: 'pre', completed: false } },
     competitions: [{ competitors: [
       { homeAway: 'home', team: { id: '1', displayName: 'Brazil' } },
       { homeAway: 'away', team: { id: '2', displayName: 'Morocco' } },
@@ -145,7 +147,7 @@ test('team aliases resolve: Türkiye, Korea Republic, Cape Verde', () => {
   const event = {
     id: '1',
     date: '2026-06-11T19:00:00Z',
-    completed: true,
+    status: { type: { state: 'post', completed: true } },
     competitions: [{ competitors: [
       { homeAway: 'home', score: '1', team: { id: '5', displayName: 'Türkiye' } },
       { homeAway: 'away', score: '0', team: { id: '6', displayName: 'Korea Republic' } },
@@ -265,22 +267,6 @@ test('digestReadiness: only postponed/cancelled — not ready', () => {
 
 test('digestReadiness: empty night is not ready', () => {
   assert.equal(digestReadiness([]).ready, false);
-});
-
-test('POSTPONED status: state=post + !completed maps to POSTPONED (terminal, not blocking)', () => {
-  // event 760417 in the scoreboard fixture (Qatar v New Zealand, completed:false, state:post)
-  const event = {
-    id: '760417', date: '2026-06-12T01:00:00Z',
-    completed: false, status: { type: { state: 'post' } },
-    competitions: [{ competitors: [
-      { homeAway: 'home', team: { id: '30', displayName: 'Qatar' } },
-      { homeAway: 'away', team: { id: '31', displayName: 'New Zealand' } },
-    ] }],
-  };
-  // synthesizeStatus is internal; test via fetchNightMatches fixture path
-  // (we verify POSTPONED does not block digestReadiness above)
-  assert.ok(true); // placeholder — actual synthesis covered by fetchNightMatches test below
-  void event;
 });
 
 test('fetchDigestData: fixture run produces correct finished/tonight/standings shape', async () => {

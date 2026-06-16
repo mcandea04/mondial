@@ -48,8 +48,12 @@ export function activeDigestDate(now = new Date()) {
   return base.toISOString().slice(0, 10);
 }
 
+/** True once ESPN marks a scoreboard event finished. ESPN nests this flag at
+ *  `status.type.completed` (top-level `completed` does not exist on a real event). */
+const isCompleted = (event) => event.status?.type?.completed === true;
+
 /** The single predicate for "is a match over?". Used by both gate and build. */
-export const isOver = (event) => event.completed === true;
+export const isOver = (event) => isCompleted(event);
 
 // ── ESPN date bucketing ───────────────────────────────────────────────────────
 
@@ -96,7 +100,7 @@ function teamIdentity(event, group) {
 }
 
 function synthesizeStatus(event) {
-  if (event.completed === true) return 'FINISHED';
+  if (isCompleted(event)) return 'FINISHED';
   const state = event.status?.type?.state ?? '';
   if (state === 'post') return 'POSTPONED';
   if (state === 'in')   return 'IN_PLAY';
