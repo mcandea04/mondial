@@ -9,7 +9,7 @@
 //
 // Exit 0: latest.json is today's digest (fresh). Exit 1: stale or missing.
 import { readFile } from 'node:fs/promises';
-import { bucharestToday } from '../pipeline/fetch.js';
+import { bucharestToday } from '../pipeline/espn.js';
 
 const expected = bucharestToday();
 

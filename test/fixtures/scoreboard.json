@@ -1,0 +1,70 @@
+{
+  "20260611": {
+    "events": [
+      {
+        "id": "760414",
+        "date": "2026-06-11T19:00:00Z",
+        "completed": true,
+        "status": { "type": { "state": "post" } },
+        "competitions": [{ "competitors": [
+          { "homeAway": "home", "score": "2", "team": { "id": "203", "displayName": "Mexico" } },
+          { "homeAway": "away", "score": "1", "team": { "id": "467", "displayName": "South Africa" } }
+        ] }]
+      },
+      {
+        "id": "760415",
+        "date": "2026-06-12T02:00:00Z",
+        "completed": true,
+        "status": { "type": { "state": "post" } },
+        "competitions": [{ "competitors": [
+          { "homeAway": "home", "score": "4", "team": { "id": "10", "displayName": "Canada" } },
+          { "homeAway": "away", "score": "0", "team": { "id": "11", "displayName": "Qatar" } }
+        ] }]
+      }
+    ]
+  },
+  "20260612": {
+    "events": [
+      {
+        "id": "760416",
+        "date": "2026-06-12T19:00:00Z",
+        "completed": false,
+        "status": { "type": { "state": "pre" } },
+        "competitions": [{ "competitors": [
+          { "homeAway": "home", "score": "0", "team": { "id": "20", "displayName": "Brazil" } },
+          { "homeAway": "away", "score": "0", "team": { "id": "21", "displayName": "Morocco" } }
+        ] }]
+      },
+      {
+        "id": "760417",
+        "date": "2026-06-12T01:00:00Z",
+        "completed": false,
+        "status": { "type": { "state": "post" } },
+        "competitions": [{ "competitors": [
+          { "homeAway": "home", "score": "0", "team": { "id": "30", "displayName": "Qatar" } },
+          { "homeAway": "away", "score": "0", "team": { "id": "31", "displayName": "New Zealand" } }
+        ] }]
+      },
+      {
+        "id": "760414",
+        "date": "2026-06-11T19:00:00Z",
+        "completed": true,
+        "status": { "type": { "state": "post" } },
+        "competitions": [{ "competitors": [
+          { "homeAway": "home", "score": "2", "team": { "id": "203", "displayName": "Mexico" } },
+          { "homeAway": "away", "score": "1", "team": { "id": "467", "displayName": "South Africa" } }
+        ] }]
+      },
+      {
+        "id": "760415",
+        "date": "2026-06-12T02:00:00Z",
+        "completed": true,
+        "status": { "type": { "state": "post" } },
+        "competitions": [{ "competitors": [
+          { "homeAway": "home", "score": "4", "team": { "id": "10", "displayName": "Canada" } },
+          { "homeAway": "away", "score": "0", "team": { "id": "11", "displayName": "Qatar" } }
+        ] }]
+      }
+    ]
+  }
+}

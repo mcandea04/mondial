@@ -1,0 +1,91 @@
+{
+  "children": [
+    {
+      "name": "Group A",
+      "standings": {
+        "entries": [
+          {
+            "team": { "displayName": "Mexico" },
+            "stats": [
+              { "name": "gamesPlayed",       "value": 1 },
+              { "name": "wins",              "value": 1 },
+              { "name": "ties",              "value": 0 },
+              { "name": "losses",            "value": 0 },
+              { "name": "pointDifferential", "value": 1 },
+              { "name": "points",            "value": 3 }
+            ]
+          },
+          {
+            "team": { "displayName": "South Africa" },
+            "stats": [
+              { "name": "gamesPlayed",       "value": 1 },
+              { "name": "wins",              "value": 0 },
+              { "name": "ties",              "value": 0 },
+              { "name": "losses",            "value": 1 },
+              { "name": "pointDifferential", "value": -1 },
+              { "name": "points",            "value": 0 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Group B",
+      "standings": {
+        "entries": [
+          {
+            "team": { "displayName": "Canada" },
+            "stats": [
+              { "name": "gamesPlayed",       "value": 1 },
+              { "name": "wins",              "value": 1 },
+              { "name": "ties",              "value": 0 },
+              { "name": "losses",            "value": 0 },
+              { "name": "pointDifferential", "value": 4 },
+              { "name": "points",            "value": 3 }
+            ]
+          },
+          {
+            "team": { "displayName": "Qatar" },
+            "stats": [
+              { "name": "gamesPlayed",       "value": 1 },
+              { "name": "wins",              "value": 0 },
+              { "name": "ties",              "value": 0 },
+              { "name": "losses",            "value": 1 },
+              { "name": "pointDifferential", "value": -4 },
+              { "name": "points",            "value": 0 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Group C",
+      "standings": {
+        "entries": [
+          {
+            "team": { "displayName": "Brazil" },
+            "stats": [
+              { "name": "gamesPlayed",       "value": 0 },
+              { "name": "wins",              "value": 0 },
+              { "name": "ties",              "value": 0 },
+              { "name": "losses",            "value": 0 },
+              { "name": "pointDifferential", "value": 0 },
+              { "name": "points",            "value": 0 }
+            ]
+          },
+          {
+            "team": { "displayName": "Morocco" },
+            "stats": [
+              { "name": "gamesPlayed",       "value": 0 },
+              { "name": "wins",              "value": 0 },
+              { "name": "ties",              "value": 0 },
+              { "name": "losses",            "value": 0 },
+              { "name": "pointDifferential", "value": 0 },
+              { "name": "points",            "value": 0 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

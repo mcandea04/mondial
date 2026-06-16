@@ -82,7 +82,6 @@ jobs:
             node pipeline/run.js --require-complete --steer "$STEER"
           fi
         env:
-          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
           STEER: ${{ inputs.steer }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # Unset by default so narrate.js DEFAULT_MODEL stays the single source of
@@ -143,7 +142,9 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Email digest ready
-        if: steps.commit.outputs.committed == 'true'
+        # Only when fresh prose was generated — not on a highlight-link or
+        # stats-only update, which still commit + deploy but carry reused prose.
+        if: steps.commit.outputs.committed == 'true' && steps.build.outputs.narrationChanged == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com

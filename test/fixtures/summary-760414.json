@@ -1,0 +1,20 @@
+{
+  "header": {
+    "competitions": [{ "competitors": [
+      { "homeAway": "home", "team": { "id": "203" } },
+      { "homeAway": "away", "team": { "id": "467" } }
+    ] }]
+  },
+  "keyEvents": [
+    { "team": { "id": "203" }, "clock": { "displayValue": "12'" }, "type": { "text": "Goal" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "Giménez" } }, { "athlete": { "displayName": "Lozano" } }], "text": "Giménez header from the centre of the box." },
+    { "team": { "id": "203" }, "clock": { "displayValue": "55'" }, "type": { "text": "Own Goal" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "Foster" } }], "text": "Foster own goal." },
+    { "team": { "id": "203" }, "clock": { "displayValue": "88'" }, "type": { "text": "Penalty - Scored" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "Lozano" } }], "text": "Lozano penalty." },
+    { "team": { "id": "467" }, "clock": { "displayValue": "79'" }, "type": { "text": "Red Card" }, "scoringPlay": false, "participants": [{ "athlete": { "displayName": "Mokoena" } }], "text": "Mokoena is shown the red card for a bad foul." }
+  ],
+  "boxscore": {
+    "teams": [
+      { "team": { "id": "203" }, "statistics": [{ "name": "possessionPct", "displayValue": "58.2" }, { "name": "totalShots", "displayValue": "15" }, { "name": "shotsOnTarget", "displayValue": "6" }, { "name": "wonCorners", "displayValue": "7" }, { "name": "saves", "displayValue": "3" }, { "name": "foulsCommitted", "displayValue": "9" }] },
+      { "team": { "id": "467" }, "statistics": [{ "name": "possessionPct", "displayValue": "41.8" }, { "name": "totalShots", "displayValue": "8" }, { "name": "shotsOnTarget", "displayValue": "3" }, { "name": "wonCorners", "displayValue": "3" }, { "name": "saves", "displayValue": "4" }, { "name": "foulsCommitted", "displayValue": "16" }] }
+    ]
+  }
+}

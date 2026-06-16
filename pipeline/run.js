@@ -33,13 +33,9 @@ import {
   fetchDigestData,
   fetchNightMatches,
   digestReadiness,
-  selectDigestMatches,
-  parseMatch,
-  parseFixture,
-  parseStandings,
   activeDigestDate,
   kickoffEEST,
-} from './fetch.js';
+} from './espn.js';
 import { classifyStandings } from './standings.js';
 import { narrate } from './narrate.js';
 import { callClaude } from './claude-engine.js';
@@ -132,7 +128,8 @@ function hasNoEnrichment(match) {
  * carried them for this id, the stored detail is restored. Mirrors
  * `mergeHighlight`: a transient outage can't strip detail (or flip the hash and
  * re-narrate) off a match that already had it. The score itself comes from
- * football-data and is always fresh, so it is left untouched.
+ * ESPN and is always fresh, so it is left untouched. Stats are handled
+ * separately by `mergeStats` (write-once freeze), not restored here.
  */
 export function mergeEnrichment(match, existingByMatch) {
   const prior = existingByMatch.get(match.id);
@@ -142,8 +139,17 @@ export function mergeEnrichment(match, existingByMatch) {
     ...match,
     scorers: prior.scorers ?? match.scorers,
     events: prior.events ?? match.events,
-    stats: prior.stats ?? match.stats,
   };
+}
+
+/**
+ * Write-once stats freeze: a match's stats block locks to the first non-null
+ * published value. Later possession refinements (post-whistle ESPN refinement)
+ * are discarded so a cosmetic stat wobble never byte-changes the digest. A match
+ * first published with null stats stays open for one fill, then locks.
+ */
+export function mergeStats(fresh, prior) {
+  return prior != null ? prior : fresh;
 }
 
 function requireEnv(name) {
@@ -165,17 +171,31 @@ async function setOutput(name, value) {
 }
 
 async function gatherFacts({ date, fixtures }) {
-  if (fixtures) {
-    const matchesResponse = await readJson(path.join(fixtures, 'matches.json'));
-    const standingsResponse = await readJson(path.join(fixtures, 'standings.json'));
-    const { finished, tonight } = selectDigestMatches(matchesResponse, date);
-    return {
-      finished: finished.map(parseMatch),
-      tonight: tonight.map(parseFixture),
-      standings: parseStandings(standingsResponse),
-    };
-  }
-  return fetchDigestData({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
+  if (!fixtures) return fetchDigestData({ digestDate: date });
+
+  const { readFileSync, existsSync } = await import('node:fs');
+  const fixturesDir = path.resolve(fixtures);
+  const readFixture = (name) => JSON.parse(readFileSync(path.join(fixturesDir, name), 'utf8'));
+
+  // Fixture fetchImpl: serves scoreboard.json, summary-<id>.json, espn-standings.json
+  // from the dir. Each branch returns a body; unknown paths and missing summaries
+  // yield {} so a finished match simply ships bare.
+  const fixtureBody = (url) => {
+    if (url.includes('/scoreboard?dates=')) {
+      const dateStr = url.match(/dates=(\d+)/)[1];
+      return { events: readFixture('scoreboard.json')[dateStr]?.events ?? [] };
+    }
+    if (url.includes('/summary?event=')) {
+      const eventId = url.match(/event=(\w+)/)[1];
+      const summaryName = `summary-${eventId}.json`;
+      return existsSync(path.join(fixturesDir, summaryName)) ? readFixture(summaryName) : {};
+    }
+    if (url.includes('/standings')) return readFixture('espn-standings.json');
+    return {};
+  };
+  const fixtureFetch = async (url) => ({ ok: true, async json() { return fixtureBody(url); } });
+
+  return fetchDigestData({ digestDate: date, fetchImpl: fixtureFetch, delayMs: 0 });
 }
 
 /**
@@ -329,7 +349,7 @@ async function main() {
 
   // Polling gate: only proceed once every match of the night has finished.
   if (args.requireComplete && !args.fixtures) {
-    const matches = await fetchNightMatches({ digestDate: date, token: requireEnv('FOOTBALL_DATA_TOKEN') });
+    const matches = await fetchNightMatches({ digestDate: date });
     const readiness = digestReadiness(matches);
     if (!readiness.ready) {
       console.log(`Not ready: ${readiness.reason}. Exiting without changes.`);
@@ -346,7 +366,11 @@ async function main() {
   // ESPN poll can't strip detail off an already-rich match) and powers the freeze.
   const existing = await readJsonOrNull(path.join(dataDir, `${date}.json`));
   const existingByMatch = new Map((existing?.matches ?? []).map((m) => [m.id, m]));
-  facts.finished = facts.finished.map((m) => mergeEnrichment(m, existingByMatch));
+  facts.finished = facts.finished.map((m) => {
+    const enriched = mergeEnrichment(m, existingByMatch);
+    const prior = existingByMatch.get(m.id);
+    return { ...enriched, stats: mergeStats(enriched.stats, prior?.stats ?? null) };
+  });
 
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
@@ -499,6 +523,10 @@ async function main() {
   await setOutput('headline', narration.headline);
   await setOutput('match_count', String(digest.matches.length));
   await setOutput('narrator', narrator);
+  // Email fires only when fresh prose was generated (first publish, facts change,
+  // or --re-narrate), never when the stored prose was reused for a highlight or
+  // stats-only update. `reused` is false in exactly those fresh-narrate cases.
+  await setOutput('narrationChanged', String(!reused));
 }
 
 const isDirectRun =
