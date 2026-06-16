@@ -1,9 +1,9 @@
 {
   "date": "2026-06-16",
-  "factsHash": "d2599f3c770134afdb24d09e57526b2cad4ebc523739f1e103d56178919fd1b4",
+  "factsHash": "9783284e859cb7e466dbe32003adc125edeee0baceba70c4c9ec20e64ae55089",
   "narrator": "gemini-polish",
-  "headline": "Spania, campioana posesiei sterile; Iran, maestră a revenirilor",
-  "summary": "Spania a dominat fără efect Capul Verde, terminând 0-0 în ciuda unei posesii copleșitoare și a 27 de șuturi. Între timp, Uruguay a smuls un egal târziu cu Arabia Saudită, iar Iranul și Noua Zeelandă au oferit un spectacol cu patru goluri și două reveniri.",
+  "headline": "Spania, la 27 de șuturi, dar tot 0-0. Autogol belgian și portari-eroi.",
+  "summary": "Spania a expediat 27 de șuturi, dar n-a reușit să bată Capul Verde, în timp ce Belgia s-a încurcat cu Egiptul, obținând un singur punct printr-un autogol. Ziua a fost marcată de echipe mici care au scos egaluri impresionante și de portari inspirați.",
   "matches": [
     {
       "id": 537369,
@@ -40,7 +40,7 @@
       "decidedOnPenalties": false,
       "group": "H",
       "utcDate": "2026-06-15T16:00:00Z",
-      "pill": "Spania și-a pierdut busola complet în fața Capului Verde, ratând 27 de șuturi și nereușind să învingă portarul advers. În ciuda unei posesii de 74%, favoriții au plecat acasă cu un singur punct. E o rușine să nu învingi Capul Verde.",
+      "pill": "Spania a expediat 27 de șuturi, 7 pe poartă, dar n-a reușit să treacă de portarul lui Capul Verde, care a avut 7 intervenții salvatoare. O campioană mondială în exercițiu începe turneul cu un punct și demonstrează că nu ești mare doar pe hârtie. Un start cu stângul care le-a complicat viața spaniolilor în Grupa H.",
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/jLS5YXPMr0XAd5lMHtbiJ"
     },
@@ -100,7 +100,7 @@
       "decidedOnPenalties": false,
       "group": "G",
       "utcDate": "2026-06-15T19:00:00Z",
-      "pill": "Egiptul a făcut tot jocul în prima repriză, deschizând scorul prin Emam Ashour la pasa lui Salah, iar Belgia a egalat în minutul 66, dar dintr-un autogol. Ambele echipe au avut doar trei șuturi pe poartă, așa că egalul e meritat. E un punct obținut pe mâna adversarului, dar e bun.",
+      "pill": "Egiptul a deschis scorul în minutul 20, prin Emam Ashour, dintr-o pasă a lui Mohamed Salah, lăsând Belgia să alerge după egalare. Acesta a venit abia în minutul 66, prin autogolul lui Mohamed Hany. Belgienii se aleg cu un singur punct, deși erau favoriți în Grupa G.",
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/2XSqobMgEwKFuhEozWztJl"
     },
@@ -160,7 +160,7 @@
       "decidedOnPenalties": false,
       "group": "H",
       "utcDate": "2026-06-15T22:00:00Z",
-      "pill": "Arabia Saudită a ținut piept Uruguayului cu un portar inspirat, care a salvat nouă șuturi, deși a avut doar 33% posesie. Uruguay a egalat prin Maxi Araújo în minutul 80, după ce saudiții au deschis scorul. Un punct scos cu greu de Uruguay, care a avut 27 de șuturi.",
+      "pill": "Arabia Saudită a dat lovitura în minutul 41 prin Al-Amri, dar portarul lor a fost adevăratul erou, cu 9 intervenții salvatoare în fața celor 27 de șuturi ale uruguayenilor. Maxi Araújo a reușit să egaleze abia în minutul 80, și Uruguay se mulțumește cu un singur punct în Grupa H, deși a dominat clar.",
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/2OO54UvFW7GK8vnsarneGk"
     },
@@ -183,7 +183,7 @@
           "team": "away",
           "penalty": false,
           "ownGoal": false,
-          "assist": "Chris Wood",
+          "assist": null,
           "bodyPart": "dreptul",
           "placement": "din careu"
         },
@@ -224,7 +224,7 @@
           "foulsCommitted": "10",
           "wonCorners": "4",
           "saves": "6",
-          "possessionPct": "48.3",
+          "possessionPct": "48.5",
           "totalShots": "17",
           "shotsOnTarget": "4"
         },
@@ -232,7 +232,7 @@
           "foulsCommitted": "8",
           "wonCorners": "1",
           "saves": "2",
-          "possessionPct": "51.7",
+          "possessionPct": "51.5",
           "totalShots": "14",
           "shotsOnTarget": "8"
         }
@@ -240,8 +240,8 @@
       "decidedOnPenalties": false,
       "group": "G",
       "utcDate": "2026-06-16T01:00:00Z",
-      "pill": "Noua Zeelandă a deschis scorul de două ori prin Elijah Just, profitând de pasele lui Chris Wood, dar Iranul s-a încăpățânat să nu piardă. Mohammad Mohebbi a trimis salvator cu capul în minutul 64, aducând egalarea finală. Un meci cu patru goluri și două reveniri.",
-      "drama": 5,
+      "pill": "Noua Zeelandă a condus de două ori prin Elijah Just, în minutele 7 și 54, însă Iranul a revenit de fiecare dată. Mohammad Mohebbi a restabilit egalitatea printr-o lovitură de cap în minutul 64, salvând un punct pentru iranieni într-un meci cu patru goluri.",
+      "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/5c6T3T7Y1XfKrT3aXzJRqL"
     }
   ],
@@ -354,7 +354,7 @@
       "awayCode": "sn",
       "kickoffEEST": "22:00",
       "alarm": "citești dimineața",
-      "why": "E la o oră decentă, un meci între două forțe care se bat pe primul loc."
+      "why": "E la o oră decentă, un duel între două forțe ale fotbalului mondial care se bat pe primul loc în Grupa I."
     },
     {
       "id": 537392,
@@ -364,7 +364,7 @@
       "awayCode": "no",
       "kickoffEEST": "01:00",
       "alarm": "citești dimineața",
-      "why": "Ora târzie nu justifică un duel între locurile 57 și 31 din clasamentul mondial, unde Norvegia e favorită."
+      "why": "Este târziu, iar diferența de valoare dintre cele două echipe nu anunță un spectacol care să merite nopți albe."
     },
     {
       "id": 537397,
@@ -373,8 +373,8 @@
       "homeCode": "ar",
       "awayCode": "dz",
       "kickoffEEST": "04:00",
-      "alarm": "stai treaz",
-      "why": "Merită alarma: e 04:00, dar Argentina, campioana mondială, joacă și e mereu un spectacol."
+      "alarm": "citești dimineața",
+      "why": "Campioana mondială joacă la o oră la care doar cei mai devotați suporteri ar sacrifica somnul, pentru o victorie probabil previzibilă."
     },
     {
       "id": 537398,
@@ -384,8 +384,8 @@
       "awayCode": "jo",
       "kickoffEEST": "07:00",
       "alarm": "citești dimineața",
-      "why": "La 07:00 dimineața, mai bine afli scorul la cafea, decât să te trezești pentru un meci dezechilibrat."
+      "why": "Este mult prea devreme pentru un meci care nu pare genul de spectacol pentru care să merite să sari peste cafeaua de dimineață."
     }
   ],
-  "teaser": "⚽ Spania, campioana posesiei sterile; Iran, maestră a revenirilor · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Spania, la 27 de șuturi, dar tot 0-0. Autogol belgian și portari-eroi. · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
