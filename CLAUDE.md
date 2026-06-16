@@ -14,7 +14,7 @@ Read `SPEC.md` for the full product spec; it is the source of truth for behavior
 npm ci                                  # install (Node 20, see .nvmrc)
 npm test                                # node --test over test/
 node --test test/standings.test.js      # run one test file
-npm run digest                          # live pipeline run (needs FOOTBALL_DATA_TOKEN + GEMINI_API_KEY)
+npm run digest                          # live pipeline run (needs GEMINI_API_KEY; ESPN needs no key)
 node pipeline/run.js --date 2026-06-12  # live run for a specific date
 node pipeline/run.js --fixtures test/fixtures --date 2026-06-12   # offline run, no API calls
 node pipeline/run.js --require-complete  # no-op unless every match of the night has finished
@@ -25,10 +25,10 @@ There is no build step and no lint config — the site is vanilla HTML/CSS/JS se
 
 ## Offline development
 
-`--fixtures <dir>` is the way to work without hitting either API. It reads `matches.json`,
-`standings.json`, and (optionally) `narration.json` from the dir instead of calling
-football-data.org and Gemini. `test/fixtures/` holds a working sample set. When `narration.json`
-is absent the run still calls Gemini, so include it to stay fully offline.
+`--fixtures <dir>` is the way to work without hitting either API. It reads `scoreboard.json`,
+`summary-<id>.json`, and `espn-standings.json` from the dir instead of calling ESPN, plus
+(optionally) `narration.json` instead of Gemini. `test/fixtures/` holds a working sample set.
+When `narration.json` is absent the run still calls Gemini, so include it to stay fully offline.
 
 ## Core principle (do not violate)
 
@@ -41,10 +41,13 @@ Any change that lets narration originate a score, scorer, or qualification claim
 
 ## Pipeline flow (`pipeline/run.js` orchestrates)
 
-1. `fetch.js` — football-data.org v4 client. Defines the EEST "night window"
-   (`[D-1 16:00 UTC, D 06:00 UTC)`) and splits a `/matches` response into last night's
-   `finished` games and `tonight`'s fixtures. `digestReadiness()` powers the `--require-complete`
-   gate. Times are computed against `Europe/Bucharest` via `Intl` — never hardcode offsets.
+1. `espn.js` — ESPN public-API client (the sole fact source; no key). Defines the EEST
+   "night window" (`[D-1 16:00 UTC, D 06:00 UTC)`) and splits the scoreboard into last
+   night's `finished` games and `tonight`'s fixtures, enriching finished matches with
+   scorers/cards/stats from each event summary and reshaping ESPN into the match shape the
+   rest of the pipeline consumes. A match is "over" when ESPN reports `completed===true`;
+   `digestReadiness()` powers the `--require-complete` gate. Times are computed against
+   `Europe/Bucharest` via `Intl` — never hardcode offsets.
 2. `standings.js` — Phase 1 status classification. Point-based math only; a team is only
    `calificată`/`eliminată` when no tiebreaker could change it (ties stay `în cărți`). The exact
    scenario engine (`scenarios.js`, tiebreakers, best-thirds) is Phase 2 and not built yet.
@@ -61,8 +64,8 @@ untouched and exits non-zero so the workflow skips commit + deploy.
 
 ## Team names
 
-`teams.js` maps football-data.org English names to Romanian exonyms. Unknown names (knockout
-placeholders) pass through. Add new mappings here, not inline.
+`teams.js` maps ESPN English names to Romanian exonyms (plus FIFA ranks and flag codes).
+Unknown names (knockout placeholders) pass through. Add new mappings here, not inline.
 
 ## Site (`site/`)
 
