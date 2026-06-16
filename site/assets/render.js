@@ -103,10 +103,16 @@ function renderMatchCard(match) {
   return card;
 }
 
-/** A team-colored event span: `${name} ${minute}'`, class `ev` plus the side. */
+/**
+ * A team-colored event span: `${name} ${minute}'`, class `ev` plus the side.
+ * Own goals carry the `(autogol)` tag so the scorer reads against, not for, the
+ * team colour they wear — `team` is the side that benefits, not the player's own.
+ */
 function eventSpan(event) {
   const cls = event.team ? `ev ${event.team}` : 'ev';
-  return el('span', cls, `${event.name} ${event.minute}'`);
+  const tag = event.ownGoal ? ' (autogol)' : '';
+  const label = `${event.name}${tag} ${event.minute}'`;
+  return el('span', cls, label);
 }
 
 /** A red-card event span: the goal span with a `■` mark prepended. */
