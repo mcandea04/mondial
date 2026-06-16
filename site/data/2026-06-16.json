@@ -1,9 +1,9 @@
 {
   "date": "2026-06-16",
-  "factsHash": "0acf85753e6cc044cceba90234650503860c23568fb8aaf215899d0cd7db260b",
+  "factsHash": "d2599f3c770134afdb24d09e57526b2cad4ebc523739f1e103d56178919fd1b4",
   "narrator": "gemini-polish",
-  "headline": "Spania, un nul alb cu Capul Verde. 27 de șuturi, 0 goluri.",
-  "summary": "Spania a dominat autoritar, cu 74% posesie și 27 de șuturi, dar n-a reușit să înscrie cu Capul Verde și a obținut doar un 0-0 sec. Portarul african a avut șapte intervenții și a contribuit decisiv la un punct istoric pentru echipa sa.",
+  "headline": "Spania, campioana posesiei sterile; Iran, maestră a revenirilor",
+  "summary": "Spania a dominat fără efect Capul Verde, terminând 0-0 în ciuda unei posesii copleșitoare și a 27 de șuturi. Între timp, Uruguay a smuls un egal târziu cu Arabia Saudită, iar Iranul și Noua Zeelandă au oferit un spectacol cu patru goluri și două reveniri.",
   "matches": [
     {
       "id": 537369,
@@ -24,7 +24,7 @@
           "foulsCommitted": "10",
           "wonCorners": "11",
           "saves": "1",
-          "possessionPct": "74.2",
+          "possessionPct": "74.3",
           "totalShots": "27",
           "shotsOnTarget": "7"
         },
@@ -32,7 +32,7 @@
           "foulsCommitted": "1",
           "wonCorners": "1",
           "saves": "7",
-          "possessionPct": "25.8",
+          "possessionPct": "25.7",
           "totalShots": "6",
           "shotsOnTarget": "1"
         }
@@ -40,18 +40,278 @@
       "decidedOnPenalties": false,
       "group": "H",
       "utcDate": "2026-06-15T16:00:00Z",
-      "pill": "Spania, a doua forță a lumii, a reușit un 0-0 sec cu Capul Verde, deși a tras de 27 de ori la poartă. Portarul african a avut șapte intervenții și le-a asigurat un punct care miroase a mare surpriză.",
-      "drama": 3,
+      "pill": "Spania și-a pierdut busola complet în fața Capului Verde, ratând 27 de șuturi și nereușind să învingă portarul advers. În ciuda unei posesii de 74%, favoriții au plecat acasă cu un singur punct. E o rușine să nu învingi Capul Verde.",
+      "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/jLS5YXPMr0XAd5lMHtbiJ"
+    },
+    {
+      "id": 537363,
+      "home": "Belgia",
+      "away": "Egipt",
+      "homeCode": "be",
+      "awayCode": "eg",
+      "homeRank": 9,
+      "awayRank": 29,
+      "score": [
+        1,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Emam Ashour",
+          "minute": "20",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Mohamed Salah",
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
+        },
+        {
+          "name": "Mohamed Hany",
+          "minute": "66",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "15",
+          "wonCorners": "2",
+          "saves": "2",
+          "possessionPct": "53.6",
+          "totalShots": "15",
+          "shotsOnTarget": "3"
+        },
+        "away": {
+          "foulsCommitted": "15",
+          "wonCorners": "7",
+          "saves": "3",
+          "possessionPct": "46.4",
+          "totalShots": "14",
+          "shotsOnTarget": "3"
+        }
+      },
+      "decidedOnPenalties": false,
+      "group": "G",
+      "utcDate": "2026-06-15T19:00:00Z",
+      "pill": "Egiptul a făcut tot jocul în prima repriză, deschizând scorul prin Emam Ashour la pasa lui Salah, iar Belgia a egalat în minutul 66, dar dintr-un autogol. Ambele echipe au avut doar trei șuturi pe poartă, așa că egalul e meritat. E un punct obținut pe mâna adversarului, dar e bun.",
+      "drama": 3,
+      "highlight": "https://www.fifa.com/en/watch/2XSqobMgEwKFuhEozWztJl"
+    },
+    {
+      "id": 537370,
+      "home": "Arabia Saudită",
+      "away": "Uruguay",
+      "homeCode": "sa",
+      "awayCode": "uy",
+      "homeRank": 61,
+      "awayRank": 16,
+      "score": [
+        1,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Abdulelah Al-Amri",
+          "minute": "41",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": null
+        },
+        {
+          "name": "Maxi Araújo",
+          "minute": "80",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": null
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "11",
+          "wonCorners": "4",
+          "saves": "9",
+          "possessionPct": "33.2",
+          "totalShots": "7",
+          "shotsOnTarget": "3"
+        },
+        "away": {
+          "foulsCommitted": "6",
+          "wonCorners": "14",
+          "saves": "2",
+          "possessionPct": "66.8",
+          "totalShots": "27",
+          "shotsOnTarget": "10"
+        }
+      },
+      "decidedOnPenalties": false,
+      "group": "H",
+      "utcDate": "2026-06-15T22:00:00Z",
+      "pill": "Arabia Saudită a ținut piept Uruguayului cu un portar inspirat, care a salvat nouă șuturi, deși a avut doar 33% posesie. Uruguay a egalat prin Maxi Araújo în minutul 80, după ce saudiții au deschis scorul. Un punct scos cu greu de Uruguay, care a avut 27 de șuturi.",
+      "drama": 4,
+      "highlight": "https://www.fifa.com/en/watch/2OO54UvFW7GK8vnsarneGk"
+    },
+    {
+      "id": 537364,
+      "home": "Iran",
+      "away": "Noua Zeelandă",
+      "homeCode": "ir",
+      "awayCode": "nz",
+      "homeRank": 20,
+      "awayRank": 85,
+      "score": [
+        2,
+        2
+      ],
+      "scorers": [
+        {
+          "name": "Elijah Just",
+          "minute": "7",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Chris Wood",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Ramin Rezaeian",
+          "minute": "32",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Elijah Just",
+          "minute": "54",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Chris Wood",
+          "bodyPart": "dreptul",
+          "placement": "din dreapta careului"
+        },
+        {
+          "name": "Mohammad Mohebbi",
+          "minute": "64",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "cu capul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "10",
+          "wonCorners": "4",
+          "saves": "6",
+          "possessionPct": "48.3",
+          "totalShots": "17",
+          "shotsOnTarget": "4"
+        },
+        "away": {
+          "foulsCommitted": "8",
+          "wonCorners": "1",
+          "saves": "2",
+          "possessionPct": "51.7",
+          "totalShots": "14",
+          "shotsOnTarget": "8"
+        }
+      },
+      "decidedOnPenalties": false,
+      "group": "G",
+      "utcDate": "2026-06-16T01:00:00Z",
+      "pill": "Noua Zeelandă a deschis scorul de două ori prin Elijah Just, profitând de pasele lui Chris Wood, dar Iranul s-a încăpățânat să nu piardă. Mohammad Mohebbi a trimis salvator cu capul în minutul 64, aducând egalarea finală. Un meci cu patru goluri și două reveniri.",
+      "drama": 5,
+      "highlight": null
     }
   ],
   "groups": [
     {
+      "name": "G",
+      "table": [
+        {
+          "team": "Iran",
+          "code": "ir",
+          "p": 1,
+          "w": 0,
+          "d": 1,
+          "l": 0,
+          "gd": 0,
+          "pts": 1,
+          "status": "în cărți"
+        },
+        {
+          "team": "Noua Zeelandă",
+          "code": "nz",
+          "p": 1,
+          "w": 0,
+          "d": 1,
+          "l": 0,
+          "gd": 0,
+          "pts": 1,
+          "status": "în cărți"
+        },
+        {
+          "team": "Belgia",
+          "code": "be",
+          "p": 1,
+          "w": 0,
+          "d": 1,
+          "l": 0,
+          "gd": 0,
+          "pts": 1,
+          "status": "în cărți"
+        },
+        {
+          "team": "Egipt",
+          "code": "eg",
+          "p": 1,
+          "w": 0,
+          "d": 1,
+          "l": 0,
+          "gd": 0,
+          "pts": 1,
+          "status": "în cărți"
+        }
+      ]
+    },
+    {
       "name": "H",
       "table": [
         {
-          "team": "Capul Verde",
-          "code": "cv",
+          "team": "Arabia Saudită",
+          "code": "sa",
+          "p": 1,
+          "w": 0,
+          "d": 1,
+          "l": 0,
+          "gd": 0,
+          "pts": 1,
+          "status": "în cărți"
+        },
+        {
+          "team": "Uruguay",
+          "code": "uy",
           "p": 1,
           "w": 0,
           "d": 1,
@@ -72,25 +332,14 @@
           "status": "în cărți"
         },
         {
-          "team": "Arabia Saudită",
-          "code": "sa",
-          "p": 0,
+          "team": "Capul Verde",
+          "code": "cv",
+          "p": 1,
           "w": 0,
-          "d": 0,
+          "d": 1,
           "l": 0,
           "gd": 0,
-          "pts": 0,
-          "status": "în cărți"
-        },
-        {
-          "team": "Uruguay",
-          "code": "uy",
-          "p": 0,
-          "w": 0,
-          "d": 0,
-          "l": 0,
-          "gd": 0,
-          "pts": 0,
+          "pts": 1,
           "status": "în cărți"
         }
       ]
@@ -105,7 +354,7 @@
       "awayCode": "sn",
       "kickoffEEST": "22:00",
       "alarm": "citești dimineața",
-      "why": "Franța și Senegal joacă în deschiderea serii la o oră rezonabilă, într-un duel echilibrat între două forțe ale turneului."
+      "why": "E la o oră decentă, un meci între două forțe care se bat pe primul loc."
     },
     {
       "id": 537392,
@@ -115,7 +364,7 @@
       "awayCode": "no",
       "kickoffEEST": "01:00",
       "alarm": "citești dimineața",
-      "why": "La 01:00, Irak și Norvegia se bat pentru puncte importante, dar e o oră la care poți liniștit să vezi rezumatul mâine."
+      "why": "Ora târzie nu justifică un duel între locurile 57 și 31 din clasamentul mondial, unde Norvegia e favorită."
     },
     {
       "id": 537397,
@@ -124,8 +373,8 @@
       "homeCode": "ar",
       "awayCode": "dz",
       "kickoffEEST": "04:00",
-      "alarm": "citești dimineața",
-      "why": "Argentina, campioana mondială, joacă la 04:00 cu Algeria; chiar dacă e o mare favorită, majoritatea suporterilor de cursă lungă își vor sacrifica somnul degeaba la ora asta."
+      "alarm": "stai treaz",
+      "why": "Merită alarma: e 04:00, dar Argentina, campioana mondială, joacă și e mereu un spectacol."
     },
     {
       "id": 537398,
@@ -135,8 +384,8 @@
       "awayCode": "jo",
       "kickoffEEST": "07:00",
       "alarm": "citești dimineața",
-      "why": "Austria contra Iordaniei e un meci de dimineață, la 07:00, o oră la care e mai productiv să-ți bei cafeaua liniștit."
+      "why": "La 07:00 dimineața, mai bine afli scorul la cafea, decât să te trezești pentru un meci dezechilibrat."
     }
   ],
-  "teaser": "⚽ Spania, un nul alb cu Capul Verde. 27 de șuturi, 0 goluri. · 1 meci azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Spania, campioana posesiei sterile; Iran, maestră a revenirilor · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
