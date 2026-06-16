@@ -28,7 +28,7 @@ Static site + daily batch job. No server, no database.
 ```
 GitHub Actions (cron 04:30 UTC = 07:30 EEST)
   └─ node pipeline/run.js
-       1. fetch results, fixtures, standings  (football-data.org)
+       1. fetch results, fixtures, standings  (ESPN public API)
        2. compute standings + qualification scenarios (deterministic, Phase 2)
        3. call Gemini API → headline, pills, drama ratings, teaser (strict JSON out)
        4. generate OG image (PNG) for the day
@@ -49,7 +49,7 @@ mondial/
 ├── .github/workflows/digest.yml # scheduled pipeline + deploy
 ├── pipeline/
 │   ├── run.js                   # orchestrator (steps 1–5 above)
-│   ├── fetch.js                 # football-data.org client (results, fixtures, standings)
+│   ├── espn.js                  # ESPN client: results, fixtures, standings + scorer/card enrichment
 │   ├── standings.js             # group tables + status classification
 │   ├── scenarios.js             # Phase 2: deterministic qualification scenarios
 │   ├── narrate.js               # Gemini API call, prompt template, JSON validation
@@ -70,29 +70,24 @@ mondial/
 
 ## 4. Pipeline details
 
-### 4.1 Fetch (`fetch.js`)
-- Source: football-data.org v4, competition `WC`. Free tier covers the World Cup;
-  rate limit ~10 req/min, so serialize calls with a small delay.
+### 4.1 Fetch (`espn.js`)
+- Source: ESPN's public soccer API, competition `fifa.world`
+  (`site.api.espn.com/.../soccer/fifa.world`). No key, no auth, no season gate.
 - Pull: yesterday's finished matches, today's & tomorrow's fixtures, current group
-  standings.
+  standings. The `scoreboard` lists a date's events; each finished event's `summary`
+  carries a `keyEvents` timeline (goals, cards) and a boxscore (team stats), reshaped
+  into the `goals[]`/`bookings[]`/`stats` shape so `parseMatch` stays the single normalizer.
 - "Yesterday" = the EEST night window: matches with UTC kickoff between
   `yesterday 16:00 UTC` and `today 06:00 UTC` (covers 19:00–09:00 EEST). Compute the
   window with `Intl`/`Temporal` against `Europe/Bucharest`, never hardcode offsets.
-- Secrets: `FOOTBALL_DATA_TOKEN` (GitHub Actions secret).
-
-### 4.1a Enrich (`enrich.js`)
-- football-data's free tier omits `goals`/`bookings` for WC, so finished matches carry
-  no scorer or card detail. Scorers and cards come from ESPN's public soccer API
-  (`site.api.espn.com/.../soccer/fifa.world`): the `scoreboard` lists a date's events,
-  each event's `summary` carries a `keyEvents` timeline. That is reshaped into
-  football-data's `goals[]`/`bookings[]` so `parseMatch` stays the single normalizer.
-- A football-data match is paired to an ESPN event by kickoff time; simultaneous
-  kickoffs (final group round) are disambiguated by team-name overlap. Score is not
-  compared — ET/shootout totals can differ between sources.
-- No key, no auth, no season gate (ESPN serves WC2026 for free). Unofficial/undocumented,
-  so parsing keys off `keyEvents[].type.text` defensively and the whole step is
-  best-effort: no event match or any HTTP error leaves the match untouched and the card
-  shows score + pill only. A missing scorer never blocks a night from publishing.
+  ESPN dates its scoreboard by US/Eastern day, so a night can span two date-boards;
+  both are queried.
+- A match is "over" when ESPN reports `completed===true`. `isOver` is the single
+  predicate behind both the readiness gate (`fetchNightMatches`) and the build
+  (`fetchDigestData`), so the two always agree on the finished set.
+- Unofficial/undocumented, so parsing keys off `keyEvents[].type.text` defensively and
+  per-event enrichment is best-effort: a missing event summary leaves the match with
+  score + pill only. A missing scorer never blocks a night from publishing.
 
 ### 4.2 Standings & status (`standings.js`)
 - Recompute or ingest group tables; classify each team:

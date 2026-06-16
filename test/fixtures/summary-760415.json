@@ -1,0 +1,20 @@
+{
+  "header": {
+    "competitions": [{ "competitors": [
+      { "homeAway": "home", "team": { "id": "10" } },
+      { "homeAway": "away", "team": { "id": "11" } }
+    ] }]
+  },
+  "keyEvents": [
+    { "team": { "id": "10" }, "clock": { "displayValue": "7'" }, "type": { "text": "Goal" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "David" } }], "text": "David right footed shot from the centre of the box." },
+    { "team": { "id": "10" }, "clock": { "displayValue": "34'" }, "type": { "text": "Goal" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "Larin" } }], "text": "Larin header from the centre of the box." },
+    { "team": { "id": "10" }, "clock": { "displayValue": "67'" }, "type": { "text": "Goal" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "Osorio" } }], "text": "Osorio left footed shot from outside the box." },
+    { "team": { "id": "10" }, "clock": { "displayValue": "85'" }, "type": { "text": "Goal" }, "scoringPlay": true, "participants": [{ "athlete": { "displayName": "Buchanan" } }], "text": "Buchanan right footed shot from the right side of the box." }
+  ],
+  "boxscore": {
+    "teams": [
+      { "team": { "id": "10" }, "statistics": [{ "name": "possessionPct", "displayValue": "62.1" }, { "name": "totalShots", "displayValue": "18" }, { "name": "shotsOnTarget", "displayValue": "8" }, { "name": "wonCorners", "displayValue": "9" }, { "name": "saves", "displayValue": "2" }, { "name": "foulsCommitted", "displayValue": "7" }] },
+      { "team": { "id": "11" }, "statistics": [{ "name": "possessionPct", "displayValue": "37.9" }, { "name": "totalShots", "displayValue": "4" }, { "name": "shotsOnTarget", "displayValue": "2" }, { "name": "wonCorners", "displayValue": "2" }, { "name": "saves", "displayValue": "4" }, { "name": "foulsCommitted", "displayValue": "14" }] }
+    ]
+  }
+}

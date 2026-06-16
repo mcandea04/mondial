@@ -85,11 +85,18 @@ test('changed facts re-narrate automatically', () => {
   runPipeline({ fixtures, out });
   const first = readDigest(out);
 
-  const matchesPath = path.join(fixtures, 'matches.json');
-  const matches = JSON.parse(readFileSync(matchesPath, 'utf8'));
-  const finished = matches.matches.find((m) => m.status === 'FINISHED');
-  finished.score.fullTime.home += 1;
-  writeFileSync(matchesPath, JSON.stringify(matches, null, 2));
+  // Mutate a completed event's score in the ESPN-shaped scoreboard fixture.
+  const boardPath = path.join(fixtures, 'scoreboard.json');
+  const board = JSON.parse(readFileSync(boardPath, 'utf8'));
+  // 760414 (Mexico v South Africa) appears in both date boards; update both.
+  for (const dateKey of Object.keys(board)) {
+    const event = board[dateKey].events.find((e) => e.id === '760414' && e.status?.type?.completed);
+    if (event) {
+      const home = event.competitions[0].competitors.find((c) => c.homeAway === 'home');
+      home.score = String(Number(home.score) + 1);
+    }
+  }
+  writeFileSync(boardPath, JSON.stringify(board, null, 2));
   setCannedHeadline(fixtures, 'Proză nouă după corecția scorului');
 
   runPipeline({ fixtures, out });
@@ -146,7 +153,7 @@ test('a backfill run for an older date does not clobber a newer latest.json', ()
 
 import { mergeHighlight, mergeEnrichment } from '../pipeline/run.js';
 
-test('mergeEnrichment: a blackout poll keeps prior scorers/events/stats', () => {
+test('mergeEnrichment: a blackout poll keeps prior scorers/events; stats left for mergeStats', () => {
   const stored = new Map([[1, {
     id: 1,
     scorers: [{ name: 'Lozano', minute: '88', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null }],
@@ -157,7 +164,8 @@ test('mergeEnrichment: a blackout poll keeps prior scorers/events/stats', () => 
   const merged = mergeEnrichment(blackout, stored);
   assert.deepEqual(merged.scorers, stored.get(1).scorers);
   assert.deepEqual(merged.events, stored.get(1).events);
-  assert.deepEqual(merged.stats, stored.get(1).stats);
+  // mergeEnrichment no longer touches stats — mergeStats handles that separately
+  assert.equal(merged.stats, null);
   assert.deepEqual(merged.score, [2, 1]); // score is always fresh
 });
 
@@ -244,4 +252,94 @@ test('--require-complete: outage after a stored link keeps the link and skips de
   const log = runPipeline({ fixtures, out, extra: ['--require-complete'] });
   assert.equal(readDigest(out).matches.filter((m) => m.highlight).length, 1);
   assert.match(log, /nothing changed; already published/);
+});
+
+import { mergeStats } from '../pipeline/run.js';
+
+test('mergeStats: prior non-null stats lock — fresh stats are discarded', () => {
+  const prior = { home: { possessionPct: '55.0' }, away: { possessionPct: '45.0' } };
+  const fresh = { home: { possessionPct: '54.7' }, away: { possessionPct: '45.3' } };
+  assert.deepEqual(mergeStats(fresh, prior), prior);
+});
+
+test('mergeStats: prior null — fresh stats fill once', () => {
+  const fresh = { home: { possessionPct: '54.7' }, away: { possessionPct: '45.3' } };
+  assert.deepEqual(mergeStats(fresh, null), fresh);
+  assert.deepEqual(mergeStats(fresh, undefined), fresh);
+});
+
+test('mergeEnrichment: scorers/events restored on blackout but stats not touched', () => {
+  const match = { id: 1, scorers: [], events: [], stats: null };
+  const prior = new Map([[1, { scorers: [{ name: 'X' }], events: [], stats: { home: { possessionPct: '55.0' } } }]]);
+  const result = mergeEnrichment(match, prior);
+  // scorers/events are restored (unchanged behavior)
+  assert.equal(result.scorers.length, 1);
+  // stats NOT touched by mergeEnrichment — stays as fresh value (null here)
+  assert.equal(result.stats, null);
+});
+
+import { readFile as readFileAsync, writeFile as writeFileAsync, mkdir as mkdirAsync, rm as rmAsync } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+const execFileAsync = promisify(execFile);
+
+test('stats freeze: second poll with refined possession produces byte-identical digest', async () => {
+  // This test runs two offline pipeline passes over the same date.
+  // Poll 1: possession is 58.2%/41.8%
+  // Poll 2: possession is updated to 57.9%/42.1% (ESPN post-match refinement)
+  // After poll 1, the stats block is locked. Poll 2 must produce an identical digest JSON.
+
+  const outDir = path.join(ROOT, 'tmp', 'stats-freeze-test');
+  await mkdirAsync(outDir, { recursive: true });
+
+  const fixtureBase = path.join(ROOT, 'test', 'fixtures');
+  const scoreboard = JSON.parse(await readFileAsync(path.join(fixtureBase, 'scoreboard.json'), 'utf8'));
+  const summary1 = JSON.parse(await readFileAsync(path.join(fixtureBase, 'summary-760414.json'), 'utf8'));
+  const standings = JSON.parse(await readFileAsync(path.join(fixtureBase, 'espn-standings.json'), 'utf8'));
+
+  // Poll 2 summary has tweaked possession
+  const summary2 = JSON.parse(JSON.stringify(summary1));
+  summary2.boxscore.teams[0].statistics.find((s) => s.name === 'possessionPct').displayValue = '57.9';
+  summary2.boxscore.teams[1].statistics.find((s) => s.name === 'possessionPct').displayValue = '42.1';
+
+  const poll1Dir = path.join(outDir, 'poll1');
+  const poll2Dir = path.join(outDir, 'poll2');
+  await mkdirAsync(poll1Dir, { recursive: true });
+  await mkdirAsync(poll2Dir, { recursive: true });
+
+  for (const d of [poll1Dir, poll2Dir]) {
+    await writeFileAsync(path.join(d, 'scoreboard.json'), JSON.stringify(scoreboard));
+    await writeFileAsync(path.join(d, 'espn-standings.json'), JSON.stringify(standings));
+    await writeFileAsync(path.join(d, 'narration.json'), await readFileAsync(path.join(fixtureBase, 'narration.json'), 'utf8'));
+    // copy summary-760415 so both matches have enrichment
+    await writeFileAsync(path.join(d, 'summary-760415.json'), await readFileAsync(path.join(fixtureBase, 'summary-760415.json'), 'utf8'));
+  }
+  await writeFileAsync(path.join(poll1Dir, 'summary-760414.json'), JSON.stringify(summary1));
+  await writeFileAsync(path.join(poll2Dir, 'summary-760414.json'), JSON.stringify(summary2));
+
+  // Run poll 1
+  await execFileAsync('node', [
+    path.join(ROOT, 'pipeline', 'run.js'),
+    '--fixtures', poll1Dir,
+    '--date', '2026-06-12',
+    '--out', outDir,
+  ]);
+
+  const after1 = await readFileAsync(path.join(outDir, '2026-06-12.json'), 'utf8');
+  const digest1 = JSON.parse(after1);
+  assert.equal(digest1.matches[0].stats?.home?.possessionPct, '58.2', 'poll 1 should record 58.2');
+
+  // Run poll 2 — same outDir so run.js reads the poll-1 digest as "existing"
+  await execFileAsync('node', [
+    path.join(ROOT, 'pipeline', 'run.js'),
+    '--fixtures', poll2Dir,
+    '--date', '2026-06-12',
+    '--out', outDir,
+  ]);
+
+  const after2 = await readFileAsync(path.join(outDir, '2026-06-12.json'), 'utf8');
+  assert.equal(after1, after2, 'digest should be byte-identical after possession refinement (stats frozen)');
+
+  // Cleanup
+  await rmAsync(outDir, { recursive: true, force: true });
 });
