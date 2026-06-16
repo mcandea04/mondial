@@ -2,8 +2,8 @@
   "date": "2026-06-17",
   "factsHash": "86ebab3d3881a69107b5a0cb4860f29c985aaf0317bdd59601f22a552d4b968a",
   "narrator": "gemini-polish",
-  "headline": "Anglia și Croația animă seara; restul, la cafea",
-  "summary": "Seara ne aduce un duel european de clasă între Anglia și Croația, dar și Portugalia intră în scenă contra Republicii Democrată Congo. Restul meciurilor se joacă la ore la care e mai înțelept să afli rezultatele dimineață, la cafea, decât să sacrifici somnul.",
+  "headline": "Anglia-Croația la 23:00, restul... dimineața",
+  "summary": "Astăzi avem parte de patru meciuri, începând cu Portugalia la 20:00 și terminând cu Uzbekistan la 05:00. Deși Anglia și Croația se întâlnesc la o oră decentă, restul programului e mai bun de citit la cafeaua de dimineață.",
   "matches": [],
   "groups": [],
   "tonight": [
@@ -15,7 +15,7 @@
       "awayCode": "cd",
       "kickoffEEST": "20:00",
       "alarm": "citești dimineața",
-      "why": "Portugalia, o mare favorită, joacă la o oră la care o prinzi fără efort, așa că nu e nevoie de alarmă."
+      "why": "Portugalia, la ora cinei, intră în turneu împotriva RD Congo, o formalitate pe care o vezi liniștit."
     },
     {
       "id": 760437,
@@ -25,7 +25,7 @@
       "awayCode": "hr",
       "kickoffEEST": "23:00",
       "alarm": "citești dimineața",
-      "why": "Anglia și Croația, două forțe europene, se întâlnesc aproape de miezul nopții, dar tot nu cer un sacrificiu de somn."
+      "why": "Două forțe ale grupei L, Anglia și Croația, se întâlnesc la o oră decentă, perfectă pentru un meci de văzut fără grija somnului."
     },
     {
       "id": 760434,
@@ -35,7 +35,7 @@
       "awayCode": "pa",
       "kickoffEEST": "02:00",
       "alarm": "citești dimineața",
-      "why": "Ghana și Panama joacă la 02:00, o oră la care e mai logic să afli scorul dimineață, la cafea."
+      "why": "Meciul dintre Ghana și Panama, la ora două dimineața, este doar pentru cei care au insomnii cronice, nu pentru o partidă care te ține cu sufletul la gură."
     },
     {
       "id": 760436,
@@ -45,8 +45,8 @@
       "awayCode": "co",
       "kickoffEEST": "05:00",
       "alarm": "citești dimineața",
-      "why": "Meciul dintre Uzbekistan și Columbia începe la 05:00, când somnul este mai prețios decât un debut de grupă."
+      "why": "Uzbekistan și Columbia închid noaptea la cinci dimineața, o oră la care e mult mai înțelept să afli scorul la cafeaua de dimineață."
     }
   ],
-  "teaser": "⚽ Anglia și Croația animă seara; restul, la cafea · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Anglia-Croația la 23:00, restul... dimineața · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
 }
