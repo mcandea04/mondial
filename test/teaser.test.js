@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildTeaser } from '../pipeline/teaser.js';
+import { buildTeaser, buildTeaserEn } from '../pipeline/teaser.js';
 
 const URL = 'https://mcandea04.github.io/mondial/';
 
@@ -25,4 +25,16 @@ test('buildTeaser does not accept recapCount (ignored if passed)', () => {
   const withoutCount = buildTeaser({ headline: 'Test', matchCount: 2, siteUrl: URL });
   assert.equal(withCount, withoutCount);
   assert.equal(withCount, `⚽ Test · 2 meciuri azi-noapte, cu rezumate video\n${URL}`);
+});
+
+test('buildTeaserEn pluralizes matches in English', () => {
+  assert.equal(
+    buildTeaserEn({ headline: 'Big night', matchCount: 3, siteUrl: 'https://x/' }),
+    '⚽ Big night · 3 matches overnight, with video highlights\nhttps://x/',
+  );
+});
+
+test('buildTeaserEn handles one match and none', () => {
+  assert.match(buildTeaserEn({ headline: 'H', matchCount: 1, siteUrl: 'u' }), /1 match overnight/);
+  assert.match(buildTeaserEn({ headline: 'H', matchCount: 0, siteUrl: 'u' }), /no matches overnight/);
 });
