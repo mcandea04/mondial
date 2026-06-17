@@ -64,6 +64,41 @@ export const responseSchema = {
   },
 };
 
+// Gemini structured-output schema for English narration: identical to
+// responseSchema but with the English alarm enum.
+export const responseSchemaEn = {
+  type: 'OBJECT',
+  required: ['headline', 'summary', 'matches', 'tonight'],
+  properties: {
+    headline: { type: 'STRING' },
+    summary: { type: 'STRING' },
+    matches: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['id', 'pill', 'drama'],
+        properties: {
+          id: { type: 'INTEGER' },
+          pill: { type: 'STRING' },
+          drama: { type: 'INTEGER' },
+        },
+      },
+    },
+    tonight: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['id', 'alarm', 'why'],
+        properties: {
+          id: { type: 'INTEGER' },
+          alarm: { type: 'STRING', enum: ['stay up', 'read in the morning'] },
+          why: { type: 'STRING' },
+        },
+      },
+    },
+  },
+};
+
 /**
  * One Gemini call with an injectable system prompt and optional schema.
  * schema null → plain text response (used for the idiom critique); schema set →
