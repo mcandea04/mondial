@@ -156,7 +156,9 @@ test('offline run with bilingual fixtures produces {ro,en} prose fields', () => 
   runPipeline({ fixtures, out });
   const digest = readDigest(out);
   assert.equal(typeof digest.headline, 'object');
-  assert.ok(digest.headline.ro && digest.headline.en);
+  // RO comes from narration.json, EN from narration.en.json — pin both canned values.
+  assert.equal(digest.headline.ro, 'Mexicul scapă cu emoții, Canada calcă apăsat');
+  assert.equal(digest.headline.en, 'Mexico survive a scare, Canada march on');
   assert.equal(typeof digest.narrator, 'object');
   assert.ok(digest.matches.every((m) => typeof m.pill === 'object'));
   assert.ok(digest.tonight.every((t) => typeof t.alarm === 'object' && typeof t.why === 'object'));
@@ -334,6 +336,8 @@ test('stats freeze: second poll with refined possession produces byte-identical 
     await writeFileAsync(path.join(d, 'scoreboard.json'), JSON.stringify(scoreboard));
     await writeFileAsync(path.join(d, 'espn-standings.json'), JSON.stringify(standings));
     await writeFileAsync(path.join(d, 'narration.json'), await readFileAsync(path.join(fixtureBase, 'narration.json'), 'utf8'));
+    // copy the English narration too, so the freeze is exercised on a bilingual digest
+    await writeFileAsync(path.join(d, 'narration.en.json'), await readFileAsync(path.join(fixtureBase, 'narration.en.json'), 'utf8'));
     // copy summary-760415 so both matches have enrichment
     await writeFileAsync(path.join(d, 'summary-760415.json'), await readFileAsync(path.join(fixtureBase, 'summary-760415.json'), 'utf8'));
   }
