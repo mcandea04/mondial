@@ -18,7 +18,7 @@ const JSON_INSTRUCTION =
   'Schema (toate câmpurile obligatorii, fără câmpuri în plus):\n' +
   '{ "headline": string, "summary": string, ' +
   '"matches": [ { "id": number, "pill": string, "drama": number 1-5 } ], ' +
-  '"tonight": [ { "id": number, "alarm": exact "stai treaz" SAU "citești dimineața", "why": string } ] }\n' +
+  '"tonight": [ { "id": number, "alarm": exact "merită văzut" SAU "citești dimineața", "why": string } ] }\n' +
   'ATENȚIE: "alarm" este un șir de caractere, una din cele două valori de mai sus — niciodată true/false. ' +
   '"id" copiază exact id-urile primite în fapte. Nu adăuga câmpul "date" sau altele.';
 

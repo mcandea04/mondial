@@ -222,7 +222,7 @@ function renderTonight(tonight) {
     if (fixture.why) {
       left.append(el('br'), el('span', 'tonight-why', fixture.why));
     }
-    const badgeClass = fixture.alarm === 'stai treaz' ? 'badge-ok' : 'badge-muted';
+    const badgeClass = fixture.alarm === 'merită văzut' ? 'badge-ok' : 'badge-muted';
     row.append(left, el('span', `badge ${badgeClass}`, fixture.alarm));
     card.append(row);
   }

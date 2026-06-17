@@ -6,7 +6,7 @@ const VALID = {
   headline: 'Rüdiger vede roșu, Germania vede aeroportul',
   summary: 'Două propoziții. Exact două.',
   matches: [{ id: 9001, pill: 'Grupa s-a încins.', drama: 4 }],
-  tonight: [{ id: 9101, alarm: 'stai treaz', why: 'Decide prima poziție.' }],
+  tonight: [{ id: 9101, alarm: 'merită văzut', why: 'Decide prima poziție.' }],
 };
 
 /** A runCli stub that returns a CLI envelope wrapping the given result text. */

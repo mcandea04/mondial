@@ -56,7 +56,7 @@ export const responseSchema = {
         required: ['id', 'alarm', 'why'],
         properties: {
           id: { type: 'INTEGER' },
-          alarm: { type: 'STRING', enum: ['stai treaz', 'citești dimineața'] },
+          alarm: { type: 'STRING', enum: ['merită văzut', 'citești dimineața'] },
           why: { type: 'STRING' },
         },
       },

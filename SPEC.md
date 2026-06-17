@@ -15,7 +15,7 @@ Every morning at ~07:30 EEST the site shows, for the previous night:
 3. **Group snapshots** — mini standings tables for every group that played,
    with a status badge per team: `calificată` / `în cărți` / `are nevoie de minune` / `eliminată`.
 4. **„La noapte — merită alarma?"** — tonight's fixtures converted to EEST, each with a
-   watchability badge (`stai treaz` / `citești dimineața`) derived from computed stakes.
+   watchability badge (`merită văzut` / `citești dimineața`) derived from computed stakes and kickoff time.
 5. **WhatsApp teaser** — a 2–3 line share text (headline + match count + URL) and a
    share button. Rich preview via Open Graph tags + a freshly generated OG image.
 
@@ -154,7 +154,7 @@ mondial/
     { "name": "E", "table": [ { "team": "Spania", "p": 2, "gd": 6, "pts": 6, "status": "calificată" } ] }
   ],
   "tonight": [
-    { "home": "Brazilia", "away": "Maroc", "kickoffEEST": "22:00", "alarm": "stai treaz", "why": "…" }
+    { "home": "Brazilia", "away": "Maroc", "kickoffEEST": "22:00", "alarm": "merită văzut", "why": "…" }
   ],
   "teaser": "⚽ <headline> · <n> meciuri azi-noapte\nhttps://<domain>"
 }

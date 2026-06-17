@@ -60,30 +60,30 @@ FORMAT:
    om viu: golul din 89, portarul făcut de râs, favorita care s-a poticnit, nu tabelul.
 4. „drama" = 1–5 (1 = s-a jucat la pas, 5 = nebunie cu răsturnări). Un 4-0 fără poveste e 1-2;
    gol decisiv după minutul 85, eliminări, reveniri = 4-5.
-5. „tonight": înainte să decizi „alarm", GÂNDEȘTE în doi pași, pentru fiecare meci:
-   (a) ORA (din „kickoffEEST", oră românească): un meci care începe seara devreme (până pe la
-       22:00 inclusiv) îl prinzi fără să sacrifici nimic — nu există „somn pierdut", deci
-       „stai treaz" n-are sens pentru el, oricât de tare ar fi. Somnul începe să doară de pe la
-       miezul nopții încolo (00:00–06:00); ăsta e singurul interval pentru care „stai treaz"
-       înseamnă ceva.
-   (b) MIZA, măsurată din CLASAMENTUL FIFA primit („homeRank"/„awayRank", poziție mondială;
+5. „tonight": două verdicte posibile — „merită văzut" (uită-te live) sau „citești dimineața"
+   (lasă-l, afli scorul mâine). Înainte să decizi, GÂNDEȘTE în doi pași, pentru fiecare meci:
+   (a) MIZA, măsurată din CLASAMENTUL FIFA primit („homeRank"/„awayRank", poziție mondială;
        mai mic = mai puternic): un meci între două echipe de top (ambele sub ~20) sau un duel
        echilibrat e tare; o echipă de top contra uneia mult mai slabe (diferență mare de
-       poziții, ex. 9 vs 60) e dezechilibrat — probabil o formalitate, miză mică, n-o
-       recomanzi noaptea decât dacă chiar se anunță o surpriză. Dacă lipsește rangul (null),
-       nu inventa o ierarhie — judeci doar după oră și ce e în joc în grupă.
+       poziții, ex. 9 vs 60) e dezechilibrat — probabil o formalitate, miză mică. Dacă lipsește
+       rangul (null), nu inventa o ierarhie — judeci doar după ce e în joc în grupă.
        Rangul e UNEALTĂ DE JUDECATĂ, nu text de afișat: NU scrie „pe locul N mondial" sau
        „(locul N)" în „why". ASCUNZI CIFRA, NU ECHIPELE — fiecare „why" numește mereu cine
        joacă (ambele echipe pe nume); traduci diferența de valoare în cuvinte („mare favorită",
        „cu mult peste", „două forțe egale"), niciodată într-un număr. O propoziție fără numele
        echipelor („un meci între două forțe") e un eșec — rescrie-o cu cine intră pe teren.
-   Abia apoi: „stai treaz" = meci care e ȘI târziu (de pe la 00:00 încolo) ȘI chiar merită
-   sacrificiul după criteriul de mai sus. Dacă e devreme, e „citești dimineața" indiferent cât
-   e de bun (oricum îl vezi la oră normală). Dacă e târziu dar slab sau dezechilibrat, tot
-   „citești dimineața". Fii zgârcit cu „stai treaz": într-o noapte normală sunt zero sau unul.
+   (b) ORA (din „kickoffEEST", oră românească) RIDICĂ ȘTACHETA, nu o coboară: cu cât e mai
+       târziu, cu atât meciul trebuie să fie mai bun ca să-l recomanzi live. Seara devreme
+       (până pe la 22:00 inclusiv) îl prinzi fără efort, deci orice meci chiar bun trece. După
+       miezul nopții (00:00–06:00) somnul costă — acolo doar un meci excepțional (două echipe de
+       top, un derby, un debut de stea) merită deranjul.
+   Abia apoi: „merită văzut" = meci care e ȘI bun după criteriul de la (a) ȘI trece ștacheta
+   ridicată de oră la (b). Orice altceva — meci slab/dezechilibrat la orice oră, sau meci doar
+   decent la o oră târzie — e „citești dimineața". Fii zgârcit: într-o noapte normală sunt zero,
+   unul, poate două „merită văzut".
    „why" = o propoziție care leagă EXPLICIT ora de miză (poți folosi puterea echipelor, nu
-   numere seci), de ex. structura „merită alarma: 01:00, dar sunt două echipe de top care se
-   bat pe primul loc". Nu spune „stai treaz" pentru un meci de la 20:00 — e o contradicție.
+   numere seci), de ex. structura „merită văzut: 20:00 și sunt două forțe europene cu miză" sau,
+   pentru un meci slab, „la 02:00 și o formalitate — îl afli la cafea".
    VARIAȚIE OBLIGATORIE: cele câteva „why" din aceeași seară NU repetă aceeași formulă. Dacă ai
    scris deja „afli scorul la cafea" / „vezi rezumatul mâine" la un meci, găsește ALT mod de a
    spune „nu merită noaptea" la următoarele (o înțepătură la echipa slabă, o imagine despre
@@ -127,7 +127,7 @@ export const narrationSchema = z.object({
   tonight: z.array(
     z.object({
       id: z.number(),
-      alarm: z.enum(['stai treaz', 'citești dimineața']),
+      alarm: z.enum(['merită văzut', 'citești dimineața']),
       why: z.string().min(1),
     }),
   ),
