@@ -321,3 +321,17 @@ tbody tr td { padding: 5px 0; }
   margin-left: auto;
 }
 
+/* ── Language toggle button ── */
+.lang-toggle {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: none;
+  border: 1px solid var(--muted);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px 8px;
+  margin-left: 8px;
+}
+

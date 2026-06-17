@@ -8,6 +8,8 @@
     try {
       var t = localStorage.getItem('theme');
       if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      var l = localStorage.getItem('lang');
+      document.documentElement.lang = (l === 'ro' || l === 'en') ? l : 'ro';
     } catch (e) {}
   </script>
   <link rel="stylesheet" href="assets/style.css" />
@@ -34,20 +36,30 @@
   <script type="module">
     import { renderDigest, loadDigest } from './assets/render.js';
     import { mountToggle } from './assets/theme.js';
+    import { mountLangToggle, currentLang } from './assets/lang.js';
 
-    mountToggle(document.querySelector('.meta'));
+    const meta = document.querySelector('.meta');
+    mountToggle(meta);
 
     const list = document.getElementById('archive-list');
     const digestRoot = document.getElementById('digest');
+    let shownDate = null;
+    let shownDigest = null;
+
+    mountLangToggle(meta, () => {
+      if (shownDigest) renderDigest(digestRoot, shownDigest, currentLang());
+    });
+
     const dateFmt = new Intl.DateTimeFormat('ro-RO', {
-      timeZone: 'Europe/Bucharest',
-      weekday: 'long', day: 'numeric', month: 'long',
+      timeZone: 'Europe/Bucharest', weekday: 'long', day: 'numeric', month: 'long',
     });
 
     async function showDay(date) {
       try {
         const digest = await loadDigest(`data/${date}.json`);
-        renderDigest(digestRoot, digest);
+        shownDate = date;
+        shownDigest = digest;
+        renderDigest(digestRoot, digest, currentLang());
         digestRoot.scrollIntoView({ behavior: 'smooth' });
       } catch {
         digestRoot.replaceChildren(Object.assign(document.createElement('p'), {

@@ -15,6 +15,8 @@
     try {
       var t = localStorage.getItem('theme');
       if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      var l = localStorage.getItem('lang');
+      document.documentElement.lang = (l === 'ro' || l === 'en') ? l : 'ro';
     } catch (e) {}
   </script>
   <link rel="stylesheet" href="assets/style.css" />
@@ -34,13 +36,24 @@
   </footer>
   <script type="module">
     import { mountToggle } from './assets/theme.js';
-    mountToggle(document.getElementById('topbar'));
-  </script>
-  <script type="module">
+    import { mountLangToggle, currentLang } from './assets/lang.js';
     import { renderDigest, loadDigest } from './assets/render.js';
+
+    const topbar = document.getElementById('topbar');
+    mountToggle(topbar);
+
     const app = document.getElementById('app');
+    let currentDigest = null;
+
+    mountLangToggle(topbar, (lang) => {
+      if (currentDigest) renderDigest(app, currentDigest, lang);
+    });
+
     loadDigest('data/latest.json')
-      .then((digest) => renderDigest(app, digest))
+      .then((digest) => {
+        currentDigest = digest;
+        renderDigest(app, digest, currentLang());
+      })
       .catch((error) => {
         app.replaceChildren();
         app.append(Object.assign(document.createElement('p'), {
