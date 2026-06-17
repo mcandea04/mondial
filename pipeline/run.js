@@ -361,19 +361,16 @@ export async function getNarration(facts, {
   geminiCritiqueEngine = callGeminiText,
   geminiDraftEngineEn = callGeminiNarrationEn,
 } = {}) {
-  // EN runs first so a shared claudeEngine mock in tests captures the RO call last
-  // (RO is the canonical result; its args are what tests like
-  // "passes model, system prompt, and a steer-aware user message" inspect).
+  const ro = await getRoNarration(facts, {
+    fixtures, recentProse, steer, gold,
+    claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
+  });
   const en = await getEnNarration(facts, {
     fixtures, recentProse, steer, gold,
     claudeEngine, polishEngine, geminiDraftEngineEn, geminiCritiqueEngine,
   }).catch((error) => {
     console.warn(`English narration failed (${error.message}). Shipping Romanian only.`);
     return null;
-  });
-  const ro = await getRoNarration(facts, {
-    fixtures, recentProse, steer, gold,
-    claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
   });
   return { ...ro, en };
 }

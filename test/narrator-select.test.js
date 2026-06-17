@@ -52,9 +52,11 @@ test('NARRATOR=opus passes model, system prompt, and a steer-aware user message'
   t.after(() => { delete process.env.NARRATOR; delete process.env.CLAUDE_MODEL; });
   process.env.NARRATOR = 'opus';
   process.env.CLAUDE_MODEL = 'opus-test-alias';
-  let received;
-  const claudeEngine = async (args) => { received = args; return OPUS_OUT; };
+  const calls = [];
+  const claudeEngine = async (args) => { calls.push(args); return OPUS_OUT; };
   await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], steer: 'mai scurt', claudeEngine });
+  const received = calls.find((c) => /digestul de dimineață/.test(c.systemPrompt));
+  assert.ok(received, 'the Romanian narration call was made');
   assert.equal(received.model, 'opus-test-alias');
   assert.match(received.systemPrompt, /digestul de dimineață/);
   assert.match(received.userMessage, /FAPTELE DE AZI/);
