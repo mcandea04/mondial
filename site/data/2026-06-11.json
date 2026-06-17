@@ -1,7 +1,13 @@
 {
   "date": "2026-06-11",
-  "headline": "Sombrerouri la cină și cehi la micul dejun",
-  "summary": "Campionatul începe oficial în Grupa A cu Mexicul sub presiunea de a câștiga acasă în fața Africii de Sud. Urmează un test de anduranță la ora cinci pentru cine vrea să vadă Coreea de Sud contra Cehiei.",
+  "headline": {
+    "ro": "Sombrerouri la cină și cehi la micul dejun",
+    "en": "The world wakes up in Mexico City"
+  },
+  "summary": {
+    "ro": "Campionatul începe oficial în Grupa A cu Mexicul sub presiunea de a câștiga acasă în fața Africii de Sud. Urmează un test de anduranță la ora cinci pentru cine vrea să vadă Coreea de Sud contra Cehiei.",
+    "en": "The long wait for the global circus to pitch its tent is finally over as the hosts prepare to greet the world. We swap our sleep schedules for the first glimpses of the groups before the real chaos takes hold."
+  },
   "matches": [],
   "groups": [],
   "tonight": [
@@ -9,16 +15,32 @@
       "home": "Mexic",
       "away": "Africa de Sud",
       "kickoffEEST": "22:00",
-      "alarm": "stai treaz",
-      "why": "Mexicul dă startul în Grupa A pe teren propriu și e singurul motiv valid să nu dormi la ora zece."
+      "alarm": {
+        "ro": "stai treaz",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Mexicul dă startul în Grupa A pe teren propriu și e singurul motiv valid să nu dormi la ora zece."
+      }
     },
     {
       "home": "Coreea de Sud",
       "away": "Cehia",
       "kickoffEEST": "05:00",
-      "alarm": "citești dimineața",
-      "why": "Coreea de Sud și Cehia se întâlnesc la o oră la care doar brutarii și cei fără somn pot aprecia fotbalul."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Coreea de Sud și Cehia se întâlnesc la o oră la care doar brutarii și cei fără somn pot aprecia fotbalul."
+      }
     }
   ],
-  "teaser": "⚽ Sombrerouri la cină și cehi la micul dejun · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": {
+    "ro": "⚽ Sombrerouri la cină și cehi la micul dejun · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ The world wakes up in Mexico City · no matches overnight\nhttps://mcandea04.github.io/mondial/"
+  },
+  "narrator": {
+    "en": "gemini"
+  }
 }

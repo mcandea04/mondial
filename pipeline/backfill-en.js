@@ -88,19 +88,35 @@ export function backfillDay(digest, enNarration) {
   };
 }
 
+function argValue(flag) {
+  const i = process.argv.indexOf(flag);
+  return i === -1 ? null : process.argv[i + 1];
+}
+
 async function main() {
-  const dateArg = process.argv.includes('--date') ? process.argv[process.argv.indexOf('--date') + 1] : null;
+  const dateArg = argValue('--date');
   // --force regenerates the English side even for days already bilingual (use
   // after an English-prompt or verdict-logic change).
   const force = process.argv.includes('--force');
+  // --limit N backfills at most N days this run, oldest first, then exits. Lets a
+  // scheduler (e.g. /loop) space out one day per call so the preview model's
+  // demand spike clears between calls instead of falling back to the GA model.
+  const limit = argValue('--limit') ? Number(argValue('--limit')) : Infinity;
+  // --newest-first processes recent days before older ones (the days people are
+  // likeliest to read get the better preview model first when calls are spaced).
+  const newestFirst = process.argv.includes('--newest-first');
   const files = (await readdir(DATA_DIR))
     .filter((n) => /^\d{4}-\d{2}-\d{2}\.json$/.test(n))
-    .filter((n) => !dateArg || n === `${dateArg}.json`);
+    .filter((n) => !dateArg || n === `${dateArg}.json`)
+    .sort();
+  if (newestFirst) files.reverse();
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
 
+  let done = 0;
   for (const file of files) {
+    if (done >= limit) { console.log(`limit ${limit} reached; ${file} and later left for the next run`); break; }
     const full = path.join(DATA_DIR, file);
     const digest = JSON.parse(await readFile(full, 'utf8'));
     if (!force && !needsBackfill(digest)) { console.log(`skip ${file} (already bilingual)`); continue; }
@@ -109,7 +125,9 @@ async function main() {
     const merged = backfillDay(digest, enNarration);
     await writeFile(full, JSON.stringify(merged, null, 2));
     console.log(`backfilled ${file}`);
+    done += 1;
   }
+  if (done === 0) console.log('nothing to backfill (all days already bilingual)');
 }
 
 const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
