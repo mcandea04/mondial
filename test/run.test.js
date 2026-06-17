@@ -65,8 +65,8 @@ test('same facts: second run reuses prose and ignores new narration', () => {
   assert.match(log, /facts unchanged, prose reused/);
   const second = readDigest(out);
   // Freeze guarantee is prose-unchanged, not byte-identical.
-  assert.equal(second.headline, first.headline);
-  assert.equal(second.summary, first.summary);
+  assert.deepEqual(second.headline, first.headline);
+  assert.deepEqual(second.summary, first.summary);
   assert.deepEqual(second.matches.map((m) => m.pill), first.matches.map((m) => m.pill));
   assert.deepEqual(second.tonight.map((t) => t.why), first.tonight.map((t) => t.why));
 });
@@ -77,7 +77,7 @@ test('--re-narrate forces fresh prose even when facts are unchanged', () => {
 
   setCannedHeadline(fixtures, 'Proză regenerată la cerere');
   runPipeline({ fixtures, out, extra: ['--re-narrate'] });
-  assert.equal(readDigest(out).headline, 'Proză regenerată la cerere');
+  assert.equal(readDigest(out).headline.ro, 'Proză regenerată la cerere');
 });
 
 test('changed facts re-narrate automatically', () => {
@@ -102,7 +102,7 @@ test('changed facts re-narrate automatically', () => {
   runPipeline({ fixtures, out });
   const second = readDigest(out);
   assert.notEqual(second.factsHash, first.factsHash);
-  assert.equal(second.headline, 'Proză nouă după corecția scorului');
+  assert.equal(second.headline.ro, 'Proză nouă după corecția scorului');
 });
 
 test('legacy digest without factsHash is trusted: prose reused, hash stamped', () => {
@@ -117,7 +117,7 @@ test('legacy digest without factsHash is trusted: prose reused, hash stamped', (
   setCannedHeadline(fixtures, 'Proză nouă care NU trebuie folosită');
   runPipeline({ fixtures, out });
   const after = readDigest(out);
-  assert.equal(after.headline, legacy.headline);
+  assert.deepEqual(after.headline, legacy.headline);
   assert.equal(after.factsHash, expectedHash);
 });
 
@@ -149,6 +149,18 @@ test('a backfill run for an older date does not clobber a newer latest.json', ()
   runPipeline({ fixtures, out, extra: ['--re-narrate'] });
   const latest = JSON.parse(readFileSync(path.join(out, 'latest.json'), 'utf8'));
   assert.equal(latest.date, '2026-06-13');
+});
+
+test('offline run with bilingual fixtures produces {ro,en} prose fields', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const digest = readDigest(out);
+  assert.equal(typeof digest.headline, 'object');
+  assert.ok(digest.headline.ro && digest.headline.en);
+  assert.equal(typeof digest.narrator, 'object');
+  assert.ok(digest.matches.every((m) => typeof m.pill === 'object'));
+  assert.ok(digest.tonight.every((t) => typeof t.alarm === 'object' && typeof t.why === 'object'));
+  assert.ok(digest.teaser.ro && digest.teaser.en);
 });
 
 import { mergeHighlight, mergeEnrichment, withoutGold } from '../pipeline/run.js';

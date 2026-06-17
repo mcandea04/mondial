@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { reuseNarration } from '../pipeline/prose-reuse.js';
+import { reuseNarrationEn } from '../pipeline/run.js';
 
 const stored = {
   headline: 'Bosnia sperie Canada ca un urs',
@@ -46,4 +47,25 @@ test('returns null when a tonight fixture has no stored prose', () => {
 test('returns null for a digest without headline or summary', () => {
   assert.equal(reuseNarration({ matches: [], tonight: [] }, facts), null);
   assert.equal(reuseNarration(null, facts), null);
+});
+
+const bilingualStored = {
+  headline: { ro: 'RO h', en: 'EN h' },
+  summary: { ro: 'RO s', en: 'EN s' },
+  matches: [{ id: 1, home: 'Bosnia', away: 'Canada', pill: { ro: 'RO p', en: 'EN p' }, drama: 4 }],
+  tonight: [{ id: 3, home: 'Brazilia', away: 'Maroc', alarm: { ro: 'merită văzut', en: 'stay up' }, why: { ro: 'RO w', en: 'EN w' } }],
+};
+
+test('reuseNarrationEn rebuilds the English side', () => {
+  const en = reuseNarrationEn(bilingualStored, facts);
+  assert.deepEqual(en, {
+    headline: 'EN h', summary: 'EN s',
+    matches: [{ id: 1, pill: 'EN p', drama: 4 }],
+    tonight: [{ id: 3, alarm: 'stay up', why: 'EN w' }],
+  });
+});
+
+test('reuseNarrationEn returns null for a RO-only stored day', () => {
+  const roOnly = { headline: 'RO h', summary: 'RO s', matches: [{ id: 1, pill: 'p', drama: 1 }], tonight: [] };
+  assert.equal(reuseNarrationEn(roOnly, { finished: [{ id: 1 }], tonight: [] }), null);
 });

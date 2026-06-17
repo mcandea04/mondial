@@ -44,10 +44,11 @@ import { polishedNarration } from './narration-polish.js';
 import {
   SYSTEM_PROMPT, SYSTEM_PROMPT_EN, buildUserMessage,
   CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
+  localizeProse,
 } from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
-import { buildTeaser } from './teaser.js';
+import { buildTeaser, buildTeaserEn } from './teaser.js';
 import { factsHash } from './facts-hash.js';
 import { reuseNarration } from './prose-reuse.js';
 import { loadGold } from './gold.js';
@@ -155,6 +156,50 @@ export function mergeEnrichment(match, existingByMatch) {
  */
 export function mergeStats(fresh, prior) {
   return prior != null ? prior : fresh;
+}
+
+/** Reads a (possibly legacy-string) narrator field for one language. */
+function localizeNarrator(narrator, lang) {
+  if (narrator == null) return null;
+  if (typeof narrator === 'string') return lang === 'ro' ? narrator : null;
+  return narrator[lang] ?? null;
+}
+
+/**
+ * Rebuilds EN narration from a stored bilingual digest, mirroring reuseNarration
+ * but reading the .en side of each prose field. Returns null when any required
+ * EN field is missing (so a RO-only stored day reuses RO and leaves EN absent).
+ */
+export function reuseNarrationEn(stored, facts) {
+  const enOrNull = (field) => (field && typeof field === 'object' && field.en != null ? field.en : null);
+  const headline = enOrNull(stored.headline);
+  const summary = enOrNull(stored.summary);
+  if (!headline || !summary) return null;
+
+  const storedMatches = new Map((stored.matches ?? []).map((m) => [m.id, m]));
+  const matches = [];
+  for (const m of facts.finished) {
+    const s = storedMatches.get(m.id);
+    const pill = enOrNull(s?.pill);
+    if (!pill) return null;
+    matches.push({ id: m.id, pill, drama: s.drama ?? 1 });
+  }
+
+  const tonightById = new Map();
+  const tonightByTeams = new Map();
+  for (const t of stored.tonight ?? []) {
+    if (t.id != null) tonightById.set(t.id, t);
+    tonightByTeams.set(`${t.home}|${t.away}`, t);
+  }
+  const tonight = [];
+  for (const f of facts.tonight) {
+    const s = tonightById.get(f.id) ?? tonightByTeams.get(`${f.home}|${f.away}`);
+    const why = enOrNull(s?.why);
+    const alarm = enOrNull(s?.alarm);
+    if (!why || !alarm) return null;
+    tonight.push({ id: f.id, alarm, why });
+  }
+  return { headline, summary, matches, tonight };
 }
 
 function requireEnv(name) {
@@ -406,9 +451,9 @@ async function recentProseBefore(dataDir, date, days = 3) {
   const prose = [];
   for (const d of files) {
     const digest = await readJson(path.join(dataDir, `${d}.json`));
-    prose.push(digest.headline, digest.summary);
-    for (const m of digest.matches ?? []) prose.push(m.pill);
-    for (const t of digest.tonight ?? []) prose.push(t.why);
+    prose.push(localizeProse(digest.headline, 'ro'), localizeProse(digest.summary, 'ro'));
+    for (const m of digest.matches ?? []) prose.push(localizeProse(m.pill, 'ro'));
+    for (const t of digest.tonight ?? []) prose.push(localizeProse(t.why, 'ro'));
   }
   return prose.filter(Boolean);
 }
@@ -495,35 +540,64 @@ async function main() {
   // prose instead of regenerating. A stored digest without factsHash predates
   // this mechanism and is trusted as-is (the hash gets stamped on rewrite).
 
-  let narration = null;
-  let narrator = null;
+  // `narration` (RO) and `enNarration` (EN | null). Reuse path supplies both
+  // from the stored digest; fresh path from getNarration.
+  let narration = null;       // RO narration object (flat strings) — feeds OG/teaser/email
+  let enNarration = null;     // EN narration object | null
+  let narratorRo = null;
+  let narratorEn = null;
   let reused = false;
+
   if (!args.reNarrate && existing && (!existing.factsHash || existing.factsHash === hash)) {
-    narration = reuseNarration(existing, facts);
-    reused = narration != null;
+    const reusedRo = reuseNarration(existing, facts);
+    if (reusedRo) {
+      // reuseNarration returns prose fields as-stored; localize to flat RO strings
+      // so narration feeds OG/teaser/email as plain text.
+      narration = {
+        headline: localizeProse(reusedRo.headline, 'ro'),
+        summary: localizeProse(reusedRo.summary, 'ro'),
+        matches: reusedRo.matches.map((m) => ({
+          id: m.id,
+          pill: localizeProse(m.pill, 'ro'),
+          drama: m.drama,
+        })),
+        tonight: reusedRo.tonight.map((t) => ({
+          id: t.id,
+          alarm: localizeProse(t.alarm, 'ro'),
+          why: localizeProse(t.why, 'ro'),
+        })),
+      };
+      narratorRo = localizeNarrator(existing.narrator, 'ro') ?? 'gemini';
+      // EN reuse: only if the stored digest already had EN prose for all needed ids.
+      enNarration = reuseNarrationEn(existing, facts);   // null if any en missing
+      narratorEn = enNarration ? (localizeNarrator(existing.narrator, 'en') ?? null) : null;
+      reused = true;
+    }
   }
 
   if (reused) {
-    // Reused prose keeps whoever wrote it; pre-marker digests are taken as Gemini.
-    narrator = existing.narrator ?? 'gemini';
     console.log('facts unchanged, prose reused');
   } else {
     const gold = await loadGoldSafe();
-    const recentProse = args.fixtures
-      ? []
-      : withoutGold(await recentProseBefore(dataDir, date), gold);
-    ({ narration, narrator } = await getNarration(factsForNarration, {
-      fixtures: args.fixtures,
-      recentProse,
-      steer: args.steer,
-      gold,
-    }));
+    const recentProse = args.fixtures ? [] : withoutGold(await recentProseBefore(dataDir, date), gold);
+    const result = await getNarration(factsForNarration, {
+      fixtures: args.fixtures, recentProse, steer: args.steer, gold,
+    });
+    narration = result.narration;
+    narratorRo = result.narrator;
+    enNarration = result.en?.narration ?? null;
+    narratorEn = result.en?.narrator ?? null;
   }
 
   const recapByMatch = await getRecaps(facts.finished, { fixtures: args.fixtures });
 
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
   const narrationByFixture = new Map(narration.tonight.map((m) => [m.id, m]));
+  const enByMatch = new Map((enNarration?.matches ?? []).map((m) => [m.id, m]));
+  const enByFixture = new Map((enNarration?.tonight ?? []).map((m) => [m.id, m]));
+
+  // Builds {ro, en} dropping the en key when the EN value is absent.
+  const bilingual = (ro, en) => (en == null ? { ro } : { ro, en });
 
   // Monotonic merge: a highlight link, once stored, is never overwritten by null
   // when a later FIFA feed outage yields no link for that match.
@@ -534,12 +608,12 @@ async function main() {
   const digest = {
     date,
     factsHash: hash,
-    narrator,
-    headline: narration.headline,
-    summary: narration.summary,
+    narrator: bilingual(narratorRo, narratorEn),
+    headline: bilingual(narration.headline, enNarration?.headline),
+    summary: bilingual(narration.summary, enNarration?.summary),
     matches: facts.finished.map((m) => ({
       ...m,
-      pill: narrationByMatch.get(m.id)?.pill ?? '',
+      pill: bilingual(narrationByMatch.get(m.id)?.pill ?? '', enByMatch.get(m.id)?.pill),
       drama: narrationByMatch.get(m.id)?.drama ?? 1,
       highlight: mergeHighlight(m.id, recapByMatch, existingHighlightById),
     })),
@@ -551,14 +625,13 @@ async function main() {
       homeCode: m.homeCode ?? null,
       awayCode: m.awayCode ?? null,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
-      alarm: narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
-      why: narrationByFixture.get(m.id)?.why ?? '',
+      alarm: bilingual(narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața', enByFixture.get(m.id)?.alarm),
+      why: bilingual(narrationByFixture.get(m.id)?.why ?? '', enByFixture.get(m.id)?.why),
     })),
-    teaser: buildTeaser({
-      headline: narration.headline,
-      matchCount: facts.finished.length,
-      siteUrl,
-    }),
+    teaser: bilingual(
+      buildTeaser({ headline: narration.headline, matchCount: facts.finished.length, siteUrl }),
+      enNarration ? buildTeaserEn({ headline: enNarration.headline, matchCount: facts.finished.length, siteUrl }) : undefined,
+    ),
   };
 
   const ogPath = path.join(dataDir, 'og', `${date}.png`);
@@ -636,9 +709,9 @@ async function main() {
 
   await setOutput('published', 'true');
   await setOutput('date', date);
-  await setOutput('headline', narration.headline);
+  await setOutput('headline', narration.headline);   // flat RO string — correct
   await setOutput('match_count', String(digest.matches.length));
-  await setOutput('narrator', narrator);
+  await setOutput('narrator', narratorRo);            // flat RO string, not the {ro,en} object
   // Email fires only when fresh prose was generated (first publish, facts change,
   // or --re-narrate), never when the stored prose was reused for a highlight or
   // stats-only update. `reused` is false in exactly those fresh-narrate cases.
