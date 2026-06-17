@@ -147,10 +147,6 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 /* keep standings team names at the table's 13px, not the scoreline's 15px */
 td .team .team-name { font-size: 13px; font-weight: 400; }
 
-/* ── Flame rating ── */
-.flames { display: flex; gap: 2px; color: var(--flame); font-size: 18px; flex-shrink: 0; }
-.flame::before { content: "🔥"; font-size: 16px; }
-
 /* ── Scorers and cards ── */
 .events { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
 .evline { font-size: 13px; color: var(--muted); }
@@ -167,21 +163,6 @@ td .team .team-name { font-size: 13px; font-weight: 400; }
   margin-top: 12px;
 }
 .pill-text { font-size: 13px; color: var(--pill-txt); line-height: 1.5; }
-
-.highlight {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  padding: 7px 14px;
-  border-radius: var(--radius-md);
-  background: var(--pill-txt);
-  color: var(--bg);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-}
-.highlight:hover { opacity: 0.85; }
 
 /* ── Group table ── */
 table {
@@ -294,44 +275,65 @@ tbody tr td { padding: 5px 0; }
   min-height: 36px; /* reserve button height so the bar doesn't grow when the module mounts */
 }
 
-/* ── Theme toggle button ── */
-.theme-toggle {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 18px;
-  min-width: 36px;
-  min-height: 36px;
+/* ── Segmented controls (lang + theme) ── */
+.topbar { gap: 8px; align-items: center; }
+.segmented {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  padding: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
 }
-.theme-toggle:hover,
-.theme-toggle:focus-visible {
-  color: var(--text);
+.segmented .segment {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 999px;
+  min-height: 28px;
+}
+.segmented .segment.is-active {
+  background: var(--text);
+  color: var(--bg);
+}
+.segmented .segment:focus-visible {
   outline: 2px solid var(--border);
   outline-offset: 2px;
 }
 
-/* Keep the toggle flush-right in .meta without reordering the back-link */
-.meta > .theme-toggle {
-  margin-left: auto;
-}
+/* Arhiva: cluster both pills flush-right beside the title + back-link */
+.meta > .segmented:first-of-type { margin-left: auto; }
 
-/* ── Language toggle button ── */
-.lang-toggle {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  background: none;
-  border: 1px solid var(--muted);
-  border-radius: 6px;
-  color: var(--muted);
-  cursor: pointer;
-  padding: 2px 8px;
-  margin-left: 8px;
+/* ── Match header actions (drama face + highlights) ── */
+.match-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+.drama-face { font-size: 20px; line-height: 1; }
+.highlight-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 999px;
+  color: var(--pill-txt);
+  font-size: 15px;
+  text-decoration: none;
+  background: transparent;
+}
+.highlight-icon:hover,
+.highlight-icon:focus-visible {
+  background: var(--pill-bg);
+  outline: none;
 }
 
