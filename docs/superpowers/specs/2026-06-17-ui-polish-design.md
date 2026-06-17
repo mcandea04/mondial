@@ -51,17 +51,28 @@ pattern, RO-first.
 A single shared builder keeps the two controls identical and avoids duplicating the
 DOM/markup logic. Add to a small shared module (new `site/assets/segmented.js`):
 
-    // options: [{ value, label, title }], active: current value,
-    // onSelect(value) called only when the choice actually changes.
+    // options: [{ value, label, title }]
+    // getActive(): () => value — a getter, re-read on every sync (NOT a snapshot),
+    //   so an external state change (OS theme flip) can re-sync the control.
+    // onSelect(value): called only when the choice actually changes.
+    // Returns { sync } so the caller can force a repaint after external state changes.
     export function mountSegmented(container, className, options, getActive, onSelect)
 
-- Renders a `<div class="segmented {className}" role="group">` with one
-  `<button role="radio">` per option. The active button gets `aria-checked="true"`
-  and the `.is-active` class; others `aria-checked="false"`.
+- Renders a `<div class="segmented {className}">` holding one plain
+  `<button type="button">` per option. The active button gets `aria-pressed="true"`
+  and the `.is-active` class; others `aria-pressed="false"`. **Plain toggle buttons with
+  `aria-pressed`, not `role="radio"`** — radios would require a `radiogroup`, roving
+  `tabindex`, and arrow-key handling that this control does not implement; `aria-pressed`
+  matches the pattern the current `lang.js`/`theme.js` already use, so it is no regression.
 - Clicking an inactive segment calls `onSelect(value)`; clicking the active one is a no-op.
-- Idempotent per container+className (a second mount is a no-op), matching today's guards.
-- A `sync()` closure re-reads `getActive()` and repaints the active state, so external
-  changes (OS theme flip) can re-sync without rebuilding.
+- **Idempotency guard is class-scoped: `container.querySelector('.segmented.' + className)`.**
+  Both controls mount into the *same* container on arhiva (`.meta`), so the guard MUST be
+  scoped by the distinct per-control class — a generic `.segmented` check would make the
+  second control a silent no-op. `lang.js` passes className `'lang'`, `theme.js` passes
+  `'theme'`; the two classes must stay distinct.
+- Returns `{ sync }`. `sync()` re-reads `getActive()` and repaints the active state. On the
+  idempotent no-op path (already mounted) it still returns a working `{ sync }` bound to the
+  existing DOM, so `theme.js` always has a handle to wire the OS-theme listener.
 
 `lang.js` and `theme.js` keep their public functions (`mountLangToggle`,
 `mountToggle`) and their storage/`currentLang`/`currentTheme` logic — they are rewritten
@@ -69,18 +80,33 @@ to delegate their DOM to `mountSegmented`:
 
 - `mountLangToggle(container, onChange)` → segmented `[RO|EN]`, RO first. On select:
   persist `localStorage.lang`, set `document.documentElement.lang`, call `onChange(lang)`.
-- `mountToggle(container)` → segmented `[☀|☾]`. On select: persist `localStorage.theme`,
-  set `document.documentElement.dataset.theme`. The existing `matchMedia('change')`
-  listener stays and calls the control's `sync()` when no explicit choice is stored.
+- `mountToggle(container)` → segmented `[☀|☾]`, className `'theme'`. On select: persist
+  `localStorage.theme`, set `document.documentElement.dataset.theme`. It captures the
+  returned `{ sync }`; the existing `matchMedia('change')` listener stays and calls that
+  `sync()` when no explicit choice is stored, so an OS theme flip still repaints the control.
 
 Titles for accessibility: lang segments `title`/`aria-label` "Română"/"English"; theme
-segments "Temă luminoasă"/"Temă întunecată". The group keeps a label
-("Schimbă limba / Change language", "Schimbă tema").
+segments "Temă luminoasă"/"Temă întunecată".
+
+**Mount order (both pages):** reorder the call sites so `mountLangToggle` runs *before*
+`mountToggle` on both `index.html` (`#topbar`) and `arhiva.html` (`.meta`) — DOM/append
+order then puts `[RO|EN]` left of `[☀|☾]`. This is a 2-line edit per page; no CSS `order`
+needed. (The earlier "no HTML changes" note is superseded — the `<script>` mount order
+changes, the markup does not.)
 
 CSS: one `.segmented` block — track with `--border`, `--surface`; `.is-active` filled with
 `--text` background and `--bg` text (inverts cleanly in both themes); the rest `--muted`.
-Focus-visible ring on each segment. Sizes tuned to sit in the existing `min-height: 36px`
-topbar without growing it. The old `.lang-toggle` / `.theme-toggle` rules are removed.
+Focus-visible ring on each segment. Sized to sit within the existing `.topbar`
+`min-height: 36px` without growing it. The old `.lang-toggle` / `.theme-toggle` rules are
+removed.
+
+**Arhiva (`.meta`) layout:** `.meta` is a `space-between` flex holding the title span and
+the back-link, and today's flush-right relied on `.meta > .theme-toggle { margin-left: auto }`
+— a rule that disappears with `.theme-toggle`. Replace it with a rule that keeps the controls
+clustered flush-right on arhiva, e.g. `.meta > .segmented:first-of-type { margin-left: auto }`
+(pushes the lang pill — and the theme pill after it — to the right edge, leaving title +
+back-link on the left). `.meta` has no `min-height`, so verify the two pills don't grow the
+bar taller than the back-link line; add a `min-height` to `.meta` if they do.
 
 ### Drama — single thermal face
 
@@ -90,18 +116,27 @@ scale onto four colored thermal faces (Map B — only the top two ratings burst)
 | drama | face | reads as |
 |-------|------|----------|
 | 1 | 🥶 | cold (blue) |
-| 2 | 😐 | neutral (yellow) |
+| 2 | 😐 | neutral (grey/yellow) |
 | 3 | 🥵 | hot (red) |
 | 4 | 🤯 | exploding |
 | 5 | 🤯 | exploding |
 
-- `render.js`: build a single `<span class="drama-face">` with the mapped emoji.
-  `aria-label` stays literal: `UI_STRINGS[lang].drama(match.drama)` → "dramă 4 din 5" /
-  "drama 4 of 5". Add a `title` with the same text for sighted hover.
-- A small pure helper `dramaFace(n)` maps rating→emoji, clamped to 1–5. Lives in `render.js`
-  (rendering concern, like `STATUS_BADGE`).
-- The `.flames`/`.flame` CSS and the `--flame` token usage for the row are removed;
-  `--flame` may stay as a token but is no longer needed for the face (emoji carries color).
+- A small **pure, exported** helper `dramaFace(n)` in `render.js` maps rating→emoji.
+  It must be `export`ed (current `render.js` exports only `renderDigest`/`loadDigest`) so the
+  unit test can import it without a DOM. It lives in `render.js` because it is a rendering
+  concern, but unlike the private `STATUS_BADGE` map it is exported for testability.
+- **Absent/invalid rating:** today `drama=0`/`undefined` renders an *empty* `.flames` (no
+  glyph). Preserve that: `dramaFace(n)` returns `null` when `n` is not a finite number ≥ 1
+  (i.e. `0`, `undefined`, `null`, `NaN` → no face), and otherwise clamps to 1–5
+  (`dramaFace(7)` → 🤯). `render.js` skips the face span when `dramaFace` returns `null`,
+  so missing data shows nothing — not a spurious 🥶.
+- `render.js`: when `dramaFace(match.drama)` is non-null, build a single
+  `<span class="drama-face">` with the mapped emoji. `aria-label`/`title` use the **clamped**
+  rating, not the raw value, via `UI_STRINGS[lang].drama(clamp(match.drama))` → "dramă 4 din 5"
+  / "drama 4 of 5", so a stray `7` never announces "din 5" mismatched.
+- The `.flames`/`.flame` CSS selectors are removed. The `--flame` custom-property
+  *declaration* stays in `:root` (harmless, avoids churning both theme blocks); only its
+  consuming selectors go. The drama-face hue comes from the emoji glyph itself.
 
 ### Highlights — inline play icon in the header
 
@@ -113,40 +148,56 @@ as an icon-only round button.
   Iran    0 – 0  Qatar          🥶
 ```
 
-- `render.js`: when `match.highlight` is set, append an `<a class="highlight-icon">` to the
-  header's right cluster (the same flex group that holds the drama face), not the card body.
-  Content is a ▷ glyph; `aria-label`/`title` = `UI_STRINGS[lang].recap` text reused, but
-  reworded to the noun form already present (`recap` → "▶ Rezumat"/"▶ Highlights"); the
-  visible glyph is the icon, the word lives in the tooltip/label only.
-- `target="_blank"`, `rel="noopener"` as today. GoatCounter behavior unchanged (the link is
-  still a plain anchor; no counting was attached to it before).
-- The header right cluster becomes a small flex row: `[ drama-face ] [ highlight-icon? ]`,
-  so the face stays put whether or not a highlight exists.
+- **New glyph-free label key.** `UI_STRINGS[lang].recap` is currently `'▶ Rezumat'` /
+  `'▶ Highlights'` — it already contains a ▶. Reusing it for the icon's `aria-label`/`title`
+  would announce "black right-pointing triangle, Rezumat" and clash with the visible ▷.
+  Replace it with a bare key `recapLabel: 'Rezumat video'` / `'Highlights'` (no glyph) for the
+  icon's `aria-label`/`title`. The old `recap` key (`'▶ Rezumat'`) had exactly one consumer —
+  render.js:87, the link being replaced — so remove it; the archive list uses the separate
+  `recaps`/`recapsTitle` keys and is untouched. The visible button shows the ▷ glyph only; the
+  word lives in `recapLabel` via `aria-label`/`title`.
+- A **new right-cluster wrapper** is required. Today `.match-header` is `flex-wrap: wrap` and
+  `.flames` is appended directly to it. Wrap the drama face + highlight icon in a
+  `<div class="match-actions">` (a small `flex` row, `flex-shrink: 0`, `flex-wrap: nowrap`,
+  `gap`) appended to `.match-header`. This keeps `[ drama-face ] [ highlight-icon? ]` on one
+  line at phone width (≤390px) and the face fixed whether or not a highlight exists.
+- The icon is an `<a class="highlight-icon">`: `href = match.highlight`, `target="_blank"`,
+  `rel="noopener"`, content the ▷ glyph. GoatCounter behavior unchanged (still a plain anchor;
+  no counting was attached to the old `.highlight` link, and none is added).
 - The old full-width `.highlight` block CSS is removed; new `.highlight-icon` is a compact
-  round tap target (min 32–36px) using the accent color for the glyph, transparent
-  background, subtle hover.
+  round tap target (min 32–36px) whose glyph uses the **`--pill-txt`** accent token (the
+  site's existing accent; not `--flame`), transparent background, subtle hover.
 
 ## Files touched
 
-- `site/assets/segmented.js` — new shared segmented-control builder.
-- `site/assets/lang.js` — delegate DOM to `mountSegmented`; keep storage + `currentLang`.
-- `site/assets/theme.js` — delegate DOM to `mountSegmented`; keep storage + OS-sync.
-- `site/assets/render.js` — `dramaFace` helper; single face span; highlight icon in header.
-- `site/assets/style.css` — add `.segmented`; add `.drama-face`, `.highlight-icon`;
-  remove `.lang-toggle`, `.theme-toggle`, `.flames`/`.flame`, full-width `.highlight`.
-- No HTML changes needed (both pages already call the same mount functions); verify the
-  mount containers (`#topbar`, `.meta`) still receive both controls. Mount order today is
-  theme-then-lang; the mockup shows `[RO|EN]` left of `[☀|☾]`, so either reorder the mount
-  calls or let CSS order them — the lang pill must render first.
+- `site/assets/segmented.js` — new shared segmented-control builder; returns `{ sync }`.
+- `site/assets/lang.js` — delegate DOM to `mountSegmented` (className `'lang'`); keep storage
+  + `currentLang`.
+- `site/assets/theme.js` — delegate DOM to `mountSegmented` (className `'theme'`); keep
+  storage + `currentTheme`; capture `{ sync }` and call it from the `matchMedia` listener.
+- `site/assets/i18n.js` — add `recapLabel` ('Rezumat video' / 'Highlights') to both lang
+  blocks for the highlight-icon's glyph-free `aria-label`/`title`.
+- `site/assets/render.js` — exported pure `dramaFace(n)` helper; single face span (skipped
+  when null); `.match-actions` wrapper holding the face + highlight icon in the header.
+- `site/assets/style.css` — add `.segmented`, `.drama-face`, `.highlight-icon`,
+  `.match-actions`; replace `.meta > .theme-toggle { margin-left:auto }` with a
+  `.meta > .segmented:first-of-type { margin-left:auto }` (and a `.meta` min-height if
+  needed); remove `.lang-toggle`, `.theme-toggle`, `.flames`/`.flame`, full-width `.highlight`.
+- `site/index.html` and `site/arhiva.html` — reorder the two mount calls so
+  `mountLangToggle` runs before `mountToggle` (lang pill left). Markup unchanged.
 
 ## Testing
 
-Existing JS unit tests (`test/i18n.test.js`, render-related) must stay green. Add:
+Existing JS unit tests (`test/i18n.test.js` etc.) must stay green. The repo has **no DOM
+test harness** (no jsdom/happy-dom in `package.json`; every test is pure Node/pipeline), and
+adding one is out of scope. So test only pure logic; `mountSegmented` DOM behavior is covered
+by the manual scenario below, not a unit test.
 
-- `dramaFace(n)` unit coverage: 1→🥶, 2→😐, 3→🥵, 4→🤯, 5→🤯, and clamping for out-of-range.
-- A `mountSegmented` DOM test (jsdom-style, matching existing patterns if present): mounting
-  yields two radio buttons, the active one is marked, clicking the inactive one fires
-  `onSelect` once with the new value and clicking the active one does not fire.
+- `dramaFace(n)` unit coverage (pure, no DOM — importable from `render.js` under plain
+  `node --test`): 1→🥶, 2→😐, 3→🥵, 4→🤯, 5→🤯; clamp 6/7→🤯; and `0`, `undefined`, `null`,
+  `NaN`, `2.5`→ defined behavior (`null` = no face, per the design). Confirm importing
+  `render.js` in a Node test loads cleanly (its DOM calls are inside function bodies, so the
+  module itself has no top-level `document` reference — verify this holds).
 
 Manual / scenario (the real proof, per project rules):
 
@@ -162,8 +213,12 @@ Manual / scenario (the real proof, per project rules):
 
 ## Risks
 
-- Emoji rendering varies by OS; 🥶😐🥵🤯 are widely supported but verify on the target
-  devices (the friends' phones — mostly mobile). If a face renders monochrome on some
-  platform the hue cue weakens; the `title`/`aria-label` keeps the literal rating as backup.
+- Emoji hue is not vendor-guaranteed: 😐 renders **grey on most platforms, not yellow**, and
+  on a monochrome-emoji platform the whole blue→red cue collapses. Target is the friends'
+  phones (Apple/Android, color emoji), where it holds; the `title`/`aria-label` keeps the
+  literal rating as the non-visual backup. Accept as known.
 - Dark-mode contrast of the filled active segment (`--text` bg / `--bg` text) must be checked
   both ways; this is the main regression surface.
+- OG image is unaffected: `og-image.js` draws a goal-sum "drama proxy" and a textual
+  "▶ cu rezumate video" footer, not `match.drama` flames or the play icon — no change needed
+  there. Stated only to close the loop; it is genuinely out of scope.
