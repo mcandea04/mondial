@@ -1,3 +1,5 @@
+import { mountSegmented } from './segmented.js';
+
 const LANG_KEY = 'lang';
 
 /** The active language: a validated saved choice, else Romanian (the default). */
@@ -10,32 +12,22 @@ export function currentLang() {
 }
 
 /**
- * Mounts a RO/EN toggle button in `container`. On change it persists the choice,
- * updates <html lang>, and calls onChange(newLang). Idempotent: a second call on
- * the same container is a no-op.
+ * Mounts a RO/EN segmented toggle in `container`. On change it persists the
+ * choice, updates <html lang>, and calls onChange(newLang). Idempotent.
  */
 export function mountLangToggle(container, onChange) {
-  if (container.querySelector('.lang-toggle')) return;
-
-  const btn = document.createElement('button');
-  btn.className = 'lang-toggle';
-  btn.setAttribute('aria-label', 'Change language / Schimbă limba');
-
-  function sync() {
-    const lang = currentLang();
-    // Button shows the language you'd switch TO.
-    btn.textContent = lang === 'ro' ? 'EN' : 'RO';
-    btn.setAttribute('aria-pressed', String(lang === 'en'));
-    document.documentElement.lang = lang;
-  }
-
-  btn.addEventListener('click', () => {
-    const next = currentLang() === 'ro' ? 'en' : 'ro';
-    try { localStorage.setItem(LANG_KEY, next); } catch (_) {}
-    sync();
-    onChange?.(next);
-  });
-
-  container.append(btn);
-  sync();
+  return mountSegmented(
+    container,
+    'lang',
+    [
+      { value: 'ro', label: 'RO', title: 'Română' },
+      { value: 'en', label: 'EN', title: 'English' },
+    ],
+    currentLang,
+    (lang) => {
+      try { localStorage.setItem(LANG_KEY, lang); } catch (_) {}
+      document.documentElement.lang = lang;
+      onChange?.(lang);
+    },
+  );
 }
