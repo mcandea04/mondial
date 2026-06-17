@@ -7,7 +7,7 @@
  * narration-core.js so the Claude engine competes on the identical contract.
  */
 
-import { SYSTEM_PROMPT, narrationSchema, buildUserMessage, normalizeSteer } from './narration-core.js';
+import { SYSTEM_PROMPT, SYSTEM_PROMPT_EN, narrationSchema, narrationSchemaEn, buildUserMessage, normalizeSteer } from './narration-core.js';
 
 export { buildUserMessage, normalizeSteer };
 
@@ -198,13 +198,12 @@ async function callModelWithBackoff({ apiKey, model, systemPrompt, userMessage, 
  * transport every Gemini path (single-pass narrate, draft, critique, rewrite)
  * goes through, so each gets the full ladder independently.
  */
-export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, systemPrompt, userMessage, schema = null, sleep = realSleep }) {
+export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, systemPrompt, userMessage, schema = null, validateWith = narrationSchema, sleep = realSleep }) {
   // `schema` is the Gemini server-side response schema; when present the output is
-  // a narration and is validated client-side against narrationSchema. The two are
-  // a pair (responseSchema mirrors narrationSchema), not independent — this is the
-  // narration transport, not a general-purpose Gemini client. A null schema means
-  // a plain-text call (the idiom critique), returned unvalidated.
-  const validate = schema ? (text) => narrationSchema.parse(JSON.parse(text)) : null;
+  // a narration and is validated client-side against validateWith (defaults to
+  // narrationSchema for RO callers; EN callers pass narrationSchemaEn). A null
+  // schema means a plain-text call (the idiom critique), returned unvalidated.
+  const validate = schema ? (text) => validateWith.parse(JSON.parse(text)) : null;
   try {
     return await callModelWithBackoff({ apiKey, model, systemPrompt, userMessage, schema, validate, maxAttempts: PRIMARY_MAX_ATTEMPTS, sleep });
   } catch (primaryError) {
@@ -232,4 +231,16 @@ export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, syste
 export async function narrate(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null, gold = [], sleep = realSleep } = {}) {
   const userMessage = buildUserMessage(facts, recentProse, steer, gold);
   return callGeminiResilient({ apiKey, model, systemPrompt: SYSTEM_PROMPT, userMessage, schema: responseSchema, sleep });
+}
+
+/**
+ * Single-pass English narration. Same transport/ladder as narrate(), but with
+ * the English voice prompt and English response schema.
+ */
+export async function narrateEn(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null, gold = [], sleep = realSleep } = {}) {
+  const userMessage = buildUserMessage(facts, recentProse, steer, gold);
+  return callGeminiResilient({
+    apiKey, model, systemPrompt: SYSTEM_PROMPT_EN, userMessage,
+    schema: responseSchemaEn, validateWith: narrationSchemaEn, sleep,
+  });
 }

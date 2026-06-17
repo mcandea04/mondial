@@ -37,11 +37,14 @@ import {
   kickoffEEST,
 } from './espn.js';
 import { classifyStandings } from './standings.js';
-import { narrate } from './narrate.js';
+import { narrate, narrateEn } from './narrate.js';
 import { callClaude } from './claude-engine.js';
-import { callGeminiNarration, callGeminiText } from './gemini-engine.js';
+import { callGeminiNarration, callGeminiNarrationEn, callGeminiText } from './gemini-engine.js';
 import { polishedNarration } from './narration-polish.js';
-import { SYSTEM_PROMPT, buildUserMessage } from './narration-core.js';
+import {
+  SYSTEM_PROMPT, SYSTEM_PROMPT_EN, buildUserMessage,
+  CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
+} from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser } from './teaser.js';
@@ -220,29 +223,13 @@ function geminiNarration(facts, { fixtures, recentProse, steer, gold }) {
 }
 
 /**
- * Picks the narrator by the NARRATOR env var and returns { narration, narrator },
- * where narrator records which engine actually produced the prose so a silent
- * fallback is visible in the day's JSON. Values:
- *   unset / "gemini"  — Gemini single-pass.
- *   "gemini-polish"   — Gemini draft -> idiom critique -> rewrite. When the
- *                       polish stage fails the validated draft ships, marked
- *                       "gemini".
- *   "opus"            — single-pass headless Opus.
- *   "opus-polish"     — Opus draft -> idiom critique -> rewrite. When the polish
- *                       stage fails the validated draft ships, marked "opus".
- *
- * Any Opus *draft* failure — expired/invalid OAuth token, or bad output after
- * its retries — logs a warning and falls back to Gemini, marked
- * "gemini-fallback". The digest must never miss a morning over a
- * narration-engine problem. Engines are injectable for testing.
+ * RO narration: current body of getNarration, extracted verbatim. Returns
+ * { narration, narrator }. Logic is unchanged — this is a pure rename/extract.
  */
-export async function getNarration(facts, {
-  fixtures, recentProse, steer, gold = [],
-  claudeEngine = callClaude,
-  polishEngine = polishedNarration,
-  geminiDraftEngine = callGeminiNarration,
-  geminiCritiqueEngine = callGeminiText,
-} = {}) {
+async function getRoNarration(facts, {
+  fixtures, recentProse, steer, gold,
+  claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
+}) {
   const mode = process.env.NARRATOR;
 
   // Gemini idiom-polish: draft -> critique -> rewrite, all on Gemini. Offline
@@ -281,6 +268,114 @@ export async function getNarration(facts, {
     console.warn(`Opus narration failed (${cause}): ${error.message}. Falling back to Gemini.`);
     return { narration: await geminiNarration(facts, { fixtures, recentProse, steer, gold }), narrator: 'gemini-fallback' };
   }
+}
+
+/**
+ * EN narration: mirrors getRoNarration engine selection but with EN prompts/schema
+ * and the EN offline fixture. Best-effort — callers catch and yield null on failure.
+ *
+ * Fixture handling only applies to Gemini paths: the opus/opus-polish paths use the
+ * injected claudeEngine directly (they have their own auth/retry logic and tests
+ * expect the engine to be called even when fixtures is set).
+ */
+async function getEnNarration(facts, {
+  fixtures, recentProse, steer, gold,
+  claudeEngine, polishEngine, geminiDraftEngineEn, geminiCritiqueEngine,
+}) {
+  const mode = process.env.NARRATOR;
+
+  const userMessage = buildUserMessage(facts, recentProse, steer, gold);
+
+  if (mode === 'gemini-polish') {
+    if (fixtures) {
+      const cannedPath = path.join(fixtures, 'narration.en.json');
+      if (!existsSync(cannedPath)) return null;
+      return { narration: await readJson(cannedPath), narrator: 'gemini' };
+    }
+    const model = process.env.GEMINI_MODEL || undefined;
+    const { narration, polished } = await polishEngine({
+      model, userMessage,
+      draftEngine: geminiDraftEngineEn, critiqueEngine: geminiCritiqueEngine,
+      systemPrompt: SYSTEM_PROMPT_EN,
+      critiquePrompt: CRITIQUE_SYSTEM_PROMPT_EN,
+      buildRewritePrompt: buildRewriteSystemPromptEn,
+    });
+    return { narration, narrator: polished ? 'gemini-polish' : 'gemini' };
+  }
+
+  if (mode !== 'opus' && mode !== 'opus-polish') {
+    if (fixtures) {
+      const cannedPath = path.join(fixtures, 'narration.en.json');
+      if (!existsSync(cannedPath)) return null;
+      return { narration: await readJson(cannedPath), narrator: 'gemini' };
+    }
+    return {
+      narration: await narrateEn(facts, {
+        apiKey: requireEnv('GEMINI_API_KEY'),
+        model: process.env.GEMINI_MODEL || undefined,
+        recentProse, steer, gold,
+      }),
+      narrator: 'gemini',
+    };
+  }
+
+  const model = process.env.CLAUDE_MODEL || 'opus';
+  if (mode === 'opus-polish') {
+    const { narration, polished } = await polishEngine({
+      model, userMessage, draftEngine: claudeEngine,
+      systemPrompt: SYSTEM_PROMPT_EN,
+      critiquePrompt: CRITIQUE_SYSTEM_PROMPT_EN,
+      buildRewritePrompt: buildRewriteSystemPromptEn,
+    });
+    return { narration, narrator: polished ? 'opus-polish' : 'opus' };
+  }
+  return { narration: await claudeEngine({ model, userMessage, systemPrompt: SYSTEM_PROMPT_EN }), narrator: 'opus' };
+}
+
+/**
+ * Picks the narrator by the NARRATOR env var and returns
+ * { narration, narrator, en }, where:
+ * - narration/narrator: the Romanian prose (identical to prior behavior).
+ * - en: { narration, narrator } for the English prose, or null when EN fails.
+ *
+ * EN is best-effort: any failure logs a warning and yields en: null so the
+ * digest always ships in Romanian. Values:
+ *   unset / "gemini"  — Gemini single-pass.
+ *   "gemini-polish"   — Gemini draft -> idiom critique -> rewrite. When the
+ *                       polish stage fails the validated draft ships, marked
+ *                       "gemini".
+ *   "opus"            — single-pass headless Opus.
+ *   "opus-polish"     — Opus draft -> idiom critique -> rewrite. When the polish
+ *                       stage fails the validated draft ships, marked "opus".
+ *
+ * Any Opus *draft* failure — expired/invalid OAuth token, or bad output after
+ * its retries — logs a warning and falls back to Gemini, marked
+ * "gemini-fallback". The digest must never miss a morning over a
+ * narration-engine problem. Engines are injectable for testing.
+ */
+export async function getNarration(facts, {
+  fixtures, recentProse, steer, gold = [],
+  claudeEngine = callClaude,
+  polishEngine = polishedNarration,
+  geminiDraftEngine = callGeminiNarration,
+  geminiCritiqueEngine = callGeminiText,
+  geminiDraftEngineEn = callGeminiNarrationEn,
+} = {}) {
+  // EN runs first so a shared claudeEngine mock in tests captures the RO call last
+  // (RO is the canonical result; its args are what tests like
+  // "passes model, system prompt, and a steer-aware user message" inspect).
+  const en = await getEnNarration(facts, {
+    fixtures, recentProse, steer, gold,
+    claudeEngine, polishEngine, geminiDraftEngineEn, geminiCritiqueEngine,
+  }).catch((error) => {
+    console.warn(`English narration failed (${error.message}). Shipping Romanian only.`);
+    return null;
+  });
+  const ro = await getRoNarration(facts, {
+    fixtures, recentProse, steer, gold,
+    claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
+  });
+  return { ...ro, en };
 }
 
 /**
