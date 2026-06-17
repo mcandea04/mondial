@@ -1,3 +1,5 @@
+import { mountSegmented } from './segmented.js';
+
 const THEME_KEY = 'theme';
 
 /**
@@ -17,34 +19,24 @@ export function currentTheme() {
 }
 
 /**
- * Mounts a theme toggle button inside `container`. Idempotent: a second call
- * on the same container is a no-op.
- * @param {HTMLElement} container
+ * Mounts a light/dark segmented toggle inside `container`. Persists the choice,
+ * sets <html data-theme>, and re-syncs on OS theme change when no explicit
+ * choice is stored. Idempotent.
  */
 export function mountToggle(container) {
-  if (container.querySelector('.theme-toggle')) return;
-
-  const btn = document.createElement('button');
-  btn.className = 'theme-toggle';
-  btn.setAttribute('aria-label', 'Schimbă tema');
-
-  function sync() {
-    const dark = currentTheme() === 'dark';
-    btn.textContent = dark ? '🌙' : '☀️';
-    btn.setAttribute('aria-pressed', String(dark));
-  }
-
-  btn.addEventListener('click', () => {
-    const next = currentTheme() === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(THEME_KEY, next);
-    } catch (_) {}
-    sync();
-  });
-
-  container.append(btn);
-  sync();
+  const { sync } = mountSegmented(
+    container,
+    'theme',
+    [
+      { value: 'light', label: '☀', title: 'Temă luminoasă' },
+      { value: 'dark', label: '☾', title: 'Temă întunecată' },
+    ],
+    currentTheme,
+    (theme) => {
+      document.documentElement.dataset.theme = theme;
+      try { localStorage.setItem(THEME_KEY, theme); } catch (_) {}
+    },
+  );
 
   const mq = typeof matchMedia !== 'undefined'
     ? matchMedia('(prefers-color-scheme: dark)')
