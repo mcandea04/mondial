@@ -1,5 +1,5 @@
 /**
- * Idiom-polished narration: draft -> native-Romanian idiom critique -> rewrite.
+ * Idiom-polished narration: draft -> native idiom critique -> rewrite.
  *
  * The draft is the same single-pass Opus call production uses. A reviewer pass
  * flags only calques and unnatural phrasing (never facts, never the jokes), and
@@ -19,32 +19,35 @@ import {
 
 /**
  * @returns { narration, polished } — polished is true only when the rewrite
- * succeeded, so run.js can mark the digest "opus-polish" vs a degraded "opus".
+ * succeeded. The prompt trio (draft system prompt, critique prompt, rewrite
+ * builder) defaults to the Romanian set; the EN pass injects the English trio.
  */
-export async function polishedNarration({ model, userMessage, draftEngine = callClaude, critiqueEngine = callClaudeText }) {
+export async function polishedNarration({
+  model, userMessage,
+  draftEngine = callClaude,
+  critiqueEngine = callClaudeText,
+  systemPrompt = SYSTEM_PROMPT,
+  critiquePrompt = CRITIQUE_SYSTEM_PROMPT,
+  buildRewritePrompt = buildRewriteSystemPrompt,
+}) {
   // The draft await is intentionally OUTSIDE the try: a draft failure must
   // propagate so getNarration can fall back to Gemini. Only polish-stage
   // failures are swallowed (the draft is already shippable). Do not wrap this.
-  const draft = await draftEngine({ model, userMessage, systemPrompt: SYSTEM_PROMPT });
+  const draft = await draftEngine({ model, userMessage, systemPrompt });
   let stage = 'critique';
   try {
     const critique = await critiqueEngine({
       model,
       userMessage: narrationToReviewText(draft),
-      systemPrompt: CRITIQUE_SYSTEM_PROMPT,
+      systemPrompt: critiquePrompt,
     });
-    // An empty critique means the reviewer found nothing to fix: ship the draft
-    // rather than burn a rewrite call on empty guidance.
     if (!critique.trim()) return { narration: draft, polished: false };
 
-    // The rewrite gets the ORIGINAL userMessage (the facts), not the review
-    // text, so it re-derives from facts and stays keyed by id — the critique
-    // only steers phrasing, it can never originate a score or scorer.
     stage = 'rewrite';
     const narration = await draftEngine({
       model,
       userMessage,
-      systemPrompt: buildRewriteSystemPrompt(critique),
+      systemPrompt: buildRewritePrompt(critique),
     });
     return { narration, polished: true };
   } catch (error) {
