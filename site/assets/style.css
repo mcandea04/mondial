@@ -113,22 +113,22 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 
 /* ── Match header ── */
 .match-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 12px;
+  display: grid;
+  grid-template-columns: 1fr auto; /* teams flow/wrap in col 1; actions own a reserved col 2, never crowded by name length */
+  align-items: start;
+  gap: 12px;
 }
+.match-actions { margin-top: 2px; } /* nudge the face to optically align with the first scoreline row */
 .match-teams {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
 .team-name { font-size: 15px; font-weight: 500; }
 .team-name.home { color: var(--home); }
 .team-name.away { color: var(--away); }
-.score { font-size: 24px; font-weight: 500; white-space: nowrap; }
+.score { font-size: 22px; font-weight: 500; white-space: nowrap; }
 .team { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; }
 .flag {
   height: 18px;
