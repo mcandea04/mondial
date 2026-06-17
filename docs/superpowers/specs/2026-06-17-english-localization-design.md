@@ -81,8 +81,8 @@ EN-fallback day has `en` absent / null).
 
 **Real RO enum (verified in code):** `merită văzut` / `citești dimineața`
 (`narration-core.js`, `run.js` default, `render.js`). The earlier draft of this
-spec wrongly said `stai treaz`; that token only appears in three older committed
-archive days (`2026-06-12/13/16`) — a pre-existing inconsistency. Current
+spec wrongly said `stai treaz`; that token only appears in older committed
+archive days (those before the enum settled) — a pre-existing inconsistency. Current
 `render.js` colors only `merită văzut` as "watch", so those legacy days silently
 render muted (latent bug we fix in passing).
 

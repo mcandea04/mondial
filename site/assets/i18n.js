@@ -1,7 +1,7 @@
 /* Pure, framework-free localization helpers shared by render.js. No DOM here. */
 
 // Watch-tonight alarm tokens across both languages plus the legacy RO value
-// (`stai treaz`) that three early archive days stored before the enum settled.
+// (`stai treaz`) that older archive days stored before the enum settled.
 export const WATCH_ALARMS = new Set(['merită văzut', 'stai treaz', 'stay up']);
 
 export function alarmIsWatch(value) {

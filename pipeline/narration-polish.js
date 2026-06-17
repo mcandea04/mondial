@@ -41,8 +41,13 @@ export async function polishedNarration({
       userMessage: narrationToReviewText(draft),
       systemPrompt: critiquePrompt,
     });
+    // An empty critique means the reviewer found nothing to fix: ship the draft
+    // rather than burn a rewrite call on empty guidance.
     if (!critique.trim()) return { narration: draft, polished: false };
 
+    // The rewrite gets the ORIGINAL userMessage (the facts), not the review
+    // text, so it re-derives from facts and stays keyed by id — the critique
+    // only steers phrasing, it can never originate a score or scorer.
     stage = 'rewrite';
     const narration = await draftEngine({
       model,
