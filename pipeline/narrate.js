@@ -7,7 +7,7 @@
  * narration-core.js so the Claude engine competes on the identical contract.
  */
 
-import { SYSTEM_PROMPT, narrationSchema, buildUserMessage, normalizeSteer } from './narration-core.js';
+import { SYSTEM_PROMPT, SYSTEM_PROMPT_EN, narrationSchema, narrationSchemaEn, buildUserMessage, normalizeSteer } from './narration-core.js';
 
 export { buildUserMessage, normalizeSteer };
 
@@ -57,6 +57,41 @@ export const responseSchema = {
         properties: {
           id: { type: 'INTEGER' },
           alarm: { type: 'STRING', enum: ['merită văzut', 'citești dimineața'] },
+          why: { type: 'STRING' },
+        },
+      },
+    },
+  },
+};
+
+// Gemini structured-output schema for English narration: identical to
+// responseSchema but with the English alarm enum.
+export const responseSchemaEn = {
+  type: 'OBJECT',
+  required: ['headline', 'summary', 'matches', 'tonight'],
+  properties: {
+    headline: { type: 'STRING' },
+    summary: { type: 'STRING' },
+    matches: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['id', 'pill', 'drama'],
+        properties: {
+          id: { type: 'INTEGER' },
+          pill: { type: 'STRING' },
+          drama: { type: 'INTEGER' },
+        },
+      },
+    },
+    tonight: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['id', 'alarm', 'why'],
+        properties: {
+          id: { type: 'INTEGER' },
+          alarm: { type: 'STRING', enum: ['worth watching', 'catch it later'] },
           why: { type: 'STRING' },
         },
       },
@@ -163,13 +198,12 @@ async function callModelWithBackoff({ apiKey, model, systemPrompt, userMessage, 
  * transport every Gemini path (single-pass narrate, draft, critique, rewrite)
  * goes through, so each gets the full ladder independently.
  */
-export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, systemPrompt, userMessage, schema = null, sleep = realSleep }) {
+export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, systemPrompt, userMessage, schema = null, validateWith = narrationSchema, sleep = realSleep }) {
   // `schema` is the Gemini server-side response schema; when present the output is
-  // a narration and is validated client-side against narrationSchema. The two are
-  // a pair (responseSchema mirrors narrationSchema), not independent — this is the
-  // narration transport, not a general-purpose Gemini client. A null schema means
-  // a plain-text call (the idiom critique), returned unvalidated.
-  const validate = schema ? (text) => narrationSchema.parse(JSON.parse(text)) : null;
+  // a narration and is validated client-side against validateWith (defaults to
+  // narrationSchema for RO callers; EN callers pass narrationSchemaEn). A null
+  // schema means a plain-text call (the idiom critique), returned unvalidated.
+  const validate = schema ? (text) => validateWith.parse(JSON.parse(text)) : null;
   try {
     return await callModelWithBackoff({ apiKey, model, systemPrompt, userMessage, schema, validate, maxAttempts: PRIMARY_MAX_ATTEMPTS, sleep });
   } catch (primaryError) {
@@ -197,4 +231,16 @@ export async function callGeminiResilient({ apiKey, model = DEFAULT_MODEL, syste
 export async function narrate(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null, gold = [], sleep = realSleep } = {}) {
   const userMessage = buildUserMessage(facts, recentProse, steer, gold);
   return callGeminiResilient({ apiKey, model, systemPrompt: SYSTEM_PROMPT, userMessage, schema: responseSchema, sleep });
+}
+
+/**
+ * Single-pass English narration. Same transport/ladder as narrate(), but with
+ * the English voice prompt and English response schema.
+ */
+export async function narrateEn(facts, { apiKey, model = DEFAULT_MODEL, recentProse = [], steer = null, gold = [], sleep = realSleep } = {}) {
+  const userMessage = buildUserMessage(facts, recentProse, steer, gold);
+  return callGeminiResilient({
+    apiKey, model, systemPrompt: SYSTEM_PROMPT_EN, userMessage,
+    schema: responseSchemaEn, validateWith: narrationSchemaEn, sleep,
+  });
 }

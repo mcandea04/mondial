@@ -1,9 +1,18 @@
 {
   "date": "2026-06-15",
   "factsHash": "5c45e7a7e0ed130ebbea6fe7a1f19e3f4f3d231c3ad071ca1b78f02fd3a9bb58",
-  "narrator": "opus-polish",
-  "headline": "Germania dă șapte, Olanda iartă, Coasta lovește în 90",
-  "summary": "Germania a dat șapte cu Curaçao și Suedia a îngropat Tunisia cu cinci, două seri de aritmetică fără suspans. Olanda a condus de două ori cu Japonia și tot a terminat la egalitate, iar Coasta de Fildeș a smuls victoria cu Ecuador în minutul 90.",
+  "narrator": {
+    "ro": "opus-polish",
+    "en": "gemini"
+  },
+  "headline": {
+    "ro": "Germania dă șapte, Olanda iartă, Coasta lovește în 90",
+    "en": "Seven-goal Germans and a Japanese sting in the tail"
+  },
+  "summary": {
+    "ro": "Germania a dat șapte cu Curaçao și Suedia a îngropat Tunisia cu cinci, două seri de aritmetică fără suspans. Olanda a condus de două ori cu Japonia și tot a terminat la egalitate, iar Coasta de Fildeș a smuls victoria cu Ecuador în minutul 90.",
+    "en": "Germany and Sweden enjoyed high-scoring afternoons at the expense of Curaçao and Tunisia, while the Dutch were frustrated by a late Japanese equaliser. Ivory Coast left it until the final minute of regulation time to secure their points against an Ecuador side that failed to turn possession into goals."
+  },
   "matches": [
     {
       "id": 537351,
@@ -119,7 +128,10 @@
       "decidedOnPenalties": false,
       "group": "E",
       "utcDate": "2026-06-14T17:00:00Z",
-      "pill": "Germania a dat șapte și conduce Grupa E cu un golaveraj de plus șase. Havertz a marcat de două ori, Schlotterbeck a pus capul, iar Curaçao s-a ales doar cu reușita lui Comenencia din minutul 21 și pleacă ultima, cu minus șase.",
+      "pill": {
+        "ro": "Germania a dat șapte și conduce Grupa E cu un golaveraj de plus șase. Havertz a marcat de două ori, Schlotterbeck a pus capul, iar Curaçao s-a ales doar cu reușita lui Comenencia din minutul 21 și pleacă ultima, cu minus șase.",
+        "en": "Germany turned a World Cup fixture into a ruthless shooting gallery, with Nico Schlotterbeck’s header and a Kai Havertz brace punctuating a seven-goal haul. Curaçao’s 21st-minute equaliser was a brief glitch that the Germans corrected with 26 shots and total indifference to their guests' feelings."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/3MSlsbd2rcnTGlcG4jhpdR"
     },
@@ -197,7 +209,10 @@
       "decidedOnPenalties": false,
       "group": "F",
       "utcDate": "2026-06-14T20:00:00Z",
-      "pill": "Un egal care nu lămurește nimic în Grupa F: Olanda a condus prin van Dijk și Summerville, dar de două ori a fost ajunsă din urmă. Kamada a egalat cu capul în minutul 89 și a lăsat-o pe Olanda cu un singur punct, lângă Japonia.",
+      "pill": {
+        "ro": "Un egal care nu lămurește nimic în Grupa F: Olanda a condus prin van Dijk și Summerville, dar de două ori a fost ajunsă din urmă. Kamada a egalat cu capul în minutul 89 și a lăsat-o pe Olanda cu un singur punct, lângă Japonia.",
+        "en": "Daichi Kamada’s 89th-minute header ensured the Dutch couldn't quite close the door in a game of oscillating leads. Virgil van Dijk thought he'd set the tone with his own header, but Japan's refusal to quit leaves Group F in a state of polite chaos."
+      },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/hfEd1R54PslEMX4Rqb0EP"
     },
@@ -245,7 +260,10 @@
       "decidedOnPenalties": false,
       "group": "E",
       "utcDate": "2026-06-14T23:00:00Z",
-      "pill": "Coasta de Fildeș a stat în meci nouăzeci de minute și a lovit exact la final, prin Amad Diallo, la pasa lui Singo. Ecuador a avut mingea mai mult și a nimerit poarta o singură dată — degeaba, că tot fără puncte deschide grupa.",
+      "pill": {
+        "ro": "Coasta de Fildeș a stat în meci nouăzeci de minute și a lovit exact la final, prin Amad Diallo, la pasa lui Singo. Ecuador a avut mingea mai mult și a nimerit poarta o singură dată — degeaba, că tot fără puncte deschide grupa.",
+        "en": "Ecuador dominated the ball but forgot the point of the game, managing only a single shot on target before being punished in the 90th minute. Amad Diallo’s late strike was a cruel lesson in efficiency for a side that spent 51.6% of the match doing very little with it."
+      },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/4P79SuyJHO3ZGVuRYxjots"
     },
@@ -343,7 +361,10 @@
       "decidedOnPenalties": false,
       "group": "F",
       "utcDate": "2026-06-15T02:00:00Z",
-      "pill": "Suedia a îngropat Tunisia cu cinci, cu Ayari de la marginea careului de două ori și Isak băgat în tot ce contează. Rekik a punctat cu capul pentru oaspeți, în rest, nimic.",
+      "pill": {
+        "ro": "Suedia a îngropat Tunisia cu cinci, cu Ayari de la marginea careului de două ori și Isak băgat în tot ce contează. Rekik a punctat cu capul pentru oaspeți, în rest, nimic.",
+        "en": "Yasin Ayari twice found the net with his right foot from outside the box as Sweden made light work of a porous Tunisia. Alexander Isak was the architect of the afternoon, scoring one from distance and providing two assists to keep the Swedes top of the pile."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/1xJ82g9ocfLQaweWUFgFMw"
     }
@@ -456,8 +477,14 @@
       "homeCode": "es",
       "awayCode": "cv",
       "kickoffEEST": "19:00",
-      "alarm": "citești dimineața",
-      "why": "Spania intră în turneu cu Capul Verde la șapte seara, favorită clară pe care o vezi relaxat lângă masă."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Spania intră în turneu cu Capul Verde la șapte seara, favorită clară pe care o vezi relaxat lângă masă.",
+        "en": "Spain and Cape Verde at 19:00 is a lopsided affair that you can easily digest via a quick score-check tomorrow morning."
+      }
     },
     {
       "id": 537363,
@@ -466,8 +493,14 @@
       "homeCode": "be",
       "awayCode": "eg",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "Belgia deschide Grupa G cu Egipt la zece seara, ora la care ești treaz fără să faci niciun efort."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Belgia deschide Grupa G cu Egipt la zece seara, ora la care ești treaz fără să faci niciun efort.",
+        "en": "Belgium facing Egypt at 22:00 lacks the competitive edge required to justify staying up late."
+      }
     },
     {
       "id": 537370,
@@ -476,8 +509,14 @@
       "homeCode": "sa",
       "awayCode": "uy",
       "kickoffEEST": "01:00",
-      "alarm": "stai treaz",
-      "why": "Uruguay își începe turneul cu Arabia Saudită la unu noaptea; dacă vrei să vezi ce poate, plătești cu somn."
+      "alarm": {
+        "ro": "stai treaz",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Uruguay își începe turneul cu Arabia Saudită la unu noaptea; dacă vrei să vezi ce poate, plătești cu somn.",
+        "en": "Saudi Arabia and Uruguay at 01:00 is the standout clash for anyone willing to trade sleep for a genuine contest."
+      }
     },
     {
       "id": 537364,
@@ -486,9 +525,18 @@
       "homeCode": "ir",
       "awayCode": "nz",
       "kickoffEEST": "04:00",
-      "alarm": "citești dimineața",
-      "why": "Iran și Noua Zeelandă închid noaptea la patru, oră la care e mai cuminte să afli scorul lângă cafea."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Iran și Noua Zeelandă închid noaptea la patru, oră la care e mai cuminte să afli scorul lângă cafea.",
+        "en": "Iran against New Zealand at 04:00 is a niche appointment better left for the highlights reel over breakfast."
+      }
     }
   ],
-  "teaser": "⚽ Germania dă șapte, Olanda iartă, Coasta lovește în 90 · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": {
+    "ro": "⚽ Germania dă șapte, Olanda iartă, Coasta lovește în 90 · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Seven-goal Germans and a Japanese sting in the tail · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+  }
 }

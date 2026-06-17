@@ -37,14 +37,18 @@ import {
   kickoffEEST,
 } from './espn.js';
 import { classifyStandings } from './standings.js';
-import { narrate } from './narrate.js';
+import { narrate, narrateEn } from './narrate.js';
 import { callClaude } from './claude-engine.js';
-import { callGeminiNarration, callGeminiText } from './gemini-engine.js';
+import { callGeminiNarration, callGeminiNarrationEn, callGeminiText } from './gemini-engine.js';
 import { polishedNarration } from './narration-polish.js';
-import { SYSTEM_PROMPT, buildUserMessage } from './narration-core.js';
+import {
+  SYSTEM_PROMPT, SYSTEM_PROMPT_EN, buildUserMessage,
+  CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
+  localizeProse, factsWithEnglishVerdicts, englishVerdict,
+} from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
-import { buildTeaser } from './teaser.js';
+import { buildTeaser, buildTeaserEn } from './teaser.js';
 import { factsHash } from './facts-hash.js';
 import { reuseNarration } from './prose-reuse.js';
 import { loadGold } from './gold.js';
@@ -154,6 +158,50 @@ export function mergeStats(fresh, prior) {
   return prior != null ? prior : fresh;
 }
 
+/** Reads a (possibly legacy-string) narrator field for one language. */
+function localizeNarrator(narrator, lang) {
+  if (narrator == null) return null;
+  if (typeof narrator === 'string') return lang === 'ro' ? narrator : null;
+  return narrator[lang] ?? null;
+}
+
+/**
+ * Rebuilds EN narration from a stored bilingual digest, mirroring reuseNarration
+ * but reading the .en side of each prose field. Returns null when any required
+ * EN field is missing (so a RO-only stored day reuses RO and leaves EN absent).
+ */
+export function reuseNarrationEn(stored, facts) {
+  const enOrNull = (field) => (field && typeof field === 'object' && field.en != null ? field.en : null);
+  const headline = enOrNull(stored.headline);
+  const summary = enOrNull(stored.summary);
+  if (!headline || !summary) return null;
+
+  const storedMatches = new Map((stored.matches ?? []).map((m) => [m.id, m]));
+  const matches = [];
+  for (const m of facts.finished) {
+    const s = storedMatches.get(m.id);
+    const pill = enOrNull(s?.pill);
+    if (!pill) return null;
+    matches.push({ id: m.id, pill, drama: s.drama ?? 1 });
+  }
+
+  const tonightById = new Map();
+  const tonightByTeams = new Map();
+  for (const t of stored.tonight ?? []) {
+    if (t.id != null) tonightById.set(t.id, t);
+    tonightByTeams.set(`${t.home}|${t.away}`, t);
+  }
+  const tonight = [];
+  for (const f of facts.tonight) {
+    const s = tonightById.get(f.id) ?? tonightByTeams.get(`${f.home}|${f.away}`);
+    const why = enOrNull(s?.why);
+    const alarm = enOrNull(s?.alarm);
+    if (!why || !alarm) return null;
+    tonight.push({ id: f.id, alarm, why });
+  }
+  return { headline, summary, matches, tonight };
+}
+
 function requireEnv(name) {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not set`);
@@ -220,29 +268,13 @@ function geminiNarration(facts, { fixtures, recentProse, steer, gold }) {
 }
 
 /**
- * Picks the narrator by the NARRATOR env var and returns { narration, narrator },
- * where narrator records which engine actually produced the prose so a silent
- * fallback is visible in the day's JSON. Values:
- *   unset / "gemini"  — Gemini single-pass.
- *   "gemini-polish"   — Gemini draft -> idiom critique -> rewrite. When the
- *                       polish stage fails the validated draft ships, marked
- *                       "gemini".
- *   "opus"            — single-pass headless Opus.
- *   "opus-polish"     — Opus draft -> idiom critique -> rewrite. When the polish
- *                       stage fails the validated draft ships, marked "opus".
- *
- * Any Opus *draft* failure — expired/invalid OAuth token, or bad output after
- * its retries — logs a warning and falls back to Gemini, marked
- * "gemini-fallback". The digest must never miss a morning over a
- * narration-engine problem. Engines are injectable for testing.
+ * RO narration: current body of getNarration, extracted verbatim. Returns
+ * { narration, narrator }. Logic is unchanged — this is a pure rename/extract.
  */
-export async function getNarration(facts, {
-  fixtures, recentProse, steer, gold = [],
-  claudeEngine = callClaude,
-  polishEngine = polishedNarration,
-  geminiDraftEngine = callGeminiNarration,
-  geminiCritiqueEngine = callGeminiText,
-} = {}) {
+async function getRoNarration(facts, {
+  fixtures, recentProse, steer, gold,
+  claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
+}) {
   const mode = process.env.NARRATOR;
 
   // Gemini idiom-polish: draft -> critique -> rewrite, all on Gemini. Offline
@@ -284,6 +316,114 @@ export async function getNarration(facts, {
 }
 
 /**
+ * EN narration: mirrors getRoNarration engine selection but with EN prompts/schema
+ * and the EN offline fixture. Best-effort — callers catch and yield null on failure.
+ *
+ * Fixture handling only applies to Gemini paths: the opus/opus-polish paths use the
+ * injected claudeEngine directly (they have their own auth/retry logic and tests
+ * expect the engine to be called even when fixtures is set).
+ */
+async function getEnNarration(facts, {
+  fixtures, recentProse, steer, gold,
+  claudeEngine, polishEngine, geminiDraftEngineEn, geminiCritiqueEngine,
+}) {
+  const mode = process.env.NARRATOR;
+
+  const userMessage = buildUserMessage(facts, recentProse, steer, gold);
+
+  if (mode === 'gemini-polish') {
+    if (fixtures) {
+      const cannedPath = path.join(fixtures, 'narration.en.json');
+      if (!existsSync(cannedPath)) return null;
+      return { narration: await readJson(cannedPath), narrator: 'gemini' };
+    }
+    const model = process.env.GEMINI_MODEL || undefined;
+    const { narration, polished } = await polishEngine({
+      model, userMessage,
+      draftEngine: geminiDraftEngineEn, critiqueEngine: geminiCritiqueEngine,
+      systemPrompt: SYSTEM_PROMPT_EN,
+      critiquePrompt: CRITIQUE_SYSTEM_PROMPT_EN,
+      buildRewritePrompt: buildRewriteSystemPromptEn,
+    });
+    return { narration, narrator: polished ? 'gemini-polish' : 'gemini' };
+  }
+
+  if (mode !== 'opus' && mode !== 'opus-polish') {
+    if (fixtures) {
+      const cannedPath = path.join(fixtures, 'narration.en.json');
+      if (!existsSync(cannedPath)) return null;
+      return { narration: await readJson(cannedPath), narrator: 'gemini' };
+    }
+    return {
+      narration: await narrateEn(facts, {
+        apiKey: requireEnv('GEMINI_API_KEY'),
+        model: process.env.GEMINI_MODEL || undefined,
+        recentProse, steer, gold,
+      }),
+      narrator: 'gemini',
+    };
+  }
+
+  const model = process.env.CLAUDE_MODEL || 'opus';
+  if (mode === 'opus-polish') {
+    const { narration, polished } = await polishEngine({
+      model, userMessage, draftEngine: claudeEngine,
+      systemPrompt: SYSTEM_PROMPT_EN,
+      critiquePrompt: CRITIQUE_SYSTEM_PROMPT_EN,
+      buildRewritePrompt: buildRewriteSystemPromptEn,
+    });
+    return { narration, narrator: polished ? 'opus-polish' : 'opus' };
+  }
+  return { narration: await claudeEngine({ model, userMessage, systemPrompt: SYSTEM_PROMPT_EN }), narrator: 'opus' };
+}
+
+/**
+ * Picks the narrator by the NARRATOR env var and returns
+ * { narration, narrator, en }, where:
+ * - narration/narrator: the Romanian prose (identical to prior behavior).
+ * - en: { narration, narrator } for the English prose, or null when EN fails.
+ *
+ * EN is best-effort: any failure logs a warning and yields en: null so the
+ * digest always ships in Romanian. Values:
+ *   unset / "gemini"  — Gemini single-pass.
+ *   "gemini-polish"   — Gemini draft -> idiom critique -> rewrite. When the
+ *                       polish stage fails the validated draft ships, marked
+ *                       "gemini".
+ *   "opus"            — single-pass headless Opus.
+ *   "opus-polish"     — Opus draft -> idiom critique -> rewrite. When the polish
+ *                       stage fails the validated draft ships, marked "opus".
+ *
+ * Any Opus *draft* failure — expired/invalid OAuth token, or bad output after
+ * its retries — logs a warning and falls back to Gemini, marked
+ * "gemini-fallback". The digest must never miss a morning over a
+ * narration-engine problem. Engines are injectable for testing.
+ */
+export async function getNarration(facts, {
+  fixtures, recentProse, steer, gold = [],
+  claudeEngine = callClaude,
+  polishEngine = polishedNarration,
+  geminiDraftEngine = callGeminiNarration,
+  geminiCritiqueEngine = callGeminiText,
+  geminiDraftEngineEn = callGeminiNarrationEn,
+} = {}) {
+  const ro = await getRoNarration(facts, {
+    fixtures, recentProse, steer, gold,
+    claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
+  });
+  // The English pass narrates the same facts plus the Romanian watch verdict per
+  // fixture, so the two languages agree on watch/skip and differ only in wording.
+  const enFacts = factsWithEnglishVerdicts(facts, ro.narration);
+  const en = await getEnNarration(enFacts, {
+    fixtures, recentProse, steer, gold,
+    claudeEngine, polishEngine, geminiDraftEngineEn, geminiCritiqueEngine,
+  }).catch((error) => {
+    console.warn(`English narration failed (${error.message}). Shipping Romanian only.`);
+    return null;
+  });
+  return { ...ro, en };
+}
+
+/**
  * Maps finished-match ids to FIFA highlight URLs. Offline (--fixtures) it reads
  * highlights.json from the dir when present and skips the network otherwise.
  * Always returns a Map; never throws, so a feed outage cannot fail the digest.
@@ -314,9 +454,9 @@ async function recentProseBefore(dataDir, date, days = 3) {
   const prose = [];
   for (const d of files) {
     const digest = await readJson(path.join(dataDir, `${d}.json`));
-    prose.push(digest.headline, digest.summary);
-    for (const m of digest.matches ?? []) prose.push(m.pill);
-    for (const t of digest.tonight ?? []) prose.push(t.why);
+    prose.push(localizeProse(digest.headline, 'ro'), localizeProse(digest.summary, 'ro'));
+    for (const m of digest.matches ?? []) prose.push(localizeProse(m.pill, 'ro'));
+    for (const t of digest.tonight ?? []) prose.push(localizeProse(t.why, 'ro'));
   }
   return prose.filter(Boolean);
 }
@@ -403,35 +543,64 @@ async function main() {
   // prose instead of regenerating. A stored digest without factsHash predates
   // this mechanism and is trusted as-is (the hash gets stamped on rewrite).
 
-  let narration = null;
-  let narrator = null;
+  // `narration` (RO) and `enNarration` (EN | null). Reuse path supplies both
+  // from the stored digest; fresh path from getNarration.
+  let narration = null;       // RO narration object (flat strings) — feeds OG/teaser/email
+  let enNarration = null;     // EN narration object | null
+  let narratorRo = null;
+  let narratorEn = null;
   let reused = false;
+
   if (!args.reNarrate && existing && (!existing.factsHash || existing.factsHash === hash)) {
-    narration = reuseNarration(existing, facts);
-    reused = narration != null;
+    const reusedRo = reuseNarration(existing, facts);
+    if (reusedRo) {
+      // reuseNarration returns prose fields as-stored; localize to flat RO strings
+      // so narration feeds OG/teaser/email as plain text.
+      narration = {
+        headline: localizeProse(reusedRo.headline, 'ro'),
+        summary: localizeProse(reusedRo.summary, 'ro'),
+        matches: reusedRo.matches.map((m) => ({
+          id: m.id,
+          pill: localizeProse(m.pill, 'ro'),
+          drama: m.drama,
+        })),
+        tonight: reusedRo.tonight.map((t) => ({
+          id: t.id,
+          alarm: localizeProse(t.alarm, 'ro'),
+          why: localizeProse(t.why, 'ro'),
+        })),
+      };
+      narratorRo = localizeNarrator(existing.narrator, 'ro') ?? 'gemini';
+      // EN reuse: only if the stored digest already had EN prose for all needed ids.
+      enNarration = reuseNarrationEn(existing, facts);   // null if any en missing
+      narratorEn = enNarration ? (localizeNarrator(existing.narrator, 'en') ?? null) : null;
+      reused = true;
+    }
   }
 
   if (reused) {
-    // Reused prose keeps whoever wrote it; pre-marker digests are taken as Gemini.
-    narrator = existing.narrator ?? 'gemini';
     console.log('facts unchanged, prose reused');
   } else {
     const gold = await loadGoldSafe();
-    const recentProse = args.fixtures
-      ? []
-      : withoutGold(await recentProseBefore(dataDir, date), gold);
-    ({ narration, narrator } = await getNarration(factsForNarration, {
-      fixtures: args.fixtures,
-      recentProse,
-      steer: args.steer,
-      gold,
-    }));
+    const recentProse = args.fixtures ? [] : withoutGold(await recentProseBefore(dataDir, date), gold);
+    const result = await getNarration(factsForNarration, {
+      fixtures: args.fixtures, recentProse, steer: args.steer, gold,
+    });
+    narration = result.narration;
+    narratorRo = result.narrator;
+    enNarration = result.en?.narration ?? null;
+    narratorEn = result.en?.narrator ?? null;
   }
 
   const recapByMatch = await getRecaps(facts.finished, { fixtures: args.fixtures });
 
   const narrationByMatch = new Map(narration.matches.map((m) => [m.id, m]));
   const narrationByFixture = new Map(narration.tonight.map((m) => [m.id, m]));
+  const enByMatch = new Map((enNarration?.matches ?? []).map((m) => [m.id, m]));
+  const enByFixture = new Map((enNarration?.tonight ?? []).map((m) => [m.id, m]));
+
+  // Builds {ro, en} dropping the en key when the EN value is absent.
+  const bilingual = (ro, en) => (en == null ? { ro } : { ro, en });
 
   // Monotonic merge: a highlight link, once stored, is never overwritten by null
   // when a later FIFA feed outage yields no link for that match.
@@ -442,12 +611,12 @@ async function main() {
   const digest = {
     date,
     factsHash: hash,
-    narrator,
-    headline: narration.headline,
-    summary: narration.summary,
+    narrator: bilingual(narratorRo, narratorEn),
+    headline: bilingual(narration.headline, enNarration?.headline),
+    summary: bilingual(narration.summary, enNarration?.summary),
     matches: facts.finished.map((m) => ({
       ...m,
-      pill: narrationByMatch.get(m.id)?.pill ?? '',
+      pill: bilingual(narrationByMatch.get(m.id)?.pill ?? '', enByMatch.get(m.id)?.pill),
       drama: narrationByMatch.get(m.id)?.drama ?? 1,
       highlight: mergeHighlight(m.id, recapByMatch, existingHighlightById),
     })),
@@ -459,14 +628,19 @@ async function main() {
       homeCode: m.homeCode ?? null,
       awayCode: m.awayCode ?? null,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
-      alarm: narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
-      why: narrationByFixture.get(m.id)?.why ?? '',
+      // The watch verdict is canonical (Romanian); the English alarm is its
+      // mapped form, never the English model's own call — so the two never
+      // disagree. Only `why` wording differs per language.
+      alarm: bilingual(
+        narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
+        enByFixture.get(m.id)?.why == null ? undefined : englishVerdict(narrationByFixture.get(m.id)?.alarm),
+      ),
+      why: bilingual(narrationByFixture.get(m.id)?.why ?? '', enByFixture.get(m.id)?.why),
     })),
-    teaser: buildTeaser({
-      headline: narration.headline,
-      matchCount: facts.finished.length,
-      siteUrl,
-    }),
+    teaser: bilingual(
+      buildTeaser({ headline: narration.headline, matchCount: facts.finished.length, siteUrl }),
+      enNarration ? buildTeaserEn({ headline: enNarration.headline, matchCount: facts.finished.length, siteUrl }) : undefined,
+    ),
   };
 
   const ogPath = path.join(dataDir, 'og', `${date}.png`);
@@ -544,9 +718,9 @@ async function main() {
 
   await setOutput('published', 'true');
   await setOutput('date', date);
-  await setOutput('headline', narration.headline);
+  await setOutput('headline', narration.headline);   // flat RO string — correct
   await setOutput('match_count', String(digest.matches.length));
-  await setOutput('narrator', narrator);
+  await setOutput('narrator', narratorRo);            // flat RO string, not the {ro,en} object
   // Email fires only when fresh prose was generated (first publish, facts change,
   // or --re-narrate), never when the stored prose was reused for a highlight or
   // stats-only update. `reused` is false in exactly those fresh-narrate cases.

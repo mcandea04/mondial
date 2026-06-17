@@ -1,18 +1,13 @@
 /* Renders a digest JSON into the page. Shared by index.html and arhiva.html. */
 
+import { localize, localizeTeam, UI_STRINGS, STATUS_LABEL, alarmIsWatch, alarmBadgeLabel, dateLabel } from './i18n.js';
+
 const STATUS_BADGE = {
   'calificată': 'badge-ok',
   'în cărți': 'badge-good',
   'are nevoie de minune': 'badge-warn',
   'eliminată': 'badge-danger',
 };
-
-const WEEKDAY_FMT = new Intl.DateTimeFormat('ro-RO', {
-  timeZone: 'Europe/Bucharest',
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-});
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -34,48 +29,42 @@ function flagImg(code, sizeClass) {
 // A team name with its flag inline, so the flag flows with the text and stays
 // next to the name even when a long name wraps. `side` places the flag 'before'
 // the name (home) or 'after' it (away).
-function teamName(className, name, code, side) {
-  const span = el('span', className, name);
+function teamName(className, name, code, side, lang) {
+  const span = el('span', className, localizeTeam(name, lang));
   const flag = flagImg(code, 'flag-inline');
   if (flag) span[side === 'before' ? 'prepend' : 'append'](flag);
   return span;
 }
 
-function renderHeader(root, digest) {
+function renderHeader(root, digest, lang) {
+  const t = UI_STRINGS[lang];
   const meta = el('div', 'meta');
-  const dateLabel = WEEKDAY_FMT.format(new Date(`${digest.date}T06:00:00Z`));
   meta.append(
-    el('span', null, `${capitalize(dateLabel)} · azi-noapte la Mondial`),
-    el('span', null, matchCountLabel(digest.matches.length)),
+    el('span', null, `${dateLabel(digest.date, lang)} · ${t.nightHere}`),
+    el('span', null, matchCountLabel(digest.matches.length, lang)),
   );
-  root.append(meta, el('h1', null, digest.headline), el('p', 'summary', digest.summary));
+  root.append(meta, el('h1', null, localize(digest.headline, lang)), el('p', 'summary', localize(digest.summary, lang)));
 }
 
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+function matchCountLabel(n, lang) {
+  const t = UI_STRINGS[lang];
+  if (n === 0) return t.noMatches;
+  if (n === 1) return t.oneMatch;
+  return t.manyMatches(n);
 }
 
-function matchCountLabel(n) {
-  if (n === 0) return 'fără meciuri';
-  if (n === 1) return '1 meci';
-  return `${n} meciuri`;
-}
-
-function renderMatchCard(match) {
+function renderMatchCard(match, lang) {
   const card = el('div', 'card');
-
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
-
   const score = el('span', 'score', `${match.score[0]} – ${match.score[1]}`);
-
   teams.append(
-    teamName('team-name home', match.home, match.homeCode, 'before'),
+    teamName('team-name home', match.home, match.homeCode, 'before', lang),
     score,
-    teamName('team-name away', match.away, match.awayCode, 'after'),
+    teamName('team-name away', match.away, match.awayCode, 'after', lang),
   );
   const flames = el('div', 'flames');
-  flames.setAttribute('aria-label', `dramă ${match.drama} din 5`);
+  flames.setAttribute('aria-label', UI_STRINGS[lang].drama(match.drama));
   for (let i = 0; i < match.drama; i += 1) {
     const flame = el('span', 'flame');
     flame.setAttribute('aria-hidden', 'true');
@@ -84,17 +73,18 @@ function renderMatchCard(match) {
   header.append(teams, flames);
   card.append(header);
 
-  const events = renderEvents(match);
+  const events = renderEvents(match, lang);
   if (events) card.append(events);
 
-  if (match.pill) {
+  const pillText = localize(match.pill, lang);
+  if (pillText) {
     const pill = el('div', 'pill');
-    pill.append(el('p', 'pill-text', match.pill));
+    pill.append(el('p', 'pill-text', pillText));
     card.append(pill);
   }
 
   if (match.highlight) {
-    const link = el('a', 'highlight', '▶ Rezumat');
+    const link = el('a', 'highlight', UI_STRINGS[lang].recap);
     link.href = match.highlight;
     link.target = '_blank';
     link.rel = 'noopener';
@@ -105,19 +95,19 @@ function renderMatchCard(match) {
 
 /**
  * A team-colored event span: `${name} ${minute}'`, class `ev` plus the side.
- * Own goals carry the `(autogol)` tag so the scorer reads against, not for, the
+ * Own goals carry the own-goal tag so the scorer reads against, not for, the
  * team colour they wear — `team` is the side that benefits, not the player's own.
  */
-function eventSpan(event) {
+function eventSpan(event, lang) {
   const cls = event.team ? `ev ${event.team}` : 'ev';
-  const tag = event.ownGoal ? ' (autogol)' : '';
+  const tag = event.ownGoal ? ` (${UI_STRINGS[lang].ownGoal})` : '';
   const label = `${event.name}${tag} ${event.minute}'`;
   return el('span', cls, label);
 }
 
 /** A red-card event span: the goal span with a `■` mark prepended. */
-function cardSpan(event) {
-  const span = eventSpan(event);
+function cardSpan(event, lang) {
+  const span = eventSpan(event, lang);
   span.prepend(el('span', 'card-mark', '■ '));
   return span;
 }
@@ -135,21 +125,22 @@ function eventLine(spans) {
 /**
  * The goals line and (if any) the red-card line, plus a penalties note. Returns
  * null when there is nothing to show. The note rides on the last line as
- * ` · decis la penalty-uri`, or stands alone when there are no events.
+ * ` · <penalties note>`, or stands alone when there are no events.
  */
-function renderEvents(match) {
+function renderEvents(match, lang) {
   const lines = [];
-  if (match.scorers.length) lines.push(eventLine(match.scorers.map(eventSpan)));
-  if (match.events.length) lines.push(eventLine(match.events.map(cardSpan)));
+  if (match.scorers.length) lines.push(eventLine(match.scorers.map((e) => eventSpan(e, lang))));
+  if (match.events.length) lines.push(eventLine(match.events.map((e) => cardSpan(e, lang))));
 
   if (match.decidedOnPenalties) {
+    const note = UI_STRINGS[lang].penalties;
     const lastLine = lines[lines.length - 1];
     if (lastLine) {
-      lastLine.append(el('span', 'sep', '  ·  decis la penalty-uri'));
+      lastLine.append(el('span', 'sep', `  ·  ${note}`));
     } else {
-      const note = el('p', 'evline');
-      note.append(el('span', null, 'decis la penalty-uri'));
-      lines.push(note);
+      const line = el('p', 'evline');
+      line.append(el('span', null, note));
+      lines.push(line);
     }
   }
 
@@ -159,27 +150,28 @@ function renderEvents(match) {
   return wrap;
 }
 
-function teamCell(row) {
+function teamCell(row, lang) {
   const td = el('td', null);
   const wrap = el('span', 'team');
-  wrap.append(...[flagImg(row.code, 'flag-sm'), el('span', 'team-name', row.team)].filter(Boolean));
+  wrap.append(...[flagImg(row.code, 'flag-sm'), el('span', 'team-name', localizeTeam(row.team, lang))].filter(Boolean));
   td.append(wrap);
   return td;
 }
 
-function renderGroupCard(group) {
+function renderGroupCard(group, lang) {
+  const t = UI_STRINGS[lang];
   const card = el('div', 'card');
-  card.append(el('p', 'card-label', `Grupa ${group.name}`));
+  card.append(el('p', 'card-label', t.group(group.name)));
 
   const table = el('table');
   const thead = el('thead');
   const headRow = el('tr');
   for (const [label, cls] of [
-    ['Echipă', 'col-team'],
-    ['MJ', 'col-num'],
-    ['GD', 'col-num'],
-    ['Pct', 'col-num'],
-    ['Status', 'col-stat'],
+    [t.colTeam, 'col-team'],
+    [t.colPlayed, 'col-num'],
+    [t.colGd, 'col-num'],
+    [t.colPts, 'col-num'],
+    [t.colStatus, 'col-stat'],
   ]) {
     headRow.append(el('td', cls, label));
   }
@@ -189,13 +181,14 @@ function renderGroupCard(group) {
   for (const row of group.table) {
     const tr = el('tr');
     tr.append(
-      teamCell(row),
+      teamCell(row, lang),
       el('td', 'col-num', String(row.p)),
       el('td', 'col-num', row.gd > 0 ? `+${row.gd}` : String(row.gd)),
       el('td', 'col-num pts', String(row.pts)),
     );
     const statusCell = el('td', 'col-stat');
-    statusCell.append(el('span', `badge ${STATUS_BADGE[row.status] ?? 'badge-muted'}`, row.status));
+    const labelText = STATUS_LABEL[lang][row.status] ?? row.status;
+    statusCell.append(el('span', `badge ${STATUS_BADGE[row.status] ?? 'badge-muted'}`, labelText));
     tr.append(statusCell);
     tbody.append(tr);
   }
@@ -204,9 +197,10 @@ function renderGroupCard(group) {
   return card;
 }
 
-function renderTonight(tonight) {
+function renderTonight(tonight, lang) {
+  const t = UI_STRINGS[lang];
   const card = el('div', 'card');
-  card.append(el('p', 'card-label', 'La noapte — merită alarma?'));
+  card.append(el('p', 'card-label', t.tonightTitle));
   for (const fixture of tonight) {
     const row = el('div', 'tonight-row');
     const left = el('div');
@@ -214,55 +208,61 @@ function renderTonight(tonight) {
     matchLine.append(
       ...[
         flagImg(fixture.homeCode, 'flag-sm'),
-        el('span', 'tonight-match', `${fixture.home} – ${fixture.away}`),
+        el('span', 'tonight-match', `${localizeTeam(fixture.home, lang)} – ${localizeTeam(fixture.away, lang)}`),
         flagImg(fixture.awayCode, 'flag-sm'),
       ].filter(Boolean),
     );
-    left.append(matchLine, el('span', 'tonight-time', ` · ${fixture.kickoffEEST} EEST`));
-    if (fixture.why) {
-      left.append(el('br'), el('span', 'tonight-why', fixture.why));
+    left.append(matchLine, el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`));
+    const whyText = localize(fixture.why, lang);
+    if (whyText) {
+      left.append(el('br'), el('span', 'tonight-why', whyText));
     }
-    const badgeClass = fixture.alarm === 'merită văzut' ? 'badge-ok' : 'badge-muted';
-    row.append(left, el('span', `badge ${badgeClass}`, fixture.alarm));
+    // The watch/skip verdict is a single judgment, not a per-language opinion:
+    // the Romanian alarm is canonical, and the badge label is its localized form.
+    // Only the `why` wording differs by language. This keeps RO and EN from
+    // disagreeing on whether a match is worth the alarm.
+    const watch = alarmIsWatch(localize(fixture.alarm, 'ro'));
+    const badgeClass = watch ? 'badge-ok' : 'badge-muted';
+    row.append(left, el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)));
     card.append(row);
   }
   return card;
 }
 
-function renderShareBar(digest) {
+function renderShareBar(digest, lang) {
+  const t = UI_STRINGS[lang];
+  const shareText = localize(digest.teaser, lang);
   const bar = el('div', 'share-bar');
-  bar.append(el('div', 'share-text', digest.teaser));
+  bar.append(el('div', 'share-text', shareText));
 
-  const waLink = el('a', 'share-btn', 'Share ↗');
-  waLink.href = `https://wa.me/?text=${encodeURIComponent(digest.teaser)}`;
+  const waLink = el('a', 'share-btn', t.share);
+  waLink.href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
   waLink.target = '_blank';
   waLink.rel = 'noopener';
   waLink.addEventListener('click', (event) => {
     window.goatcounter?.count?.({ path: 'share-whatsapp', title: 'WhatsApp share', event: true });
     if (navigator.share) {
       event.preventDefault();
-      navigator.share({ text: digest.teaser }).catch(() => {});
+      navigator.share({ text: shareText }).catch(() => {});
     }
   });
   bar.append(waLink);
   return bar;
 }
 
-export function renderDigest(root, digest) {
+export function renderDigest(root, digest, lang = 'ro') {
   root.replaceChildren();
-  renderHeader(root, digest);
+  renderHeader(root, digest, lang);
 
   if (digest.matches.length === 0) {
     const emptyCard = el('div', 'card');
-    emptyCard.append(
-      el('p', 'empty-state', 'Azi-noapte nu s-a jucat niciun meci. Vezi mai jos ce urmează.'),
-    );
+    emptyCard.append(el('p', 'empty-state', UI_STRINGS[lang].emptyNight));
     root.append(emptyCard);
   }
-  for (const match of digest.matches) root.append(renderMatchCard(match));
-  for (const group of digest.groups) root.append(renderGroupCard(group));
-  if (digest.tonight.length) root.append(renderTonight(digest.tonight));
-  root.append(renderShareBar(digest));
+  for (const match of digest.matches) root.append(renderMatchCard(match, lang));
+  for (const group of digest.groups) root.append(renderGroupCard(group, lang));
+  if (digest.tonight.length) root.append(renderTonight(digest.tonight, lang));
+  root.append(renderShareBar(digest, lang));
 }
 
 export async function loadDigest(url) {

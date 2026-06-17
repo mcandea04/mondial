@@ -18,12 +18,12 @@
 </head>
 <body>
   <div class="meta">
-    <span>Arhiva dimineților</span>
-    <span><a href="index.html" style="color: var(--muted);">← azi</a></span>
+    <span id="archive-title">Arhiva dimineților</span>
+    <span><a href="index.html" id="back-today" style="color: var(--muted);">← azi</a></span>
   </div>
   <main id="app">
     <div class="card">
-      <p class="card-label">Alege o dimineață</p>
+      <p class="card-label" id="choose-day">Alege o dimineață</p>
       <ul class="archive-list" id="archive-list">
         <li class="empty-state">Se încarcă…</li>
       </ul>
@@ -37,6 +37,7 @@
     import { renderDigest, loadDigest } from './assets/render.js';
     import { mountToggle } from './assets/theme.js';
     import { mountLangToggle, currentLang } from './assets/lang.js';
+    import { UI_STRINGS, dateLabel } from './assets/i18n.js';
 
     const meta = document.querySelector('.meta');
     mountToggle(meta);
@@ -45,14 +46,46 @@
     const digestRoot = document.getElementById('digest');
     let shownDate = null;
     let shownDigest = null;
+    let manifest = null;
 
-    mountLangToggle(meta, () => {
-      if (shownDigest) renderDigest(digestRoot, shownDigest, currentLang());
-    });
+    // Re-applies every language-dependent label on the page for the active
+    // language: the static chrome, the archive day list, and the shown digest.
+    function applyLang() {
+      const lang = currentLang();
+      const t = UI_STRINGS[lang];
+      document.getElementById('archive-title').textContent = t.archiveTitle;
+      document.getElementById('back-today').textContent = t.backToday;
+      document.getElementById('choose-day').textContent = t.chooseDay;
+      if (manifest) renderList(lang);
+      if (shownDigest) renderDigest(digestRoot, shownDigest, lang);
+    }
 
-    const dateFmt = new Intl.DateTimeFormat('ro-RO', {
-      timeZone: 'Europe/Bucharest', weekday: 'long', day: 'numeric', month: 'long',
-    });
+    mountLangToggle(meta, applyLang);
+
+    function renderList(lang) {
+      const t = UI_STRINGS[lang];
+      list.replaceChildren();
+      for (const date of [...manifest.dates].sort().reverse()) {
+        const link = document.createElement('a');
+        link.href = `#${date}`;
+        link.textContent = dateLabel(date, lang);
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          history.replaceState(null, '', `#${date}`);
+          showDay(date);
+        });
+        const item = document.createElement('li');
+        item.append(link);
+        if (manifest.recaps?.[date]) {
+          const mark = document.createElement('span');
+          mark.className = 'archive-recaps';
+          mark.textContent = t.recaps;
+          mark.title = t.recapsTitle(manifest.recaps[date]);
+          item.append(mark);
+        }
+        list.append(item);
+      }
+    }
 
     async function showDay(date) {
       try {
@@ -64,40 +97,19 @@
       } catch {
         digestRoot.replaceChildren(Object.assign(document.createElement('p'), {
           className: 'empty-state',
-          textContent: `Nu există digest pentru ${date}.`,
+          textContent: UI_STRINGS[currentLang()].noDigest(date),
         }));
       }
     }
 
     try {
-      const manifest = await loadDigest('data/manifest.json');
-      list.replaceChildren();
-      for (const date of [...manifest.dates].sort().reverse()) {
-        const link = document.createElement('a');
-        link.href = `#${date}`;
-        link.textContent = dateFmt.format(new Date(`${date}T06:00:00Z`));
-        link.addEventListener('click', (event) => {
-          event.preventDefault();
-          history.replaceState(null, '', `#${date}`);
-          showDay(date);
-        });
-        const item = document.createElement('li');
-        item.append(link);
-        if (manifest.recaps?.[date]) {
-          const mark = document.createElement('span');
-          mark.className = 'archive-recaps';
-          const count = manifest.recaps[date];
-          mark.textContent = '▶ rezumate';
-          mark.title = count === 1 ? '1 rezumat video' : `${count} rezumate video`;
-          item.append(mark);
-        }
-        list.append(item);
-      }
+      manifest = await loadDigest('data/manifest.json');
+      renderList(currentLang());
       if (location.hash) showDay(location.hash.slice(1));
     } catch {
       list.replaceChildren(Object.assign(document.createElement('li'), {
         className: 'empty-state',
-        textContent: 'Arhiva e încă goală.',
+        textContent: UI_STRINGS[currentLang()].emptyArchive,
       }));
     }
   </script>

@@ -52,9 +52,11 @@ test('NARRATOR=opus passes model, system prompt, and a steer-aware user message'
   t.after(() => { delete process.env.NARRATOR; delete process.env.CLAUDE_MODEL; });
   process.env.NARRATOR = 'opus';
   process.env.CLAUDE_MODEL = 'opus-test-alias';
-  let received;
-  const claudeEngine = async (args) => { received = args; return OPUS_OUT; };
+  const calls = [];
+  const claudeEngine = async (args) => { calls.push(args); return OPUS_OUT; };
   await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], steer: 'mai scurt', claudeEngine });
+  const received = calls.find((c) => /digestul de dimineață/.test(c.systemPrompt));
+  assert.ok(received, 'the Romanian narration call was made');
   assert.equal(received.model, 'opus-test-alias');
   assert.match(received.systemPrompt, /digestul de dimineață/);
   assert.match(received.userMessage, /FAPTELE DE AZI/);
@@ -183,4 +185,40 @@ test('getNarration passes gold into the single-pass gemini path', async () => {
     if (prevKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = prevKey;
   }
   assert.match(sentBody.contents[0].parts[0].text, /PILL: aur2/);
+});
+
+test('getNarration produces an EN narration alongside RO (opus)', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'opus';
+  const EN_OUT = { headline: 'EN title', summary: 'Two sentences. Really two.', matches: [], tonight: [] };
+  // claudeEngine is called twice: once for RO (SYSTEM_PROMPT), once for EN (SYSTEM_PROMPT_EN).
+  const claudeEngine = async ({ systemPrompt }) =>
+    /English/i.test(systemPrompt) ? EN_OUT : OPUS_OUT;
+  const result = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], claudeEngine });
+  assert.equal(result.narrator, 'opus');
+  assert.equal(result.narration.headline, 'Titlu scris de Opus');
+  assert.equal(result.en.narrator, 'opus');
+  assert.equal(result.en.narration.headline, 'EN title');
+});
+
+test('getNarration: EN failure leaves en null, RO still ships', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  process.env.NARRATOR = 'opus';
+  const claudeEngine = async ({ systemPrompt }) => {
+    if (/English/i.test(systemPrompt)) throw new Error('EN engine down');
+    return OPUS_OUT;
+  };
+  const result = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [], claudeEngine });
+  assert.equal(result.narration.headline, 'Titlu scris de Opus');
+  assert.equal(result.en, null);
+});
+
+test('getNarration (gemini single-pass) also produces EN', async (t) => {
+  t.after(() => { delete process.env.NARRATOR; });
+  delete process.env.NARRATOR;
+  // Offline fixtures: RO from narration.json, EN from narration.en.json (Task 9).
+  const result = await getNarration(facts, { fixtures: fixturesDir(), recentProse: [] });
+  assert.equal(result.narrator, 'gemini');
+  assert.ok(result.en, 'EN narration present offline');
+  assert.equal(result.en.narrator, 'gemini');
 });

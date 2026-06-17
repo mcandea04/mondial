@@ -1,9 +1,18 @@
 {
   "date": "2026-06-16",
   "factsHash": "d2599f3c770134afdb24d09e57526b2cad4ebc523739f1e103d56178919fd1b4",
-  "narrator": "gemini-polish",
-  "headline": "Spania, campioana posesiei sterile; Iran, maestră a revenirilor",
-  "summary": "Spania a dominat fără efect Capul Verde, terminând 0-0 în ciuda unei posesii copleșitoare și a 27 de șuturi. Între timp, Uruguay a smuls un egal târziu cu Arabia Saudită, iar Iranul și Noua Zeelandă au oferit un spectacol cu patru goluri și două reveniri.",
+  "narrator": {
+    "ro": "gemini-polish",
+    "en": "gemini"
+  },
+  "headline": {
+    "ro": "Spania, campioana posesiei sterile; Iran, maestră a revenirilor",
+    "en": "27 shots, zero goals, and a lot of Spanish pointing"
+  },
+  "summary": {
+    "ro": "Spania a dominat fără efect Capul Verde, terminând 0-0 în ciuda unei posesii copleșitoare și a 27 de șuturi. Între timp, Uruguay a smuls un egal târziu cu Arabia Saudită, iar Iranul și Noua Zeelandă au oferit un spectacol cu patru goluri și două reveniri.",
+    "en": "A day of stubborn underdogs saw Spain and Uruguay fire a combined 54 shots for a grand total of one goal between them. Groups G and H are now perfectly level, mostly because the favorites couldn't finish a sentence, let alone a chance."
+  },
   "matches": [
     {
       "id": 537369,
@@ -40,7 +49,10 @@
       "decidedOnPenalties": false,
       "group": "H",
       "utcDate": "2026-06-15T16:00:00Z",
-      "pill": "Spania și-a pierdut busola complet în fața Capului Verde, ratând 27 de șuturi și nereușind să învingă portarul advers. În ciuda unei posesii de 74%, favoriții au plecat acasă cu un singur punct. E o rușine să nu învingi Capul Verde.",
+      "pill": {
+        "ro": "Spania și-a pierdut busola complet în fața Capului Verde, ratând 27 de șuturi și nereușind să învingă portarul advers. În ciuda unei posesii de 74%, favoriții au plecat acasă cu un singur punct. E o rușine să nu învingi Capul Verde.",
+        "en": "Spain turned 74% possession into a very expensive exercise in passing sideways, failing to score despite 27 shots. Cape Verde’s keeper registered seven saves to ensure that three-quarters of the ball for the favorites resulted in exactly zero points gained."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/jLS5YXPMr0XAd5lMHtbiJ"
     },
@@ -100,7 +112,10 @@
       "decidedOnPenalties": false,
       "group": "G",
       "utcDate": "2026-06-15T19:00:00Z",
-      "pill": "Egiptul a făcut tot jocul în prima repriză, deschizând scorul prin Emam Ashour la pasa lui Salah, iar Belgia a egalat în minutul 66, dar dintr-un autogol. Ambele echipe au avut doar trei șuturi pe poartă, așa că egalul e meritat. E un punct obținut pe mâna adversarului, dar e bun.",
+      "pill": {
+        "ro": "Egiptul a făcut tot jocul în prima repriză, deschizând scorul prin Emam Ashour la pasa lui Salah, iar Belgia a egalat în minutul 66, dar dintr-un autogol. Ambele echipe au avut doar trei șuturi pe poartă, așa că egalul e meritat. E un punct obținut pe mâna adversarului, dar e bun.",
+        "en": "Belgium’s aging guard required a Mohamed Hany own goal to spare their blushes after Emam Ashour struck from outside the box. Despite Salah providing the opening assist, the match devolved into a foul-heavy slog that leaves Group G in a four-way deadlock."
+      },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/2XSqobMgEwKFuhEozWztJl"
     },
@@ -160,7 +175,10 @@
       "decidedOnPenalties": false,
       "group": "H",
       "utcDate": "2026-06-15T22:00:00Z",
-      "pill": "Arabia Saudită a ținut piept Uruguayului cu un portar inspirat, care a salvat nouă șuturi, deși a avut doar 33% posesie. Uruguay a egalat prin Maxi Araújo în minutul 80, după ce saudiții au deschis scorul. Un punct scos cu greu de Uruguay, care a avut 27 de șuturi.",
+      "pill": {
+        "ro": "Arabia Saudită a ținut piept Uruguayului cu un portar inspirat, care a salvat nouă șuturi, deși a avut doar 33% posesie. Uruguay a egalat prin Maxi Araújo în minutul 80, după ce saudiții au deschis scorul. Un punct scos cu greu de Uruguay, care a avut 27 de șuturi.",
+        "en": "Uruguay managed to turn 14 corners and 27 shots into a single goal, needing an 80th-minute rescue from Maxi Araújo to salvage a point. The Saudi keeper’s nine saves made the South Americans look increasingly frantic as they realized possession doesn't actually win matches."
+      },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/2OO54UvFW7GK8vnsarneGk"
     },
@@ -240,7 +258,10 @@
       "decidedOnPenalties": false,
       "group": "G",
       "utcDate": "2026-06-16T01:00:00Z",
-      "pill": "Noua Zeelandă a deschis scorul de două ori prin Elijah Just, profitând de pasele lui Chris Wood, dar Iranul s-a încăpățânat să nu piardă. Mohammad Mohebbi a trimis salvator cu capul în minutul 64, aducând egalarea finală. Un meci cu patru goluri și două reveniri.",
+      "pill": {
+        "ro": "Noua Zeelandă a deschis scorul de două ori prin Elijah Just, profitând de pasele lui Chris Wood, dar Iranul s-a încăpățânat să nu piardă. Mohammad Mohebbi a trimis salvator cu capul în minutul 64, aducând egalarea finală. Un meci cu patru goluri și două reveniri.",
+        "en": "Elijah Just and Chris Wood operated a two-man demolition crew, combining for two goals to leave the Iranian defense looking like a collection of statues. A Mohammad Mohebbi header eventually secured a point for Iran in a game where defending felt strictly optional for both sides."
+      },
       "drama": 5,
       "highlight": "https://www.fifa.com/en/watch/5c6T3T7Y1XfKrT3aXzJRqL"
     }
@@ -353,8 +374,14 @@
       "homeCode": "fr",
       "awayCode": "sn",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "E la o oră decentă, un meci între două forțe care se bat pe primul loc."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "E la o oră decentă, un meci între două forțe care se bat pe primul loc.",
+        "en": "France and Senegal at 22:00 is a glamorous fixture on paper that will likely be a cautious stalemate best viewed in the morning."
+      }
     },
     {
       "id": 537392,
@@ -363,8 +390,14 @@
       "homeCode": "iq",
       "awayCode": "no",
       "kickoffEEST": "01:00",
-      "alarm": "citești dimineața",
-      "why": "Ora târzie nu justifică un duel între locurile 57 și 31 din clasamentul mondial, unde Norvegia e favorită."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Ora târzie nu justifică un duel între locurile 57 și 31 din clasamentul mondial, unde Norvegia e favorită.",
+        "en": "Only the most dedicated insomniacs need to be awake at 01:00 to watch Iraq try to keep a clean sheet against Norway."
+      }
     },
     {
       "id": 537397,
@@ -373,8 +406,14 @@
       "homeCode": "ar",
       "awayCode": "dz",
       "kickoffEEST": "04:00",
-      "alarm": "stai treaz",
-      "why": "Merită alarma: e 04:00, dar Argentina, campioana mondială, joacă și e mereu un spectacol."
+      "alarm": {
+        "ro": "stai treaz",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Merită alarma: e 04:00, dar Argentina, campioana mondială, joacă și e mereu un spectacol.",
+        "en": "Set the alarm for 04:00 because Argentina and Algeria promise enough technical quality to justify the ruined sleep cycle."
+      }
     },
     {
       "id": 537398,
@@ -383,9 +422,18 @@
       "homeCode": "at",
       "awayCode": "jo",
       "kickoffEEST": "07:00",
-      "alarm": "citești dimineața",
-      "why": "La 07:00 dimineața, mai bine afli scorul la cafea, decât să te trezești pentru un meci dezechilibrat."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "La 07:00 dimineața, mai bine afli scorul la cafea, decât să te trezești pentru un meci dezechilibrat.",
+        "en": "Austria and Jordan at 07:00 is a low-stakes way to start your day that can be easily summarized in a single notification."
+      }
     }
   ],
-  "teaser": "⚽ Spania, campioana posesiei sterile; Iran, maestră a revenirilor · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": {
+    "ro": "⚽ Spania, campioana posesiei sterile; Iran, maestră a revenirilor · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ 27 shots, zero goals, and a lot of Spanish pointing · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+  }
 }

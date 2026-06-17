@@ -1,8 +1,14 @@
 {
   "date": "2026-06-13",
   "factsHash": "4fa47c84599d77891e877e9da5d5af826f8ee3a897830bbea62916ec9ec0326f",
-  "headline": "Balogun a transformat poarta Paraguayului în poligon de tragere",
-  "summary": "Statele Unite s-au instalat confortabil la șefia Grupei D după un 4-1 fără drept de apel. Canada a smuls un egal târziu cu Bosnia și Herțegovina, lăsând Grupa B într-un echilibru fragil.",
+  "headline": {
+    "ro": "Balogun a transformat poarta Paraguayului în poligon de tragere",
+    "en": "Balogun bags brace for USA; Canada and Bosnia settle for a point"
+  },
+  "summary": {
+    "ro": "Statele Unite s-au instalat confortabil la șefia Grupei D după un 4-1 fără drept de apel. Canada a smuls un egal târziu cu Bosnia și Herțegovina, lăsând Grupa B într-un echilibru fragil.",
+    "en": "The US kicked off their campaign in style with a commanding win over Paraguay, securing all three points. Meanwhile, Canada and Bosnia settled for a draw, leaving them both on one point after their opening fixture."
+  },
   "matches": [
     {
       "id": 537333,
@@ -30,7 +36,10 @@
       "decidedOnPenalties": false,
       "group": "B",
       "utcDate": "2026-06-12T19:00:00Z",
-      "pill": "Jovo Lukic a stricat planurile gazdelor în minutul 21, dar Cyle Larin a salvat un punct în minutul 78. Grupa B rămâne un șantier deschis unde nimeni nu a reușit să se desprindă.",
+      "pill": {
+        "ro": "Jovo Lukic a stricat planurile gazdelor în minutul 21, dar Cyle Larin a salvat un punct în minutul 78. Grupa B rămâne un șantier deschis unde nimeni nu a reușit să se desprindă.",
+        "en": "Bosnia nearly pulled off a surprise, with Jovo Lukic putting them ahead in the 21st minute. Canada found their equaliser through Cyle Larin in the 78th minute, rescuing a point but leaving both sides with work to do."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/5ekSKA6XJZqv9Fag9pI7sH"
     },
@@ -75,7 +84,10 @@
       "decidedOnPenalties": false,
       "group": "D",
       "utcDate": "2026-06-13T01:00:00Z",
-      "pill": "Dubla lui Balogun a tranșat meciul încă din prima repriză, în timp ce Reyna a închis tabela în prelungiri. Americanii conduc Grupa D, profitând de o defensivă paraguayană care a cedat la aproape fiecare asalt.",
+      "pill": {
+        "ro": "Dubla lui Balogun a tranșat meciul încă din prima repriză, în timp ce Reyna a închis tabela în prelungiri. Americanii conduc Grupa D, profitând de o defensivă paraguayană care a cedat la aproape fiecare asalt.",
+        "en": "The US made a statement, with Damián Bobadilla opening the scoring in the 7th minute before Folarin Balogun bagged a quickfire brace, including one in the fifth minute of first-half stoppage time. Paraguay's Maurício pulled one back in the 73rd, but Giovanni Reyna sealed a dominant performance with a goal deep into stoppage time."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/6jzgitUqP6YyXpwwuY6VRc"
     }
@@ -188,8 +200,14 @@
       "homeCode": "qa",
       "awayCode": "ch",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "Gazdele din Qatar își testează rezistența în fața Elveției într-un meci care va decide cine preia inițiativa în Grupa B."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Gazdele din Qatar își testează rezistența în fața Elveției într-un meci care va decide cine preia inițiativa în Grupa B.",
+        "en": "Qatar and Switzerland at 22:00 isn't exactly a clash of titans, so you can easily catch the highlights later."
+      }
     },
     {
       "id": 537339,
@@ -198,8 +216,14 @@
       "homeCode": "br",
       "awayCode": "ma",
       "kickoffEEST": "01:00",
-      "alarm": "stai treaz",
-      "why": "E primul test serios pentru Brazilia în Grupa C contra unei echipe marocane care știe să sufoce jocul adversarului."
+      "alarm": {
+        "ro": "stai treaz",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "E primul test serios pentru Brazilia în Grupa C contra unei echipe marocane care știe să sufoce jocul adversarului.",
+        "en": "Brazil and Morocco facing off at 01:00 promises a genuine spectacle that's worth staying up for."
+      }
     },
     {
       "id": 537340,
@@ -208,8 +232,14 @@
       "homeCode": "ht",
       "awayCode": "gb-sct",
       "kickoffEEST": "04:00",
-      "alarm": "citești dimineața",
-      "why": "Un duel pentru entuziaști în care Scoția încearcă să nu devină prima victimă a haitienilor în Grupa C."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Un duel pentru entuziaști în care Scoția încearcă să nu devină prima victimă a haitienilor în Grupa C.",
+        "en": "Haiti and Scotland kicking off at 04:00 is a late one, and you'll find out the score over your morning coffee."
+      }
     },
     {
       "id": 537346,
@@ -218,9 +248,21 @@
       "homeCode": "au",
       "awayCode": "tr",
       "kickoffEEST": "07:00",
-      "alarm": "citești dimineața",
-      "why": "Australia și Turcia închid programul la o oră la care posesia mingii contează mai puțin decât numărul de cafele consumate."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Australia și Turcia închid programul la o oră la care posesia mingii contează mai puțin decât numărul de cafele consumate.",
+        "en": "Australia and Turkey at 07:00 is an early start, best for those who enjoy a recap rather than live action."
+      }
     }
   ],
-  "teaser": "⚽ Balogun a transformat poarta Paraguayului în poligon de tragere · 2 meciuri + 2 rezumate video azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": {
+    "ro": "⚽ Balogun a transformat poarta Paraguayului în poligon de tragere · 2 meciuri + 2 rezumate video azi-noapte\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Balogun bags brace for USA; Canada and Bosnia settle for a point · 2 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+  },
+  "narrator": {
+    "en": "gemini"
+  }
 }

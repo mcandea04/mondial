@@ -38,15 +38,25 @@
     import { mountToggle } from './assets/theme.js';
     import { mountLangToggle, currentLang } from './assets/lang.js';
     import { renderDigest, loadDigest } from './assets/render.js';
+    import { UI_STRINGS } from './assets/i18n.js';
 
     const topbar = document.getElementById('topbar');
     mountToggle(topbar);
 
     const app = document.getElementById('app');
     let currentDigest = null;
+    let loadError = null;
+
+    function showError(lang) {
+      app.replaceChildren(Object.assign(document.createElement('p'), {
+        className: 'empty-state',
+        textContent: UI_STRINGS[lang].notReady(loadError.message),
+      }));
+    }
 
     mountLangToggle(topbar, (lang) => {
       if (currentDigest) renderDigest(app, currentDigest, lang);
+      else if (loadError) showError(lang);
     });
 
     loadDigest('data/latest.json')
@@ -55,11 +65,8 @@
         renderDigest(app, digest, currentLang());
       })
       .catch((error) => {
-        app.replaceChildren();
-        app.append(Object.assign(document.createElement('p'), {
-          className: 'empty-state',
-          textContent: `Digestul de azi nu e încă gata. (${error.message})`,
-        }));
+        loadError = error;
+        showError(currentLang());
       });
   </script>
 </body>

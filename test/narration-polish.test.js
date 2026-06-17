@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { polishedNarration } from '../pipeline/narration-polish.js';
-import { buildRewriteSystemPrompt, narrationToReviewText } from '../pipeline/narration-core.js';
+import { buildRewriteSystemPrompt, narrationToReviewText, SYSTEM_PROMPT_EN, CRITIQUE_SYSTEM_PROMPT_EN } from '../pipeline/narration-core.js';
 
 const DRAFT = {
   headline: 'Draft cu un cap de McGinn',
@@ -112,4 +112,26 @@ test('narrationToReviewText lists headline, summary, pills, tonight', () => {
   assert.match(text, /SUMMARY: Saibari/);
   assert.match(text, /PILL 9001: Poarta intactă/);
   assert.match(text, /TONIGHT 9101: Meci la 5/);
+});
+
+test('polishedNarration uses injected EN prompts for draft and critique', async () => {
+  const seen = {};
+  const draftEngine = async ({ systemPrompt }) => {
+    seen.draftSystem = systemPrompt;
+    return { headline: 'h', summary: 's', matches: [], tonight: [] };
+  };
+  const critiqueEngine = async ({ systemPrompt }) => {
+    seen.critiqueSystem = systemPrompt;
+    return ''; // empty critique → ship draft, no rewrite
+  };
+  const { narration, polished } = await polishedNarration({
+    model: 'm', userMessage: 'facts',
+    draftEngine, critiqueEngine,
+    systemPrompt: SYSTEM_PROMPT_EN,
+    critiquePrompt: CRITIQUE_SYSTEM_PROMPT_EN,
+  });
+  assert.equal(seen.draftSystem, SYSTEM_PROMPT_EN);
+  assert.equal(seen.critiqueSystem, CRITIQUE_SYSTEM_PROMPT_EN);
+  assert.equal(narration.headline, 'h');
+  assert.equal(polished, false);
 });

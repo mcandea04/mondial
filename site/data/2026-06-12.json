@@ -1,8 +1,14 @@
 {
   "date": "2026-06-12",
   "factsHash": "64b5bfd75b671c94bb1d76aa203f1fce5cd6df7a03923de290eaf57522cacdb5",
-  "headline": "Hwang și Oh au stricat micul dejun al cehilor în Grupa A",
-  "summary": "Mexicul și-a rezolvat debutul fără mari emoții, în timp ce Coreea de Sud a avut nevoie de o revenire rapidă pentru a lăsa Cehia cu zero puncte. Grupa A începe să arate exact cum se așteptau organizatorii, cu gazdele pe primul loc și restul lumii încercând să țină pasul.",
+  "headline": {
+    "ro": "Hwang și Oh au stricat micul dejun al cehilor în Grupa A",
+    "en": "Mexico find their feet as Czechia lose theirs"
+  },
+  "summary": {
+    "ro": "Mexicul și-a rezolvat debutul fără mari emoții, în timp ce Coreea de Sud a avut nevoie de o revenire rapidă pentru a lăsa Cehia cu zero puncte. Grupa A începe să arate exact cum se așteptau organizatorii, cu gazdele pe primul loc și restul lumii încercând să țină pasul.",
+    "en": "Mexico and South Korea established an early grip on Group A by securing wins that were as different in style as they were in drama. While the Mexicans enjoyed a routine afternoon against South Africa, the Koreans had to climb out of a hole dug by Ladislav Krejcí to beat Czechia."
+  },
   "matches": [
     {
       "id": 537327,
@@ -44,7 +50,10 @@
       "decidedOnPenalties": false,
       "group": "A",
       "utcDate": "2026-06-11T19:00:00Z",
-      "pill": "Julián Quiñones a marcat în minutul 9 și a tăiat orice urmă de entuziasm african, restul fiind doar o gestionare cinică până la reușita lui Raúl Jiménez. Mexicul e lider în Grupa A, în timp ce Africa de Sud pleacă la drum cu două galbene și nicio speranță concretă.",
+      "pill": {
+        "ro": "Julián Quiñones a marcat în minutul 9 și a tăiat orice urmă de entuziasm african, restul fiind doar o gestionare cinică până la reușita lui Raúl Jiménez. Mexicul e lider în Grupa A, în timp ce Africa de Sud pleacă la drum cu două galbene și nicio speranță concretă.",
+        "en": "Julián Quiñones needed just nine minutes to puncture the South African resistance, leaving the visitors to chase shadows and yellow cards for the rest of the afternoon. Raúl Jiménez added the second in the 67th minute, ensuring Mexico sits comfortably at the top of Group A. César Montes picked up a booking in the 92nd minute just to ensure the referee remembered he was there."
+      },
       "drama": 2,
       "highlight": null
     },
@@ -77,7 +86,10 @@
       "decidedOnPenalties": false,
       "group": "A",
       "utcDate": "2026-06-12T02:00:00Z",
-      "pill": "Cehia a crezut că a dat lovitura prin Krejcí, dar a fost pedepsită de Hwang In-Beom și Oh Hyeon-Gyu în mai puțin de un sfert de oră. Coreea de Sud ocupă poziția a doua și lasă echipa europeană să mediteze la fragilitatea unui avantaj de un gol.",
+      "pill": {
+        "ro": "Cehia a crezut că a dat lovitura prin Krejcí, dar a fost pedepsită de Hwang In-Beom și Oh Hyeon-Gyu în mai puțin de un sfert de oră. Coreea de Sud ocupă poziția a doua și lasă echipa europeană să mediteze la fragilitatea unui avantaj de un gol.",
+        "en": "Ladislav Krejcí’s 59th-minute goal briefly suggested a Czech upset, but Hwang In-Beom and Oh Hyeon-Gyu needed only thirteen minutes to dismantle that theory. The 2-1 result leaves Czechia staring at the bottom of Group A while the Koreans celebrate a perfectly timed heist. A tidy bit of business for Korea, who now join Mexico with a perfect start."
+      },
       "drama": 4,
       "highlight": null
     }
@@ -135,17 +147,35 @@
       "home": "Canada",
       "away": "Bosnia și Herțegovina",
       "kickoffEEST": "22:00",
-      "alarm": "citești dimineața",
-      "why": "Canada începe aventura acasă împotriva unei echipe bosniace care știe să închidă jocul și să testeze răbdarea oricărui telespectator european la ora zece seara."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Canada începe aventura acasă împotriva unei echipe bosniace care știe să închidă jocul și să testeze răbdarea oricărui telespectator european la ora zece seara.",
+        "en": "The 22:00 slot for Canada and Bosnia & Herzegovina is better spent sleeping through what looks like a low-scoring stalemate."
+      }
     },
     {
       "id": 537345,
       "home": "SUA",
       "away": "Paraguay",
       "kickoffEEST": "04:00",
-      "alarm": "stai treaz",
-      "why": "Americanii debutează sub presiune la ora patru împotriva unei selecționate din Paraguay care nu cere scuze pentru intrările la limita regulamentului."
+      "alarm": {
+        "ro": "stai treaz",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Americanii debutează sub presiune la ora patru împotriva unei selecționate din Paraguay care nu cere scuze pentru intrările la limita regulamentului.",
+        "en": "The USA hosting Paraguay at 04:00 is exactly the kind of high-pressure atmosphere that justifies setting a painful alarm."
+      }
     }
   ],
-  "teaser": "⚽ Hwang și Oh au stricat micul dejun al cehilor în Grupa A · 2 meciuri azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": {
+    "ro": "⚽ Hwang și Oh au stricat micul dejun al cehilor în Grupa A · 2 meciuri azi-noapte\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Mexico find their feet as Czechia lose theirs · 2 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+  },
+  "narrator": {
+    "en": "gemini"
+  }
 }

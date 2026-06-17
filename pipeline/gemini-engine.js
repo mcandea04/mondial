@@ -9,7 +9,8 @@
  * by id in run.js, the critique only steers phrasing.
  */
 
-import { callGeminiResilient, responseSchema } from './narrate.js';
+import { callGeminiResilient, responseSchema, responseSchemaEn } from './narrate.js';
+import { narrationSchemaEn } from './narration-core.js';
 
 function requireKey() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -35,6 +36,7 @@ export async function callGeminiNarration({ model, userMessage, systemPrompt }) 
 /**
  * Critique engine: a plain-text Gemini call (no schema). Returns the reviewer's
  * idiom notes verbatim, to be injected into the rewrite system prompt.
+ * Language-neutral — reused for both RO and EN polish critiques.
  */
 export async function callGeminiText({ model, userMessage, systemPrompt }) {
   return callGeminiResilient({
@@ -43,5 +45,20 @@ export async function callGeminiText({ model, userMessage, systemPrompt }) {
     systemPrompt,
     userMessage,
     schema: null,
+  });
+}
+
+/**
+ * EN draft/rewrite engine: schema-validated Gemini call using the English
+ * response schema and Zod validator.
+ */
+export async function callGeminiNarrationEn({ model, userMessage, systemPrompt }) {
+  return callGeminiResilient({
+    apiKey: requireKey(),
+    model: model || undefined,
+    systemPrompt,
+    userMessage,
+    schema: responseSchemaEn,
+    validateWith: narrationSchemaEn,
   });
 }
