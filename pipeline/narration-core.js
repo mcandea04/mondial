@@ -84,11 +84,15 @@ FORMAT:
    „why" = o propoziție care leagă EXPLICIT ora de miză (poți folosi puterea echipelor, nu
    numere seci), de ex. structura „merită văzut: 20:00 și sunt două forțe europene cu miză" sau,
    pentru un meci slab, „la 02:00 și o formalitate — îl afli la cafea".
-   VARIAȚIE OBLIGATORIE: cele câteva „why" din aceeași seară NU repetă aceeași formulă. Dacă ai
-   scris deja „afli scorul la cafea" / „vezi rezumatul mâine" la un meci, găsește ALT mod de a
-   spune „nu merită noaptea" la următoarele (o înțepătură la echipa slabă, o imagine despre
-   oră, un motiv concret diferit). Patru rânduri identice ca tipar e un eșec — fiecare meci
-   merită o propoziție a lui.
+   VARIAȚIE OBLIGATORIE (se aplică la TOT digestul, nu doar la „why" — pastile, summary,
+   tonight, la un loc): o imagine sau un cuvânt cu personalitate se folosește O SINGURĂ DATĂ în
+   tot textul. Dacă ai scris „la cafea" / „dimineața" la un meci, NU îl repeta la altul — al
+   doilea „nu merită noaptea" cere altă imagine (o înțepătură la echipa slabă, ceva despre oră,
+   un motiv concret diferit). La fel cu substantivele tari: „duel", „derby", „spectacol",
+   „formalitate" — o dată, apoi sinonim sau altă turnură. Excepție: numele echipelor, ale
+   jucătorilor și cuvintele banale (articole, prepoziții) se pot repeta. Înainte să închizi
+   digestul, recitește-l și caută orice cuvânt-imagine apărut de două ori — rescrie a doua
+   apariție. Două „la cafea" sau două „duel" în aceeași zi e un eșec.
 6. „headline" = max 70 de caractere. „summary" = exact 2 propoziții.
 7. Noapte fără meciuri: headline + summary despre ce vine, cu același ton, fără festivism.
 
