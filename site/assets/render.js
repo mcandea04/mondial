@@ -80,11 +80,10 @@ function renderMatchCard(match, lang) {
     teamName('team-name away', match.away, match.awayCode, 'after', lang),
   );
   const actions = el('div', 'match-actions');
-  const face = dramaFace(match.drama);
-  if (face) {
-    const rating = clampDrama(match.drama);
+  const rating = clampDrama(match.drama);
+  if (rating !== null) {
     const label = UI_STRINGS[lang].drama(rating);
-    const faceSpan = el('span', 'drama-face', face);
+    const faceSpan = el('span', 'drama-face', dramaFace(rating));
     faceSpan.setAttribute('aria-label', label);
     faceSpan.title = label;
     actions.append(faceSpan);

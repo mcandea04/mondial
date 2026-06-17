@@ -22,6 +22,7 @@ test('dramaFace floors a fractional rating before mapping', () => {
 
 test('dramaFace returns null for absent or non-positive ratings', () => {
   assert.equal(dramaFace(0), null);
+  assert.equal(dramaFace(-2), null);
   assert.equal(dramaFace(undefined), null);
   assert.equal(dramaFace(null), null);
   assert.equal(dramaFace(NaN), null);
@@ -33,5 +34,6 @@ test('clampDrama returns the integer rating, clamped to 1-5, null when no face',
   assert.equal(clampDrama(7), 5);
   assert.equal(clampDrama(2.9), 2);
   assert.equal(clampDrama(0), null);
+  assert.equal(clampDrama(-2), null);
   assert.equal(clampDrama(undefined), null);
 });
