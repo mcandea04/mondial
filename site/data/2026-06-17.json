@@ -1,9 +1,18 @@
 {
   "date": "2026-06-17",
   "factsHash": "4c9cc07bf4448065f3d6311f11ab3f3000219c6657f1967eb9bee25b44b39d0d",
-  "narrator": "gemini-polish",
-  "headline": "Messi, triplă la debut; Haaland și Mbappé, duble cu cântec",
-  "summary": "A fost o noapte a marilor atacanți, cu Messi debutând în turneu cu un hat-trick și Haaland și Mbappé semnând duble. Nici autogolurile nu au lipsit, transformând unele victorii categorice în partide prelungite peste așteptări.",
+  "narrator": {
+    "ro": "gemini-polish",
+    "en": "gemini"
+  },
+  "headline": {
+    "ro": "Messi, triplă la debut; Haaland și Mbappé, duble cu cântec",
+    "en": "Messi’s hat-trick and Haaland’s industrial double"
+  },
+  "summary": {
+    "ro": "A fost o noapte a marilor atacanți, cu Messi debutând în turneu cu un hat-trick și Haaland și Mbappé semnând duble. Nici autogolurile nu au lipsit, transformând unele victorii categorice în partide prelungite peste așteptări.",
+    "en": "Lionel Messi dismantled Algeria with a clinical hat-trick while Erling Haaland helped himself to two as Norway cruised past Iraq. France and Austria both secured 3-1 wins to keep the heavyweights moving toward the knockout rounds."
+  },
   "matches": [
     {
       "id": 760432,
@@ -79,7 +88,10 @@
         }
       },
       "decidedOnPenalties": false,
-      "pill": "Franța a avut de tras până la final, cu Mbappé care a marcat o dublă, inclusiv golul care a stabilit scorul final în minutul 90+6. Senegal a reușit să reducă din scor prin Mbaye, dar prea târziu pentru a schimba soarta meciului.",
+      "pill": {
+        "ro": "Franța a avut de tras până la final, cu Mbappé care a marcat o dublă, inclusiv golul care a stabilit scorul final în minutul 90+6. Senegal a reușit să reducă din scor prin Mbaye, dar prea târziu pentru a schimba soarta meciului.",
+        "en": "Senegal’s 95th-minute goal served only to annoy Kylian Mbappé, who promptly smashed in his second from outside the box a minute later. It was a comfortable evening for the French, punctuated by Bradley Barcola’s tidy finish from the right of the area after being set up by Adrien Rabiot."
+      },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/3EKjirmmC6D2Ss29rPdDph"
     },
@@ -167,7 +179,10 @@
         }
       },
       "decidedOnPenalties": false,
-      "pill": "Norvegia a defilat în fața Irakului, cu un Erling Haaland în formă, marcând o dublă cu stângul și cu dreptul. Irakienii au avut un moment de speranță prin golul lui Hussein, care apoi și-a trimis mingea în propria poartă, pecetluind victoria scandinavilor.",
+      "pill": {
+        "ro": "Norvegia a defilat în fața Irakului, cu un Erling Haaland în formă, marcând o dublă cu stângul și cu dreptul. Irakienii au avut un moment de speranță prin golul lui Hussein, care apoi și-a trimis mingea în propria poartă, pecetluind victoria scandinavilor.",
+        "en": "Aymen Hussein’s night began with a fine header for Iraq and ended with the indignity of a 96th-minute own goal. Erling Haaland was typically industrial, scoring with his left foot before adding a second to ensure Norway’s afternoon was never in doubt."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/SsQRwgoouokLgVYDKitmB"
     },
@@ -235,7 +250,10 @@
         }
       },
       "decidedOnPenalties": false,
-      "pill": "Lionel Messi a debutat în turneu cu un hat-trick de senzație, aducând o victorie categorică Argentinei. Algeria a stat mai mult cu mingea, dar posesia de 52.2% n-a contat, că n-a trimis decât un șut pe poartă.",
+      "pill": {
+        "ro": "Lionel Messi a debutat în turneu cu un hat-trick de senzație, aducând o victorie categorică Argentinei. Algeria a stat mai mult cu mingea, dar posesia de 52.2% n-a contat, că n-a trimis decât un șut pe poartă.",
+        "en": "Algeria enjoyed the majority of possession and used it primarily to provide Lionel Messi with a front-row seat for his own hat-trick. His opener from outside the box set the tone for an evening where Argentina had six shots on target and required precisely zero saves."
+      },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/7w5eTQ8xbmnSNHypyuYhdG"
     },
@@ -313,7 +331,10 @@
         }
       },
       "decidedOnPenalties": false,
-      "pill": "Austria a câștigat o partidă prelungită peste așteptări, cu un autogol al lui Yazan Al-Arab și un penalty transformat de Marko Arnautovic în minutul 90+12. Iordania a încercat să revină prin Ali Olwan, dar a plecat acasă fără puncte.",
+      "pill": {
+        "ro": "Austria a câștigat o partidă prelungită peste așteptări, cu un autogol al lui Yazan Al-Arab și un penalty transformat de Marko Arnautovic în minutul 90+12. Iordania a încercat să revină prin Ali Olwan, dar a plecat acasă fără puncte.",
+        "en": "Austria needed a helping hand from Yazan Al-Arab's own goal to settle their nerves after Ali Olwan had equalized for Jordan. Marko Arnautovic eventually added the gloss with a penalty in the 102nd minute to end Jordan's resistance."
+      },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/77P4VoHiQj3RG3yEQVhGpH"
     }
@@ -426,8 +447,14 @@
       "homeCode": "pt",
       "awayCode": "cd",
       "kickoffEEST": "20:00",
-      "alarm": "merită văzut",
-      "why": "Portugalia–RD Congo la 20:00 — o oră la care îl prinzi confortabil live. Nu ai scuze să îl ratezi."
+      "alarm": {
+        "ro": "merită văzut",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Portugalia–RD Congo la 20:00 — o oră la care îl prinzi confortabil live. Nu ai scuze să îl ratezi.",
+        "en": "A 20:00 kickoff with Portugal’s creative lineup against a stubborn DR Congo is a perfect accompaniment to your evening."
+      }
     },
     {
       "id": 760437,
@@ -436,8 +463,14 @@
       "homeCode": "gb-eng",
       "awayCode": "hr",
       "kickoffEEST": "23:00",
-      "alarm": "merită văzut",
-      "why": "Anglia–Croația la 23:00 — un duel european de clasă, exact meciul pentru care merită să stai treaz."
+      "alarm": {
+        "ro": "merită văzut",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Anglia–Croația la 23:00 — un duel european de clasă, exact meciul pentru care merită să stai treaz.",
+        "en": "You stay up for England and Croatia at 23:00 because these two usually find a way to make things complicated."
+      }
     },
     {
       "id": 760434,
@@ -446,8 +479,14 @@
       "homeCode": "gh",
       "awayCode": "pa",
       "kickoffEEST": "02:00",
-      "alarm": "citești dimineața",
-      "why": "Ghana–Panama se joacă după miezul nopții, o partidă fără miză mare — afli scorul mâine dimineață și n-ai pierdut nimic."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Ghana–Panama se joacă după miezul nopții, o partidă fără miză mare — afli scorul mâine dimineață și n-ai pierdut nimic.",
+        "en": "Ghana and Panama at 02:00 is a specialized interest best consumed as a scoreline over breakfast."
+      }
     },
     {
       "id": 760436,
@@ -456,9 +495,18 @@
       "homeCode": "uz",
       "awayCode": "co",
       "kickoffEEST": "05:00",
-      "alarm": "citești dimineața",
-      "why": "Uzbekistan și Columbia închid programul la 05:00, o oră la care somnul bate orice debut de grupă."
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "Uzbekistan și Columbia închid programul la 05:00, o oră la care somnul bate orice debut de grupă.",
+        "en": "Only the most dedicated or the most jet-lagged will be awake for Uzbekistan against Colombia at dawn."
+      }
     }
   ],
-  "teaser": "⚽ Messi, triplă la debut; Haaland și Mbappé, duble cu cântec · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+  "teaser": {
+    "ro": "⚽ Messi, triplă la debut; Haaland și Mbappé, duble cu cântec · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Messi’s hat-trick and Haaland’s industrial double · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+  }
 }

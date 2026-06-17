@@ -1,6 +1,6 @@
 /* Renders a digest JSON into the page. Shared by index.html and arhiva.html. */
 
-import { localize, UI_STRINGS, STATUS_LABEL, alarmIsWatch, dateLabel } from './i18n.js';
+import { localize, localizeTeam, UI_STRINGS, STATUS_LABEL, alarmIsWatch, alarmBadgeLabel, dateLabel } from './i18n.js';
 
 const STATUS_BADGE = {
   'calificată': 'badge-ok',
@@ -29,8 +29,8 @@ function flagImg(code, sizeClass) {
 // A team name with its flag inline, so the flag flows with the text and stays
 // next to the name even when a long name wraps. `side` places the flag 'before'
 // the name (home) or 'after' it (away).
-function teamName(className, name, code, side) {
-  const span = el('span', className, name);
+function teamName(className, name, code, side, lang) {
+  const span = el('span', className, localizeTeam(name, lang));
   const flag = flagImg(code, 'flag-inline');
   if (flag) span[side === 'before' ? 'prepend' : 'append'](flag);
   return span;
@@ -59,12 +59,12 @@ function renderMatchCard(match, lang) {
   const teams = el('div', 'match-teams');
   const score = el('span', 'score', `${match.score[0]} – ${match.score[1]}`);
   teams.append(
-    teamName('team-name home', match.home, match.homeCode, 'before'),
+    teamName('team-name home', match.home, match.homeCode, 'before', lang),
     score,
-    teamName('team-name away', match.away, match.awayCode, 'after'),
+    teamName('team-name away', match.away, match.awayCode, 'after', lang),
   );
   const flames = el('div', 'flames');
-  flames.setAttribute('aria-label', `dramă ${match.drama} din 5`);
+  flames.setAttribute('aria-label', UI_STRINGS[lang].drama(match.drama));
   for (let i = 0; i < match.drama; i += 1) {
     const flame = el('span', 'flame');
     flame.setAttribute('aria-hidden', 'true');
@@ -73,7 +73,7 @@ function renderMatchCard(match, lang) {
   header.append(teams, flames);
   card.append(header);
 
-  const events = renderEvents(match);
+  const events = renderEvents(match, lang);
   if (events) card.append(events);
 
   const pillText = localize(match.pill, lang);
@@ -95,19 +95,19 @@ function renderMatchCard(match, lang) {
 
 /**
  * A team-colored event span: `${name} ${minute}'`, class `ev` plus the side.
- * Own goals carry the `(autogol)` tag so the scorer reads against, not for, the
+ * Own goals carry the own-goal tag so the scorer reads against, not for, the
  * team colour they wear — `team` is the side that benefits, not the player's own.
  */
-function eventSpan(event) {
+function eventSpan(event, lang) {
   const cls = event.team ? `ev ${event.team}` : 'ev';
-  const tag = event.ownGoal ? ' (autogol)' : '';
+  const tag = event.ownGoal ? ` (${UI_STRINGS[lang].ownGoal})` : '';
   const label = `${event.name}${tag} ${event.minute}'`;
   return el('span', cls, label);
 }
 
 /** A red-card event span: the goal span with a `■` mark prepended. */
-function cardSpan(event) {
-  const span = eventSpan(event);
+function cardSpan(event, lang) {
+  const span = eventSpan(event, lang);
   span.prepend(el('span', 'card-mark', '■ '));
   return span;
 }
@@ -125,21 +125,22 @@ function eventLine(spans) {
 /**
  * The goals line and (if any) the red-card line, plus a penalties note. Returns
  * null when there is nothing to show. The note rides on the last line as
- * ` · decis la penalty-uri`, or stands alone when there are no events.
+ * ` · <penalties note>`, or stands alone when there are no events.
  */
-function renderEvents(match) {
+function renderEvents(match, lang) {
   const lines = [];
-  if (match.scorers.length) lines.push(eventLine(match.scorers.map(eventSpan)));
-  if (match.events.length) lines.push(eventLine(match.events.map(cardSpan)));
+  if (match.scorers.length) lines.push(eventLine(match.scorers.map((e) => eventSpan(e, lang))));
+  if (match.events.length) lines.push(eventLine(match.events.map((e) => cardSpan(e, lang))));
 
   if (match.decidedOnPenalties) {
+    const note = UI_STRINGS[lang].penalties;
     const lastLine = lines[lines.length - 1];
     if (lastLine) {
-      lastLine.append(el('span', 'sep', '  ·  decis la penalty-uri'));
+      lastLine.append(el('span', 'sep', `  ·  ${note}`));
     } else {
-      const note = el('p', 'evline');
-      note.append(el('span', null, 'decis la penalty-uri'));
-      lines.push(note);
+      const line = el('p', 'evline');
+      line.append(el('span', null, note));
+      lines.push(line);
     }
   }
 
@@ -149,10 +150,10 @@ function renderEvents(match) {
   return wrap;
 }
 
-function teamCell(row) {
+function teamCell(row, lang) {
   const td = el('td', null);
   const wrap = el('span', 'team');
-  wrap.append(...[flagImg(row.code, 'flag-sm'), el('span', 'team-name', row.team)].filter(Boolean));
+  wrap.append(...[flagImg(row.code, 'flag-sm'), el('span', 'team-name', localizeTeam(row.team, lang))].filter(Boolean));
   td.append(wrap);
   return td;
 }
@@ -180,7 +181,7 @@ function renderGroupCard(group, lang) {
   for (const row of group.table) {
     const tr = el('tr');
     tr.append(
-      teamCell(row),
+      teamCell(row, lang),
       el('td', 'col-num', String(row.p)),
       el('td', 'col-num', row.gd > 0 ? `+${row.gd}` : String(row.gd)),
       el('td', 'col-num pts', String(row.pts)),
@@ -207,7 +208,7 @@ function renderTonight(tonight, lang) {
     matchLine.append(
       ...[
         flagImg(fixture.homeCode, 'flag-sm'),
-        el('span', 'tonight-match', `${fixture.home} – ${fixture.away}`),
+        el('span', 'tonight-match', `${localizeTeam(fixture.home, lang)} – ${localizeTeam(fixture.away, lang)}`),
         flagImg(fixture.awayCode, 'flag-sm'),
       ].filter(Boolean),
     );
@@ -216,9 +217,13 @@ function renderTonight(tonight, lang) {
     if (whyText) {
       left.append(el('br'), el('span', 'tonight-why', whyText));
     }
-    const alarmText = localize(fixture.alarm, lang);
-    const badgeClass = alarmIsWatch(alarmText) ? 'badge-ok' : 'badge-muted';
-    row.append(left, el('span', `badge ${badgeClass}`, alarmText));
+    // The watch/skip verdict is a single judgment, not a per-language opinion:
+    // the Romanian alarm is canonical, and the badge label is its localized form.
+    // Only the `why` wording differs by language. This keeps RO and EN from
+    // disagreeing on whether a match is worth the alarm.
+    const watch = alarmIsWatch(localize(fixture.alarm, 'ro'));
+    const badgeClass = watch ? 'badge-ok' : 'badge-muted';
+    row.append(left, el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)));
     card.append(row);
   }
   return card;

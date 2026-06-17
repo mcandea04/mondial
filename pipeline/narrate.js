@@ -91,7 +91,7 @@ export const responseSchemaEn = {
         required: ['id', 'alarm', 'why'],
         properties: {
           id: { type: 'INTEGER' },
-          alarm: { type: 'STRING', enum: ['stay up', 'read in the morning'] },
+          alarm: { type: 'STRING', enum: ['worth watching', 'catch it later'] },
           why: { type: 'STRING' },
         },
       },

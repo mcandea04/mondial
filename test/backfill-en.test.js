@@ -17,7 +17,9 @@ const enNarration = {
   headline: 'EN headline',
   summary: 'EN summary.',
   matches: [{ id: 1, pill: 'EN pill', drama: 2 }],
-  tonight: [{ id: 2, alarm: 'stay up', why: 'EN why' }],
+  // The English model's own alarm is ignored — alarm.en is derived from the
+  // canonical Romanian verdict — so this value is deliberately the "wrong" one.
+  tonight: [{ id: 2, alarm: 'catch it later', why: 'EN why' }],
 };
 
 test('needsBackfill: true for a flat-string day, false once headline.en exists', () => {
@@ -29,7 +31,8 @@ test('backfillDay merges EN and preserves RO verbatim', () => {
   const out = backfillDay(legacyDigest, enNarration);
   assert.deepEqual(out.headline, { ro: 'RO titlu', en: 'EN headline' });
   assert.deepEqual(out.matches[0].pill, { ro: 'RO pastilă', en: 'EN pill' });
-  assert.deepEqual(out.tonight[0].alarm, { ro: 'merită văzut', en: 'stay up' });
+  // alarm.en is the canonical RO verdict mapped to English, NOT the EN model's call
+  assert.deepEqual(out.tonight[0].alarm, { ro: 'merită văzut', en: 'worth watching' });
   assert.deepEqual(out.narrator, { ro: 'gemini', en: 'gemini' });
   // RO untouched
   assert.equal(out.headline.ro, legacyDigest.headline);
@@ -43,4 +46,6 @@ test('reconstructFacts pulls the narration-facts shape from a stored day', () =>
   assert.equal(facts.tonight[0].id, 2);
   // ranks are absent in stored days — reconstructed as null, not invented
   assert.equal(facts.tonight[0].homeRank ?? null, null);
+  // the canonical RO verdict is injected for the English pass to honor
+  assert.equal(facts.tonight[0].verdict, 'worth watching');
 });

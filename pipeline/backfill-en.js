@@ -18,6 +18,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { narrateEn } from './narrate.js';
 import { buildTeaserEn } from './teaser.js';
+import { englishVerdict } from './narration-core.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DATA_DIR = path.join(ROOT, 'site', 'data');
@@ -31,6 +32,11 @@ export function needsBackfill(digest) {
 function merge(field, en) {
   const ro = typeof field === 'object' && field !== null ? field.ro : field;
   return en == null ? { ro } : { ro, en };
+}
+
+/** The Romanian side of a prose field that may be a plain string or {ro,en}. */
+function roOf(field) {
+  return typeof field === 'object' && field !== null ? field.ro : field;
 }
 
 /**
@@ -50,6 +56,9 @@ export function reconstructFacts(digest) {
     tonight: (digest.tonight ?? []).map((t) => ({
       id: t.id, home: t.home, away: t.away, homeCode: t.homeCode, awayCode: t.awayCode,
       kickoffEEST: t.kickoffEEST, homeRank: null, awayRank: null,
+      // The Romanian alarm is the canonical verdict; hand it to the English pass
+      // so EN justifies the same watch/skip call rather than re-deciding it.
+      verdict: englishVerdict(roOf(t.alarm)),
     })),
     standings: digest.groups ?? [],
   };
@@ -70,7 +79,9 @@ export function backfillDay(digest, enNarration) {
     matches: (digest.matches ?? []).map((m) => ({ ...m, pill: merge(m.pill, enMatch.get(m.id)?.pill) })),
     tonight: (digest.tonight ?? []).map((t) => ({
       ...t,
-      alarm: merge(t.alarm, enTonight.get(t.id)?.alarm),
+      // alarm.en is the canonical Romanian verdict mapped to English, never the
+      // English model's own call, so the two languages never disagree.
+      alarm: merge(t.alarm, englishVerdict(roOf(t.alarm))),
       why: merge(t.why, enTonight.get(t.id)?.why),
     })),
     teaser: merge(digest.teaser, teaserEn),
@@ -79,6 +90,9 @@ export function backfillDay(digest, enNarration) {
 
 async function main() {
   const dateArg = process.argv.includes('--date') ? process.argv[process.argv.indexOf('--date') + 1] : null;
+  // --force regenerates the English side even for days already bilingual (use
+  // after an English-prompt or verdict-logic change).
+  const force = process.argv.includes('--force');
   const files = (await readdir(DATA_DIR))
     .filter((n) => /^\d{4}-\d{2}-\d{2}\.json$/.test(n))
     .filter((n) => !dateArg || n === `${dateArg}.json`);
@@ -89,7 +103,7 @@ async function main() {
   for (const file of files) {
     const full = path.join(DATA_DIR, file);
     const digest = JSON.parse(await readFile(full, 'utf8'));
-    if (!needsBackfill(digest)) { console.log(`skip ${file} (already bilingual)`); continue; }
+    if (!force && !needsBackfill(digest)) { console.log(`skip ${file} (already bilingual)`); continue; }
     const facts = reconstructFacts(digest);
     const enNarration = await narrateEn(facts, { apiKey });
     const merged = backfillDay(digest, enNarration);

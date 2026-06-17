@@ -44,7 +44,7 @@ import { polishedNarration } from './narration-polish.js';
 import {
   SYSTEM_PROMPT, SYSTEM_PROMPT_EN, buildUserMessage,
   CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
-  localizeProse,
+  localizeProse, factsWithEnglishVerdicts, englishVerdict,
 } from './narration-core.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
@@ -410,7 +410,10 @@ export async function getNarration(facts, {
     fixtures, recentProse, steer, gold,
     claudeEngine, polishEngine, geminiDraftEngine, geminiCritiqueEngine,
   });
-  const en = await getEnNarration(facts, {
+  // The English pass narrates the same facts plus the Romanian watch verdict per
+  // fixture, so the two languages agree on watch/skip and differ only in wording.
+  const enFacts = factsWithEnglishVerdicts(facts, ro.narration);
+  const en = await getEnNarration(enFacts, {
     fixtures, recentProse, steer, gold,
     claudeEngine, polishEngine, geminiDraftEngineEn, geminiCritiqueEngine,
   }).catch((error) => {
@@ -625,7 +628,13 @@ async function main() {
       homeCode: m.homeCode ?? null,
       awayCode: m.awayCode ?? null,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
-      alarm: bilingual(narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața', enByFixture.get(m.id)?.alarm),
+      // The watch verdict is canonical (Romanian); the English alarm is its
+      // mapped form, never the English model's own call — so the two never
+      // disagree. Only `why` wording differs per language.
+      alarm: bilingual(
+        narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
+        enByFixture.get(m.id)?.why == null ? undefined : englishVerdict(narrationByFixture.get(m.id)?.alarm),
+      ),
       why: bilingual(narrationByFixture.get(m.id)?.why ?? '', enByFixture.get(m.id)?.why),
     })),
     teaser: bilingual(

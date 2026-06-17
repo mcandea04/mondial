@@ -53,7 +53,7 @@ const bilingualStored = {
   headline: { ro: 'RO h', en: 'EN h' },
   summary: { ro: 'RO s', en: 'EN s' },
   matches: [{ id: 1, home: 'Bosnia', away: 'Canada', pill: { ro: 'RO p', en: 'EN p' }, drama: 4 }],
-  tonight: [{ id: 3, home: 'Brazilia', away: 'Maroc', alarm: { ro: 'merită văzut', en: 'stay up' }, why: { ro: 'RO w', en: 'EN w' } }],
+  tonight: [{ id: 3, home: 'Brazilia', away: 'Maroc', alarm: { ro: 'merită văzut', en: 'worth watching' }, why: { ro: 'RO w', en: 'EN w' } }],
 };
 
 test('reuseNarrationEn rebuilds the English side', () => {
@@ -61,7 +61,7 @@ test('reuseNarrationEn rebuilds the English side', () => {
   assert.deepEqual(en, {
     headline: 'EN h', summary: 'EN s',
     matches: [{ id: 1, pill: 'EN p', drama: 4 }],
-    tonight: [{ id: 3, alarm: 'stay up', why: 'EN w' }],
+    tonight: [{ id: 3, alarm: 'worth watching', why: 'EN w' }],
   });
 });
 

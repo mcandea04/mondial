@@ -147,6 +147,37 @@ export function normalizeSteer(raw) {
   return (raw ?? '').replace(/<!--[\s\S]*?-->/g, '').trim() || null;
 }
 
+// The watch verdict is decided once (in Romanian) and handed to the English
+// pass as a fact, so the two languages can never disagree on whether a match is
+// worth the alarm. Romanian alarm enum -> English verdict enum.
+const EN_VERDICT_BY_RO_ALARM = {
+  'merită văzut': 'worth watching',
+  'stai treaz': 'worth watching', // legacy RO token
+  'citești dimineața': 'catch it later',
+};
+
+/** Maps a Romanian alarm value to the English verdict; defaults to skip. */
+export function englishVerdict(roAlarm) {
+  return EN_VERDICT_BY_RO_ALARM[roAlarm] ?? 'catch it later';
+}
+
+/**
+ * Returns a copy of `facts` whose tonight fixtures each carry a `verdict` field
+ * (English enum) taken from the Romanian narration's alarm for the same id. The
+ * English narration is told to honor this verdict rather than re-decide it, so
+ * the watch/skip call is identical across languages and only the wording differs.
+ */
+export function factsWithEnglishVerdicts(facts, roNarration) {
+  const alarmById = new Map((roNarration?.tonight ?? []).map((t) => [t.id, t.alarm]));
+  return {
+    ...facts,
+    tonight: (facts.tonight ?? []).map((f) => ({
+      ...f,
+      verdict: englishVerdict(alarmById.get(f.id)),
+    })),
+  };
+}
+
 const GOLD_ORDER = ['headline', 'summary', 'pill', 'tonight'];
 
 /**
@@ -299,30 +330,21 @@ FORMAT:
    goal, the keeper made to look foolish, the favorite that stumbled — not the table.
 4. "drama" = 1–5 (1 = a stroll, 5 = madness with swings). A 4-0 with no story is 1-2; a decisive goal
    after the 85th, red cards, comebacks = 4-5.
-5. "tonight": before you decide "alarm", THINK in two steps, per match:
-   (a) THE TIME (from "kickoffEEST", Romanian local time): a match starting early evening (up to about
-       22:00) you catch without sacrificing anything — there is no "lost sleep", so "stay up" makes no
-       sense for it however good it is. Sleep only starts to hurt from around midnight on (00:00–06:00);
-       that is the only window where "stay up" means anything.
-   (b) THE STAKES, judged from the FIFA ranking provided ("homeRank"/"awayRank", world position; lower =
-       stronger): a match between two top sides (both under ~20) or a balanced duel is strong; a top side
-       against a much weaker one (a big ranking gap, e.g. 9 vs 60) is lopsided — probably a formality, low
-       stakes, do not recommend it at night unless a genuine upset is brewing. If the rank is missing
-       (null), do not invent a hierarchy — judge only on time and what is at stake in the group.
-       The rank is a JUDGMENT TOOL, not display text: do NOT write "ranked Nth in the world" or "(Nth)" in
-       "why". HIDE THE NUMBER, NOT THE TEAMS — every "why" always names who plays (both teams by name);
-       translate the gap in value into words ("big favorites", "well above", "two equal forces"), never a
-       number. A sentence without the team names is a failure — rewrite it with who takes the field.
-   Only then: "stay up" = a match that is BOTH late (from about 00:00 on) AND genuinely worth the sacrifice
-   by the test above. If it is early, it is "read in the morning" however good (you see it at a normal hour
-   anyway). If it is late but weak or lopsided, also "read in the morning". Be stingy with "stay up": on a
-   normal night there are zero or one.
-   "why" = one sentence linking the time EXPLICITLY to the stakes (you may use team strength, not bare
-   numbers), e.g. "worth the alarm: 01:00, but it is two top sides fighting for first". Do not say "stay up"
-   for a 20:00 match — that is a contradiction.
+5. "tonight": the verdict is ALREADY DECIDED for you — each fixture carries a "verdict" field, either
+   "worth watching" (watch it live) or "catch it later" (skip it, check the score later). Do NOT re-judge it.
+   Set "alarm" to EXACTLY that verdict, and write "why" to justify THAT verdict. Your only job is the wording.
+   "why" = one sentence that names BOTH teams and links the kickoff time ("kickoffEEST", Romanian local time)
+   to what is at stake:
+   - for "worth watching": say why this match earns your attention live — a real clash, two strong sides, a
+     genuine story; tie it to the hour (early evening you catch it with no effort; late at night only an
+     exceptional match earns the bother), e.g. "worth it: 20:00 and two European sides with real stakes".
+   - for "catch it later": say why it can wait — a lopsided or low-stakes match, or only-decent at a punishing
+     hour, e.g. "Ghana and Panama at 02:00 is a formality you can read about over coffee".
+   You may use team strength in words ("big favorites", "well above", "two equal forces") but NEVER a bare
+   ranking number, and never write "ranked Nth". A sentence without both team names is a failure.
    MANDATORY VARIATION: the few "why" lines on the same night must NOT repeat the same formula. If you have
    already written "you'll catch the score over coffee" / "watch the highlights tomorrow", find ANOTHER way
-   to say "not worth the night" for the next ones. Four identical lines is a failure.
+   to say "not worth it live" for the next ones. Four identical lines is a failure.
 6. "headline" = at most 70 characters. "summary" = exactly 2 sentences.
 7. A night with no matches: headline + summary about what is coming, same tone, no fanfare.
 
@@ -355,7 +377,7 @@ export const narrationSchemaEn = z.object({
   tonight: z.array(
     z.object({
       id: z.number(),
-      alarm: z.enum(['stay up', 'read in the morning']),
+      alarm: z.enum(['worth watching', 'catch it later']),
       why: z.string().min(1),
     }),
   ),

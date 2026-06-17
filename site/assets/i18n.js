@@ -2,10 +2,18 @@
 
 // Watch-tonight alarm tokens across both languages plus the legacy RO value
 // (`stai treaz`) that older archive days stored before the enum settled.
-export const WATCH_ALARMS = new Set(['merită văzut', 'stai treaz', 'stay up']);
+export const WATCH_ALARMS = new Set(['merită văzut', 'stai treaz', 'worth watching']);
 
 export function alarmIsWatch(value) {
   return WATCH_ALARMS.has(value);
+}
+
+// The tonight badge shows a single canonical verdict (watch vs skip) in the
+// active language, rather than each language's own model-written alarm string —
+// so RO and EN never disagree on whether a match is worth the alarm.
+export function alarmBadgeLabel(watch, lang) {
+  const t = UI_STRINGS[lang] ?? UI_STRINGS.ro;
+  return watch ? t.alarmWatch : t.alarmSkip;
 }
 
 /**
@@ -35,6 +43,20 @@ export const UI_STRINGS = {
     recap: '▶ Rezumat',
     share: 'Share ↗',
     eest: 'EEST',
+    alarmWatch: 'merită văzut',
+    alarmSkip: 'citești dimineața',
+    ownGoal: 'autogol',
+    penalties: 'decis la penalty-uri',
+    drama: (n) => `dramă ${n} din 5`,
+    archiveTitle: 'Arhiva dimineților',
+    chooseDay: 'Alege o dimineață',
+    backToday: '← azi',
+    loading: 'Se încarcă…',
+    emptyArchive: 'Arhiva e încă goală.',
+    recaps: '▶ rezumate',
+    recapsTitle: (n) => (n === 1 ? '1 rezumat video' : `${n} rezumate video`),
+    noDigest: (date) => `Nu există digest pentru ${date}.`,
+    notReady: (msg) => `Digestul de azi nu e încă gata. (${msg})`,
   },
   en: {
     nightHere: 'last night at the World Cup',
@@ -52,8 +74,67 @@ export const UI_STRINGS = {
     recap: '▶ Highlights',
     share: 'Share ↗',
     eest: 'EEST',
+    alarmWatch: 'worth watching',
+    alarmSkip: 'catch it later',
+    ownGoal: 'own goal',
+    penalties: 'decided on penalties',
+    drama: (n) => `drama ${n} of 5`,
+    archiveTitle: 'Morning archive',
+    chooseDay: 'Pick a morning',
+    backToday: '← today',
+    loading: 'Loading…',
+    emptyArchive: 'The archive is still empty.',
+    recaps: '▶ highlights',
+    recapsTitle: (n) => (n === 1 ? '1 video highlight' : `${n} video highlights`),
+    noDigest: (date) => `No digest for ${date}.`,
+    notReady: (msg) => `Today's digest is not ready yet. (${msg})`,
   },
 };
+
+// Romanian team exonym → English display name. Only entries that differ from
+// the English name are listed; everything else (identical names, knockout
+// placeholders) passes through. Source of truth for the names is
+// pipeline/teams.js (ROMANIAN_NAMES); keep this in sync if that table changes.
+export const TEAM_NAME_EN = {
+  'Belgia': 'Belgium',
+  'Bosnia și Herțegovina': 'Bosnia & Herzegovina',
+  'Brazilia': 'Brazil',
+  'Capul Verde': 'Cape Verde',
+  'Columbia': 'Colombia',
+  'RD Congo': 'DR Congo',
+  'Croația': 'Croatia',
+  'Cehia': 'Czechia',
+  'Egipt': 'Egypt',
+  'Anglia': 'England',
+  'Franța': 'France',
+  'Germania': 'Germany',
+  'Irak': 'Iraq',
+  'Coasta de Fildeș': 'Ivory Coast',
+  'Japonia': 'Japan',
+  'Iordania': 'Jordan',
+  'Mexic': 'Mexico',
+  'Maroc': 'Morocco',
+  'Olanda': 'Netherlands',
+  'Noua Zeelandă': 'New Zealand',
+  'Norvegia': 'Norway',
+  'Portugalia': 'Portugal',
+  'Arabia Saudită': 'Saudi Arabia',
+  'Scoția': 'Scotland',
+  'Africa de Sud': 'South Africa',
+  'Coreea de Sud': 'South Korea',
+  'Spania': 'Spain',
+  'Suedia': 'Sweden',
+  'Elveția': 'Switzerland',
+  'Turcia': 'Turkey',
+  'SUA': 'USA',
+};
+
+// Team names are stored in the digest as Romanian exonyms (the fact layer is
+// Romanian). For English, map them through; unknown names pass through unchanged.
+export function localizeTeam(name, lang) {
+  if (lang !== 'en') return name;
+  return TEAM_NAME_EN[name] ?? name;
+}
 
 export const STATUS_LABEL = {
   ro: {
