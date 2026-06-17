@@ -69,7 +69,7 @@ EN-fallback day has `en` absent / null).
       "home": "...", "away": "...",
       "homeCode": "...", "awayCode": "...",
       "kickoffEEST": "21:00",
-      "alarm": { "ro": "stai treaz", "en": "stay up" },
+      "alarm": { "ro": "merită văzut", "en": "stay up" },
       "why":   { "ro": "...", "en": "..." }
     }
   ],
@@ -79,11 +79,24 @@ EN-fallback day has `en` absent / null).
 
 ### `alarm` enum
 
-RO: `stai treaz` / `citești dimineața`. EN needs its own enum: `stay up` /
-`read in the morning`. The EN narration schema validates the EN enum. The badge
-CSS class is chosen by render.js from the *active-language* alarm value, so
-render maps both enums to the same two classes (`badge-ok` for "watch tonight",
-`badge-muted` otherwise) — see Rendering.
+**Real RO enum (verified in code):** `merită văzut` / `citești dimineața`
+(`narration-core.js`, `run.js` default, `render.js`). The earlier draft of this
+spec wrongly said `stai treaz`; that token only appears in three older committed
+archive days (`2026-06-12/13/16`) — a pre-existing inconsistency. Current
+`render.js` colors only `merită văzut` as "watch", so those legacy days silently
+render muted (latent bug we fix in passing).
+
+EN needs its own enum: `stay up` / `read in the morning`. The EN narration
+schema validates the EN enum. The badge CSS class is chosen by render.js from the
+*active-language* alarm value via a single predicate:
+
+```js
+// watch-tonight tokens across both languages + the legacy RO value
+const WATCH_ALARMS = new Set(['merită văzut', 'stai treaz', 'stay up']);
+const alarmIsWatch = (value) => WATCH_ALARMS.has(value); // badge-ok else badge-muted
+```
+
+This both drives the EN badge and repairs the legacy `stai treaz` archive days.
 
 ### Backward compatibility
 
@@ -119,32 +132,97 @@ function localize(field, lang) {
   avoidance stay Romanian-only for now; EN gets facts + an EN voice prompt. EN
   recent-prose avoidance is a possible follow-up, not in scope.)
 
+### Polish ladder must be language-parameterized
+
+`polishedNarration` currently imports and hardcodes the RO `SYSTEM_PROMPT`,
+`CRITIQUE_SYSTEM_PROMPT`, and `buildRewriteSystemPrompt` (a Romanian-native idiom
+reviewer). Running that critique over English is nonsensical. So:
+
+- Add `CRITIQUE_SYSTEM_PROMPT_EN` (an English-native idiom reviewer) and
+  `buildRewriteSystemPromptEn` (EN voice prompt + the EN critique notes).
+- `polishedNarration` takes the draft system prompt, critique system prompt, and
+  rewrite-prompt builder as parameters (defaulting to the RO trio for backward
+  compatibility), so the EN pass injects the EN trio. `narrationToReviewText`
+  is language-neutral (it flattens fields) and is reused.
+
 ### Engine selection (`run.js` `getNarration`)
 
 - After producing the RO narration (current logic, unchanged), run the same
-  engine again for EN with the EN system prompt + EN schema.
+  engine again for EN with the EN system/critique/rewrite prompts + EN schema.
 - Wrap the EN call in its own try/catch: on any EN failure log a warning and
   return EN absent. The RO narration always ships.
-- Return shape grows to carry both: `{ ro: {narration, narrator}, en: {narration, narrator} | null }`.
+- Return shape grows to carry both:
+  `{ ro: { narration, narrator }, en: { narration, narrator } | null }`.
+  **This is a breaking change** to `main()`'s `({ narration, narrator } = ...)`
+  destructure and to ~10 destructure sites in `test/narrator-select.test.js`;
+  rewriting those tests is in scope.
+- `getNarration`'s EN branch still goes through the fallback ladder, but an EN
+  *total* failure returns `en: null` (not a `gemini-fallback` marker) — EN is
+  best-effort. A successful EN via the Opus→Gemini fallback records its real
+  engine in `narrator.en` just as RO does.
 
 ### Digest assembly (`run.js` `main`)
 
-- Build prose fields as `{ ro, en }` objects, reading EN from the EN narration
-  keyed by the same `id`. When EN is absent, omit the `en` key (render falls
-  back to RO).
-- `narrator` becomes `{ ro, en }` (en omitted on fallback).
-- `teaser`: build both, RO via existing `buildTeaser`, EN via an English string
-  variant.
+The single most error-prone area: today `main()` reads the narration prose as
+flat strings in many places, and several of them must KEEP reading a flat RO
+string even after the stored digest prose becomes `{ ro, en }`. The rule:
+
+- **A `roNarration` object (flat `{headline, summary, matches, tonight}`) stays
+  the variable that feeds OG, teaser, email, and the OG meta injection.** Those
+  are Romanian-only by decision, so they read `roNarration.headline` /
+  `roNarration.summary` — never the `{ro,en}` digest field. This prevents the
+  `[object Object]` leak that would otherwise hit `renderOgImage`,
+  `injectOgTags`, `buildTeaser`, and `setOutput('headline'/'summary')`.
+- **Only the stored digest's prose fields become `{ ro, en }`:** `headline`,
+  `summary`, each `matches[].pill`, each `tonight[].alarm` + `.why`, `teaser`.
+  EN values come from the EN narration keyed by the same `id`. When EN is absent,
+  omit the `en` key (render falls back to RO via `localize`).
+- `drama` stays scalar (from RO narration; language-neutral).
+- `narrator` becomes `{ ro, en }`. `setOutput('narrator', ...)` and the email
+  read `narrator.ro` (a string) — never the object.
+- `teaser`: `teaser.ro` via existing `buildTeaser`; `teaser.en` via a new EN
+  variant (own pluralization: `1 match` / `N matches`, `no matches overnight`),
+  built only when EN narration succeeded, else `teaser.en` omitted.
 - Facts merge (score/scorers/events/stats/standings/highlight) is unchanged.
-- The freeze (`factsHash`) and reuse path must reuse *both* languages when facts
-  are unchanged — `reuseNarration` extended to carry the per-language prose
-  through. A reused day keeps its stored `narrator` object.
+
+### `recentProseBefore` + gold filtering (existing RO feature — must not regress)
+
+`recentProseBefore` and `withoutGold` read `digest.headline/summary`, `m.pill`,
+`t.why` as strings to build the RO anti-recycling avoid-list. Once prior days
+carry `{ ro, en }`, these would push objects (serialized as `[object Object]`)
+and gold filtering (string compare) would silently stop matching. Fix:
+`recentProseBefore` localizes each field to `.ro` with legacy-string passthrough
+(reuse the same `localize` helper, server-side copy). EN recent-prose avoidance
+stays out of scope.
 
 ### Freeze / reuse interaction
 
-`factsHash` is computed from facts only (already language-neutral), so it does
-not change. When facts are unchanged the stored bilingual prose is reused
-wholesale. `--re-narrate` regenerates both languages.
+`factsHash` is computed from facts only (language-neutral), so it does not
+change. `reuseNarration` is extended to carry per-language prose: **RO fields
+stay required** (a missing RO `pill`/`why`/`headline` still returns `null` →
+re-narrate), but **`en` is optional** — a stored day with no `en` reuses RO-only
+and does NOT force a re-narrate (that would defeat the freeze on every poll).
+`main()` consumes the reuse result and the fresh `getNarration` result through
+one shared assembly that emits the `{ro,en}` digest, treating absent EN as
+"omit the `en` key".
+
+**Consequence (accepted):** a day that froze RO-only (because it published before
+the EN code deployed, or because EN failed that night) is NOT self-healed by the
+nightly reuse path — it stays RO-only until the backfill script touches it or
+`--re-narrate` is forced. This is the same best-effort contract as the existing
+Opus→Gemini degrade. The backfill (below) is the transition-window heal; new
+days from deploy onward get both languages on their first publish (no stored
+digest yet → not reused). `--re-narrate` regenerates both languages.
+
+### Publish gate / email interaction
+
+- The publish-only-on-change byte compare (`run.js`) keeps working: a backfilled
+  or first-bilingual day differs byte-wise and deploys; a frozen RO-only reused
+  day is byte-identical and correctly does not re-publish. Because reuse does NOT
+  top-up EN live, there is no per-poll EN flap that could re-deploy a frozen day.
+- `narrationChanged` (email trigger) stays RO-centric and boolean (`!reused`).
+  The notification email is for the Romanian audience; it fires when fresh prose
+  is generated, not when EN is merely backfilled later. Documented, not changed.
 
 ## Backfill migration (one-time script)
 
@@ -153,13 +231,35 @@ wholesale. `--re-narrate` regenerates both languages.
 - For each committed `site/data/YYYY-MM-DD.json`, skip if `headline.en` already
   present (idempotent, re-runnable).
 - Reconstruct `factsForNarration` from the stored facts already in the file
-  (score, scorers, events, stats, standings/groups, tonight, date). Handles
-  empty-match nights (`matches: []`).
-- Call the EN narration (same engine ladder) and merge only `en` fields into the
-  existing prose objects; convert any flat RO string into `{ ro, en }`.
+  (score, scorers, events, stats, groups, tonight, date). Handles empty-match
+  nights (`matches: []`).
+- **Known limitation (accepted):** the stored day JSON does NOT carry
+  `homeRank`/`awayRank` (they were only inputs to the live run) and stores
+  standings as the classified `groups`, not the raw `standings`. So backfilled EN
+  `tonight` reasoning runs with ranks absent — the EN prompt's "if rank is null,
+  don't invent a hierarchy" branch handles this; the historical EN tonight prose
+  is slightly weaker than a live run would have produced. Not worth re-fetching
+  ESPN for ephemeral past "tonight" sections.
+- Call the EN narration (same engine ladder + EN prompts) and merge only `en`
+  fields into the existing prose objects; convert any flat RO string into
+  `{ ro, en }`. Also write `narrator` as `{ ro: <existing>, en: <engine> }`.
 - **Never** alter existing RO prose (gold-promoted lines stay intact).
 - Rebuild `latest.json` if it points at a backfilled day. Leave `manifest.json`
   untouched (no schema change there).
+
+### Deploy ordering (mandatory)
+
+`render.js` is made tolerant of both shapes (legacy flat string and `{ro,en}`),
+so the only safe sequence is **code-first**:
+
+1. Merge + deploy the new `render.js`/`lang.js`/pipeline code (Pages redeploy).
+   Old archive days (flat strings) keep rendering correctly under `localize`.
+2. Then run `backfill-en.js` locally and commit the updated `site/data/*.json`.
+3. Deploy the backfilled data via a manual `deploy.yml` dispatch (no
+   re-narration, preserves the committed prose).
+
+Backfilling data BEFORE the new render.js is live would make the running
+(old) render show `[object Object]`, so this order is not optional.
 
 ## Site / rendering
 
@@ -190,17 +290,38 @@ Mirrors `theme.js`:
 
 ### Pages
 
-- `index.html` and `arhiva.html` both mount the lang toggle and re-render the
-  current digest on language change. `index.html` sets `<html lang>` from the
-  saved choice in the inline head script (like the theme bootstrap) to avoid a
-  flash.
+- `index.html` and `arhiva.html` both mount the lang toggle and re-render on
+  language change. Each page needs a **state holder** so "re-render the current
+  digest" has something to re-render:
+  - `index.html`: hoist the loaded `digest` to module scope; `onChange(lang)`
+    calls `renderDigest(app, digest, lang)`.
+  - `arhiva.html`: track the currently shown date (it already lives in
+    `location.hash`); `onChange(lang)` re-runs `showDay(currentDate, lang)`, or
+    is a no-op when no day is open (only the list is shown).
+- Both pages set `<html lang>` from the saved choice in an inline head script
+  mirroring `currentLang()` (`localStorage.lang || 'ro'`) to avoid a flash. The
+  static OG meta stays Romanian regardless (social preview is RO by decision), so
+  an EN reader's crawler still sees RO — accepted.
+
+### Partial EN (accepted behavior)
+
+The EN narration is one schema-validated object, so it can't have a half-missing
+field — but it MAY omit a `matches[]`/`tonight[]` entry for some `id` (the schema
+doesn't require every fact id). In that case `localize(field, 'en')` falls back
+to the RO value for that one pill/why inside an otherwise-English page. Accepted;
+no per-item marker.
 
 ## Testing
 
 - `narration-core`: EN schema validates the EN alarm enum; RO schema unchanged.
-- `run.js`: per-language assembly produces `{ ro, en }`; EN-failure path ships
-  RO-only with `en` absent and `narrator.en` absent; reuse path carries both
-  languages; `--re-narrate` regenerates both.
+- `run.js` / `narrator-select.test.js`: the existing ~10 destructure sites are
+  rewritten for the new `{ ro, en }` `getNarration` shape. Per-language assembly
+  produces `{ ro, en }` digest prose; EN-failure path ships RO-only with `en`
+  absent and `narrator.en` absent; OG/teaser/email read the flat RO value (no
+  `[object Object]`); reuse path keeps RO required + EN optional; `--re-narrate`
+  regenerates both.
+- `polishedNarration`: EN trio (system/critique/rewrite) is injected and used;
+  RO defaults unchanged.
 - `render.js`: `localize` handles legacy string, full object, and `en`-missing
   object; `UI_STRINGS` covers every rendered label in both languages; alarm
   badge class correct for both enums; status label map covers all four statuses.
