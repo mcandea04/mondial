@@ -2,11 +2,13 @@ name: Re-narrate digest
 
 # Two thin triggers, both gated on the repo owner opening a labeled issue:
 #   label "re-narrate" -> dispatch digest.yml force=true with the issue body as a
-#     one-shot steering note (fix today's prose).
-#   label "gold"       -> append the issue body's lines to pipeline/gold.json, push,
-#     then dispatch digest.yml force=true so today is re-narrated WITH the new gold
-#     (which is now on main) and the existing deploy + email run. The fresh digest
-#     email is the confirmation.
+#     one-shot steering note (fix today's prose; this is where you steer or
+#     blacklist phrasing you dislike).
+#   label "gold"       -> append the issue body's lines to pipeline/gold.json and
+#     push. That is all: gold is few-shot taste for FUTURE nights, so promoting a
+#     line does NOT re-narrate today. The next nightly digest (and any later
+#     re-narrate) picks up the new gold from main. Use the "re-narrate" label when
+#     you actually want today's prose regenerated.
 # Joined to the digest concurrency group so a gold push never collides with the
 # nightly digest's push.
 
@@ -61,28 +63,29 @@ jobs:
           GOLD_ISSUE_BODY: ${{ github.event.issue.body }}
         run: node pipeline/gold.js add-from-issue
       - name: Commit and push gold.json
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add pipeline/gold.json
           if git diff --cached --quiet; then
             echo "No new gold (duplicate or empty); skipping commit."
+            echo "added=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "gold: promote line(s) from issue #${{ github.event.issue.number }}"
             git pull --rebase origin main
             git push
+            echo "added=true" >> "$GITHUB_OUTPUT"
           fi
-      - name: Re-narrate today with the new gold, then deploy + email
-        env:
-          GH_TOKEN: ${{ github.token }}
-        # gold.json is now on main, so the dispatched digest run checks it out and
-        # the fresh prose sees the new gold. force=true => re-narrate + email.
-        run: |
-          gh workflow run digest.yml --repo "$GITHUB_REPOSITORY" -f force=true
       - name: Confirm and close issue
         env:
           GH_TOKEN: ${{ github.token }}
+          ADDED: ${{ steps.commit.outputs.added }}
         run: |
-          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" \
-            --body "Fraza a fost salvată în gold și am pornit regenerarea de azi cu ea. Vei primi un email. Progres: https://github.com/$GITHUB_REPOSITORY/actions/workflows/digest.yml"
+          if [ "$ADDED" = "true" ]; then
+            BODY="Fraza a fost salvată în gold și va influența digestele viitoare. Nu am regenerat textul de azi — pentru asta folosește linkul de re-narrare."
+          else
+            BODY="Fraza era deja în gold (duplicat) — nimic de adăugat."
+          fi
+          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body "$BODY"
           gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY"
