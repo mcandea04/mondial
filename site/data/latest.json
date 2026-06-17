@@ -1,11 +1,423 @@
 {
   "date": "2026-06-17",
-  "factsHash": "86ebab3d3881a69107b5a0cb4860f29c985aaf0317bdd59601f22a552d4b968a",
+  "factsHash": "4c9cc07bf4448065f3d6311f11ab3f3000219c6657f1967eb9bee25b44b39d0d",
   "narrator": "gemini-polish",
-  "headline": "Anglia-Croația la 23:00, restul... dimineața",
-  "summary": "Astăzi avem parte de patru meciuri, începând cu Portugalia la 20:00 și terminând cu Uzbekistan la 05:00. Deși Anglia și Croația se întâlnesc la o oră decentă, restul programului e mai bun de citit la cafeaua de dimineață.",
-  "matches": [],
-  "groups": [],
+  "headline": "Messi, triplă la debut; Haaland și Mbappé, duble cu cântec",
+  "summary": "A fost o noapte a marilor atacanți, cu Messi debutând în turneu cu un hat-trick și Haaland și Mbappé semnând duble. Nici autogolurile nu au lipsit, transformând unele victorii categorice în partide prelungite peste așteptări.",
+  "matches": [
+    {
+      "id": 760432,
+      "home": "Franța",
+      "away": "Senegal",
+      "homeCode": "fr",
+      "awayCode": "sn",
+      "group": "I",
+      "utcDate": "2026-06-16T19:00Z",
+      "score": [
+        3,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Kylian Mbappé",
+          "minute": "66",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Michael Olise",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Bradley Barcola",
+          "minute": "82",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Adrien Rabiot",
+          "bodyPart": "dreptul",
+          "placement": "din dreapta careului"
+        },
+        {
+          "name": "Ibrahim Mbaye",
+          "minute": "90+5",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Iliman Ndiaye",
+          "bodyPart": "dreptul",
+          "placement": "din dreapta careului"
+        },
+        {
+          "name": "Kylian Mbappé",
+          "minute": "90+6",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "5",
+          "wonCorners": "6",
+          "saves": "2",
+          "possessionPct": "53.4",
+          "totalShots": "11",
+          "shotsOnTarget": "8"
+        },
+        "away": {
+          "foulsCommitted": "9",
+          "wonCorners": "4",
+          "saves": "5",
+          "possessionPct": "46.6",
+          "totalShots": "6",
+          "shotsOnTarget": "2"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": "Franța a avut de tras până la final, cu Mbappé care a marcat o dublă, inclusiv golul care a stabilit scorul final în minutul 90+6. Senegal a reușit să reducă din scor prin Mbaye, dar prea târziu pentru a schimba soarta meciului.",
+      "drama": 3,
+      "highlight": "https://www.fifa.com/en/watch/3EKjirmmC6D2Ss29rPdDph"
+    },
+    {
+      "id": 760430,
+      "home": "Irak",
+      "away": "Norvegia",
+      "homeCode": "iq",
+      "awayCode": "no",
+      "group": "I",
+      "utcDate": "2026-06-16T22:00Z",
+      "score": [
+        1,
+        4
+      ],
+      "scorers": [
+        {
+          "name": "Erling Haaland",
+          "minute": "29",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "David Møller Wolfe",
+          "bodyPart": "stângul",
+          "placement": null
+        },
+        {
+          "name": "Aymen Hussein",
+          "minute": "39",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "cu capul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Erling Haaland",
+          "minute": "43",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": null
+        },
+        {
+          "name": "Leo Østigard",
+          "minute": "76",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "cu capul",
+          "placement": null
+        },
+        {
+          "name": "Aymen Hussein",
+          "minute": "90+6",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "12",
+          "wonCorners": "2",
+          "saves": "2",
+          "possessionPct": "38.7",
+          "totalShots": "11",
+          "shotsOnTarget": "1"
+        },
+        "away": {
+          "foulsCommitted": "13",
+          "wonCorners": "5",
+          "saves": "0",
+          "possessionPct": "61.3",
+          "totalShots": "12",
+          "shotsOnTarget": "5"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": "Norvegia a defilat în fața Irakului, cu un Erling Haaland în formă, marcând o dublă cu stângul și cu dreptul. Irakienii au avut un moment de speranță prin golul lui Hussein, care apoi și-a trimis mingea în propria poartă, pecetluind victoria scandinavilor.",
+      "drama": 2,
+      "highlight": "https://www.fifa.com/en/watch/SsQRwgoouokLgVYDKitmB"
+    },
+    {
+      "id": 760433,
+      "home": "Argentina",
+      "away": "Algeria",
+      "homeCode": "ar",
+      "awayCode": "dz",
+      "group": "J",
+      "utcDate": "2026-06-17T01:00Z",
+      "score": [
+        3,
+        0
+      ],
+      "scorers": [
+        {
+          "name": "Lionel Messi",
+          "minute": "17",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Rodrigo De Paul",
+          "bodyPart": "stângul",
+          "placement": "din afara careului"
+        },
+        {
+          "name": "Lionel Messi",
+          "minute": "60",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Lionel Messi",
+          "minute": "76",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Nico González",
+          "bodyPart": "stângul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "13",
+          "wonCorners": "2",
+          "saves": "0",
+          "possessionPct": "47.8",
+          "totalShots": "10",
+          "shotsOnTarget": "6"
+        },
+        "away": {
+          "foulsCommitted": "8",
+          "wonCorners": "2",
+          "saves": "3",
+          "possessionPct": "52.2",
+          "totalShots": "7",
+          "shotsOnTarget": "1"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": "Lionel Messi a debutat în turneu cu un hat-trick de senzație, aducând o victorie categorică Argentinei. Algeria a stat mai mult cu mingea, dar posesia de 52.2% n-a contat, că n-a trimis decât un șut pe poartă.",
+      "drama": 2,
+      "highlight": "https://www.fifa.com/en/watch/7w5eTQ8xbmnSNHypyuYhdG"
+    },
+    {
+      "id": 760431,
+      "home": "Austria",
+      "away": "Iordania",
+      "homeCode": "at",
+      "awayCode": "jo",
+      "group": "J",
+      "utcDate": "2026-06-17T04:00Z",
+      "score": [
+        3,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Romano Schmid",
+          "minute": "21",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Xaver Schlager",
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
+        },
+        {
+          "name": "Ali Olwan",
+          "minute": "50",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Noor Al-Rawabdeh",
+          "bodyPart": "dreptul",
+          "placement": "din stânga careului"
+        },
+        {
+          "name": "Yazan Al-Arab",
+          "minute": "76",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
+        },
+        {
+          "name": "Marko Arnautovic",
+          "minute": "90+12",
+          "team": "home",
+          "penalty": true,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": null
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "12",
+          "wonCorners": "4",
+          "saves": "3",
+          "possessionPct": "63.2",
+          "totalShots": "11",
+          "shotsOnTarget": "4"
+        },
+        "away": {
+          "foulsCommitted": "7",
+          "wonCorners": "3",
+          "saves": "1",
+          "possessionPct": "36.8",
+          "totalShots": "11",
+          "shotsOnTarget": "4"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": "Austria a câștigat o partidă prelungită peste așteptări, cu un autogol al lui Yazan Al-Arab și un penalty transformat de Marko Arnautovic în minutul 90+12. Iordania a încercat să revină prin Ali Olwan, dar a plecat acasă fără puncte.",
+      "drama": 3,
+      "highlight": null
+    }
+  ],
+  "groups": [
+    {
+      "name": "I",
+      "table": [
+        {
+          "team": "Norvegia",
+          "code": "no",
+          "p": 1,
+          "w": 1,
+          "d": 0,
+          "l": 0,
+          "gd": 3,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Franța",
+          "code": "fr",
+          "p": 1,
+          "w": 1,
+          "d": 0,
+          "l": 0,
+          "gd": 2,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Senegal",
+          "code": "sn",
+          "p": 1,
+          "w": 0,
+          "d": 0,
+          "l": 1,
+          "gd": -2,
+          "pts": 0,
+          "status": "în cărți"
+        },
+        {
+          "team": "Irak",
+          "code": "iq",
+          "p": 1,
+          "w": 0,
+          "d": 0,
+          "l": 1,
+          "gd": -3,
+          "pts": 0,
+          "status": "în cărți"
+        }
+      ]
+    },
+    {
+      "name": "J",
+      "table": [
+        {
+          "team": "Argentina",
+          "code": "ar",
+          "p": 1,
+          "w": 1,
+          "d": 0,
+          "l": 0,
+          "gd": 3,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Austria",
+          "code": "at",
+          "p": 1,
+          "w": 1,
+          "d": 0,
+          "l": 0,
+          "gd": 2,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Algeria",
+          "code": "dz",
+          "p": 1,
+          "w": 0,
+          "d": 0,
+          "l": 1,
+          "gd": -3,
+          "pts": 0,
+          "status": "în cărți"
+        },
+        {
+          "team": "Iordania",
+          "code": "jo",
+          "p": 1,
+          "w": 0,
+          "d": 0,
+          "l": 1,
+          "gd": -2,
+          "pts": 0,
+          "status": "în cărți"
+        }
+      ]
+    }
+  ],
   "tonight": [
     {
       "id": 760435,
@@ -15,7 +427,7 @@
       "awayCode": "cd",
       "kickoffEEST": "20:00",
       "alarm": "citești dimineața",
-      "why": "Portugalia, la ora cinei, intră în turneu împotriva RD Congo, o formalitate pe care o vezi liniștit."
+      "why": "Portugalia debutează la o oră rezonabilă, așa că o poți urmări fără să sacrifici somnul."
     },
     {
       "id": 760437,
@@ -25,7 +437,7 @@
       "awayCode": "hr",
       "kickoffEEST": "23:00",
       "alarm": "citești dimineața",
-      "why": "Două forțe ale grupei L, Anglia și Croația, se întâlnesc la o oră decentă, perfectă pentru un meci de văzut fără grija somnului."
+      "why": "Anglia și Croația se duelează la o oră convenabilă, un meci între două forțe care debutează în turneu."
     },
     {
       "id": 760434,
@@ -35,7 +447,7 @@
       "awayCode": "pa",
       "kickoffEEST": "02:00",
       "alarm": "citești dimineața",
-      "why": "Meciul dintre Ghana și Panama, la ora două dimineața, este doar pentru cei care au insomnii cronice, nu pentru o partidă care te ține cu sufletul la gură."
+      "why": "Ghana împotriva Panamei se joacă după miezul nopții, dar mai bine afli scorul dimineață, la cafea, decât să te trezești pentru un duel fără miză mare."
     },
     {
       "id": 760436,
@@ -45,8 +457,8 @@
       "awayCode": "co",
       "kickoffEEST": "05:00",
       "alarm": "citești dimineața",
-      "why": "Uzbekistan și Columbia închid noaptea la cinci dimineața, o oră la care e mult mai înțelept să afli scorul la cafeaua de dimineață."
+      "why": "Uzbekistan și Columbia închid programul la 05:00, o oră la care rezumatul de dimineață, la cafea, e singura opțiune rezonabilă."
     }
   ],
-  "teaser": "⚽ Anglia-Croația la 23:00, restul... dimineața · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/"
+  "teaser": "⚽ Messi, triplă la debut; Haaland și Mbappé, duble cu cântec · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
 }
