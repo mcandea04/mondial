@@ -9,6 +9,22 @@ const STATUS_BADGE = {
   'eliminată': 'badge-danger',
 };
 
+// Drama 1-5 → one colored thermal face whose hue rises with the rating. The
+// data scale stays 1-5; only the rendering collapses to a single glyph. Returns
+// null for absent/non-positive ratings so missing data shows no face (matching
+// the old empty flame row), rather than a spurious cold face.
+const DRAMA_FACES = ['🥶', '😐', '🥵', '🤯', '🤯'];
+
+export function clampDrama(n) {
+  if (typeof n !== 'number' || !Number.isFinite(n) || n < 1) return null;
+  return Math.min(5, Math.floor(n));
+}
+
+export function dramaFace(n) {
+  const rating = clampDrama(n);
+  return rating === null ? null : DRAMA_FACES[rating - 1];
+}
+
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -63,14 +79,26 @@ function renderMatchCard(match, lang) {
     score,
     teamName('team-name away', match.away, match.awayCode, 'after', lang),
   );
-  const flames = el('div', 'flames');
-  flames.setAttribute('aria-label', UI_STRINGS[lang].drama(match.drama));
-  for (let i = 0; i < match.drama; i += 1) {
-    const flame = el('span', 'flame');
-    flame.setAttribute('aria-hidden', 'true');
-    flames.append(flame);
+  const actions = el('div', 'match-actions');
+  const face = dramaFace(match.drama);
+  if (face) {
+    const rating = clampDrama(match.drama);
+    const label = UI_STRINGS[lang].drama(rating);
+    const faceSpan = el('span', 'drama-face', face);
+    faceSpan.setAttribute('aria-label', label);
+    faceSpan.title = label;
+    actions.append(faceSpan);
   }
-  header.append(teams, flames);
+  if (match.highlight) {
+    const link = el('a', 'highlight-icon', '▷');
+    link.href = match.highlight;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.setAttribute('aria-label', UI_STRINGS[lang].recapLabel);
+    link.title = UI_STRINGS[lang].recapLabel;
+    actions.append(link);
+  }
+  header.append(teams, actions);
   card.append(header);
 
   const events = renderEvents(match, lang);
@@ -83,13 +111,6 @@ function renderMatchCard(match, lang) {
     card.append(pill);
   }
 
-  if (match.highlight) {
-    const link = el('a', 'highlight', UI_STRINGS[lang].recap);
-    link.href = match.highlight;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    card.append(link);
-  }
   return card;
 }
 
