@@ -1,17 +1,17 @@
 {
   "date": "2026-06-18",
-  "factsHash": "1278ab985d325e8f0a5c51d67fbcf66615812ae519dd2ccb13ad55778702638b",
+  "factsHash": "1a3a65419902e85d74fcd046a02ea8a24cec8498649696f45d7245a50053be83",
   "narrator": {
     "ro": "gemini-polish",
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Portugalia, posesie degeaba; Anglia, spectacol cu goluri",
-    "en": "England's goal-fest, Portugal's possession puzzle"
+    "ro": "Portugalia: 75% posesie, 1 punct. Ghana: 90+5 și 3 puncte.",
+    "en": "England ran riot; Portugal pondered; Ghana pinched it late"
   },
   "summary": {
-    "ro": "Portugalia a remizat surprinzător cu RD Congo, în ciuda unei posesii copleșitoare, în timp ce Anglia a făcut spectacol cu Croația, marcând de patru ori. Ghana a dat lovitura pe final, iar Columbia a confirmat rolul de favorită.",
-    "en": "England delivered a six-goal game against Croatia, with Harry Kane leading the charge for a crucial three points. Meanwhile, Portugal's overwhelming possession yielded only a point against a resilient RD Congo."
+    "ro": "Portugalia a arătat că posesia copleșitoare nu garantează victoria, remizând cu RD Congo, în timp ce Anglia și Croația au oferit un meci cu șase goluri. Ghana a smuls cele trei puncte în minutul 90+5, iar Columbia a învins Uzbekistanul.",
+    "en": "England ran riot against Croatia, scoring four, while Portugal only managed to draw despite dominating the ball. Late drama saw Ghana snatch a 95th-minute winner and Colombia secure their victory deep in stoppage time."
   },
   "matches": [
     {
@@ -69,8 +69,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Portugalia a deschis scorul rapid prin João Neves, cu capul din careu, dar s-a culcat pe o ureche, lăsând RD Congo să egaleze în prelungirile primei reprize prin Yoane Wissa, tot cu capul. Cu 75% posesie și un singur șut pe poartă, lusitanii au arătat că degeaba țin mingea dacă nu știu ce să facă cu ea, iar RD Congo a obținut un punct nesperat.",
-        "en": "Portugal had 75.4% possession but only managed a single shot on target, a true masterclass in sterile possession. João Neves headed them into an early lead, but Yoane Wissa headed an equaliser for RD Congo deep into first-half stoppage time. Portugal came away with a point and plenty to think about."
+        "ro": "Portugalia a deschis scorul devreme printr-o lovitură de cap a lui João Neves în minutul 6, dar a lăsat două puncte în urmă. Degeaba a avut 75% posesie sterilă, că RD Congo a fost mai pragmatică și a primit golul egalării de la Yoane Wissa, tot printr-o lovitură de cap, chiar înainte de pauză.",
+        "en": "Portugal draw with DR Congo, despite having 75.4% possession. João Neves's early header was their only shot on target, a masterclass in efficiency from DR Congo who hit back through Yoane Wissa just before the break. Portugal will settle for a point, but they'll be scratching their heads about what they did with all that ball."
       },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/3phBNopGuBvaow9DPBc2D"
@@ -170,10 +170,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Anglia a făcut spectacol în meciul cu Croația, cu un Harry Kane care a marcat un penalty și apoi a înscris cu capul. Croații au încercat să țină pasul prin Martin Baturina, cu un șut din afara careului, și Petar Musa, dar Jude Bellingham a punctat imediat după pauză, iar Marcus Rashford a închis tabela în minutul 85, la pasa lui Bukayo Saka.",
-        "en": "England put on a proper six-goal game, with Harry Kane opening the scoring from the penalty spot and adding a header before the break. Despite Martin Baturina and Petar Musa keeping Croatia in it with two first-half goals, Jude Bellingham and Marcus Rashford sealed a comfortable 4-2 win for England. A dominant display with 11 shots on target."
+        "ro": "Anglia și Croația au oferit o ploaie de goluri, cu Harry Kane marcând un penalty și o lovitură de cap, dar croații au restabilit egalitatea în două rânduri prin Baturina și Musa. Jude Bellingham și Marcus Rashford, cu golurile lor din repriza a doua, au asigurat o victorie fără dubii pentru englezi.",
+        "en": "England ran riot against Croatia, with Harry Kane converting a penalty in the 12th minute and adding a header just before half-time. Croatia fought back twice through Martin Baturina and Petar Musa, but second-half goals from Jude Bellingham and Marcus Rashford, set up by Elliot Anderson and Bukayo Saka respectively, took all three points for England."
       },
-      "drama": 4,
+      "drama": 5,
       "highlight": "https://www.fifa.com/en/watch/69ls3TcVt6PIJPxhiREehA"
     },
     {
@@ -221,10 +221,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Panama a avut posesia și mai multe șuturi la poartă, dar Ghana le-a dat lovitura în prelungiri, prin Caleb Yirenkyi, cu dreptul, la pasa lui Brandon Thomas-Asante. O lecție de pragmatism pentru panamezi, care au plecat acasă cu un gust amar și zero puncte în grupă.",
-        "en": "Panama had 62.1% possession and more shots, but Ghana stole the show with a dramatic late winner. Caleb Yirenkyi, set up by Brandon Thomas-Asante, struck in the 90+5th minute to secure a smash-and-grab victory. Panama will be flying home with three suitcases of regret after that last-gasp defeat."
+        "ro": "Panama a ținut mingea degeaba, dominând meciul cu 62% posesie și 11 șuturi, dar Ghana a lovit în minutul 90+5. Caleb Yirenkyi a marcat golul victoriei, după o pasă decisivă, lăsând Panama cu o ineficiență totală.",
+        "en": "Ghana left it until the 95th minute for Caleb Yirenkyi to snatch a winner, set up by Brandon Thomas-Asante, leaving Panama with nothing. Panama will fly home with three suitcases of regret, having had 62.1% possession and more shots, but just couldn't find the net."
       },
-      "drama": 3,
+      "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/5yGWUJLlTqyvKydpUvLJnU"
     },
     {
@@ -246,7 +246,7 @@
           "team": "away",
           "penalty": false,
           "ownGoal": false,
-          "assist": "Luis Díaz",
+          "assist": null,
           "bodyPart": "dreptul",
           "placement": "din careu"
         },
@@ -302,8 +302,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Columbia a deschis scorul prin Daniel Muñoz, la pasa lui Luis Díaz, a fost egalată de Abbosbek Fayzullaev cu capul, dar s-a redresat rapid. Luis Díaz a marcat și el din careu, iar Jáminton Campaz a pecetluit victoria cu capul, în ultimul minut de prelungiri, asigurând trei puncte prețioase.",
-        "en": "Colombia proved too strong for Uzbekistan, securing a 3-1 win after a brief scare. Daniel Muñoz scored from inside the box, followed by Luis Díaz, while Jáminton Campaz added a late header in the 90+9th minute. Abbosbek Fayzullaev’s equalizer for Uzbekistan in the 60th minute was a mere fleeting moment of hope."
+        "ro": "Columbia s-a impus cu 3-1 în fața Uzbekistanului, deși asiaticii au reușit să egaleze printr-o lovitură de cap a lui Fayzullaev în minutul 60. Luis Díaz a readus Columbia în avantaj după doar cinci minute, iar Jáminton Campaz a pecetluit victoria cu o lovitură de cap în minutul 90+9.",
+        "en": "Colombia took all three points from Uzbekistan in a dramatic encounter, with Daniel Muñoz opening the scoring and Luis Díaz regaining the lead after Abbosbek Fayzullaev's equalizer. Jáminton Campaz sealed the victory with a header deep into injury time, leaving Uzbekistan to wonder what might have been."
       },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/6Tr0HFdKBRPzlKF5p6kFLD"
@@ -422,8 +422,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "Este 19:00 și ambele echipe se luptă pentru puncte în Grupa A, așa că miza e serioasă pentru Cehia și Africa de Sud.",
-        "en": "A 19:00 kickoff makes it easy to catch Czechia and South Africa, two sides desperate for points to kickstart their campaign."
+        "ro": "Miza e mare pentru Cehia și Africa de Sud, iar ora este accesibilă pentru un meci care le poate relansa în grupă.",
+        "en": "19:00, where both Czechia and South Africa are desperate for points in Group A after losing their opening fixtures."
       }
     },
     {
@@ -438,8 +438,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "La 22:00, Elveția și Bosnia și Herțegovina, două formații care au remizat în prima etapă, se întâlnesc într-un duel echilibrat pentru a-și consolida poziția.",
-        "en": "For a proper European clash, Switzerland and Bosnia and Herzegovina at 22:00 promise a tactical battle worth staying up for."
+        "ro": "Elveția și Bosnia și Herțegovina au ambele un punct și se luptă pentru o poziție mai bună, la o oră perfectă pentru o confruntare echilibrată.",
+        "en": "22:00 brings two European forces, Switzerland and Bosnia and Herzegovina, looking to break the logjam in Group B after both drew their first game."
       }
     },
     {
@@ -454,8 +454,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "Ora 01:00 e cam târzie pentru un meci între Canada și Qatar, așa că mai bine afli scorul la prima cafea.",
-        "en": "Canada and Qatar at 01:00 is a game you can afford to miss in favour of the highlights, unless you have a particular fondness for late-night draws."
+        "ro": "Canada și Qatar se întâlnesc la 01:00, iar un punct le-ar putea fi de ajuns, așa că poți afla scorul dimineața.",
+        "en": "Canada and Qatar at 01:00 is a late one; the highlights will be a better bet in the morning."
       }
     },
     {
@@ -466,17 +466,17 @@
       "awayCode": "kr",
       "kickoffEEST": "04:00",
       "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+        "ro": "citești dimineața",
+        "en": "catch it later"
       },
       "why": {
-        "ro": "Chiar dacă e 04:00, Mexic și Coreea de Sud, ambele cu victorii, se bat pentru șefia grupei A, deci s-ar putea să merite să pierzi somnul.",
-        "en": "If you’re an early riser, Mexico and South Korea at 04:00 is a genuine clash with a point to prove for both teams, making it worth the early alarm."
+        "ro": "Mexic și Coreea de Sud se bat pentru primul loc în grupă la 04:00, oră la care somnul este mai prețios.",
+        "en": "Mexico versus South Korea kicks off at 04:00, a time when catching the score over coffee feels far more sensible."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Portugalia, posesie degeaba; Anglia, spectacol cu goluri · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ England's goal-fest, Portugal's possession puzzle · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Portugalia: 75% posesie, 1 punct. Ghana: 90+5 și 3 puncte. · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ England ran riot; Portugal pondered; Ghana pinched it late · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
