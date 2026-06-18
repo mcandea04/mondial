@@ -102,3 +102,14 @@ clear site data or use a private window.
 - ESM only (`"type": "module"`), Node 20+.
 - All user-facing text is Romanian with correct diacritics (ă â î ș ț).
 - This is a `~/personal/` project: push to **github.com/mcandea04** only, never a work account.
+
+## Specs and plans are throwaway
+
+Brainstorming specs and implementation plans (the `docs/superpowers/` files the
+superpowers flow produces) are working artifacts, not repo content. Write them in
+the gitignored worktree while doing the work, and let them die with the worktree —
+do NOT commit them to the repo and do NOT include them in the feature PR. The
+feature PR is pure code (implementation + tests). The commit messages and the PR
+description are the durable record; there is no separate design doc and no design
+issue. Older `docs/superpowers/specs|plans/*` files predate this rule; leave them,
+but add no new ones.

@@ -5,3 +5,9 @@ node_modules
 .DS_Store
 tmp/
 .worktrees/
+
+# Brainstorming specs and implementation plans are throwaway working artifacts,
+# not repo content (see CLAUDE.md "Specs and plans are throwaway"). Files tracked
+# before this rule stay tracked; new ones are ignored.
+docs/superpowers/specs/
+docs/superpowers/plans/
