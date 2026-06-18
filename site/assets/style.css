@@ -114,23 +114,27 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 }
 
 /* ── Match header ── */
+/* The tricode scoreline is compact and uniform, so the actions (highlight icon +
+   flames) sit left, packed right after it. Visitors cluster at 384-430px where
+   it stays one row; on a rare narrow device (≤~360px) the actions wrap to a tidy
+   second line rather than forcing the scoreline to break. */
 .match-header {
-  display: grid;
-  grid-template-columns: 1fr auto; /* teams flow/wrap in col 1; actions own a reserved col 2, never crowded by name length */
-  align-items: start;
-  gap: 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
 }
-.match-actions { margin-top: 2px; } /* nudge the face to optically align with the first scoreline row */
 .match-teams {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
 }
 .team-name { font-size: 15px; font-weight: 500; }
 .team-name.home { color: var(--home); }
 .team-name.away { color: var(--away); }
-.score { font-size: 22px; font-weight: 500; white-space: nowrap; }
+.score { font-size: 24px; font-weight: 500; white-space: nowrap; }
 .team { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; }
 .flag {
   height: 18px;
@@ -312,21 +316,22 @@ tbody tr td { padding: 5px 0; }
 /* Arhiva: cluster both pills flush-right beside the title + back-link */
 .meta > .segmented:first-of-type { margin-left: auto; }
 
-/* ── Match header actions (drama face + highlights) ── */
+/* ── Match header actions (highlights icon + drama flames) ── */
 .match-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   flex-shrink: 0;
   flex-wrap: nowrap;
 }
-.drama-face { font-size: 20px; line-height: 1; }
+.flames { display: flex; gap: 1px; line-height: 1; }
+.flame::before { content: "🔥"; font-size: 14px; }
 .highlight-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
   min-height: 32px;
+  padding: 0 6px;
   border-radius: 999px;
   color: var(--pill-txt);
   font-size: 15px;

@@ -136,6 +136,68 @@ export function localizeTeam(name, lang) {
   return TEAM_NAME_EN[name] ?? name;
 }
 
+// Romanian team exonym → FIFA tricode for the compact scoreline. Keyed by the
+// stored Romanian name so it works on the committed archive without a pipeline
+// rerun. The codes are the same FIFA tricodes pipeline/teams.js uses in
+// FIFA_TRICODE_TO_FLAG; keep the two in sync. Unknown names (knockout
+// placeholders) return null so the renderer falls back to the full name.
+export const TEAM_CODE = {
+  'Algeria': 'ALG',
+  'Argentina': 'ARG',
+  'Australia': 'AUS',
+  'Austria': 'AUT',
+  'Belgia': 'BEL',
+  'Bosnia și Herțegovina': 'BIH',
+  'Brazilia': 'BRA',
+  'Canada': 'CAN',
+  'Capul Verde': 'CPV',
+  'Columbia': 'COL',
+  'RD Congo': 'COD',
+  'Croația': 'CRO',
+  'Curaçao': 'CUW',
+  'Cehia': 'CZE',
+  'Ecuador': 'ECU',
+  'Egipt': 'EGY',
+  'Anglia': 'ENG',
+  'Franța': 'FRA',
+  'Germania': 'GER',
+  'Ghana': 'GHA',
+  'Haiti': 'HAI',
+  'Iran': 'IRN',
+  'Irak': 'IRQ',
+  'Coasta de Fildeș': 'CIV',
+  'Japonia': 'JPN',
+  'Iordania': 'JOR',
+  'Mexic': 'MEX',
+  'Maroc': 'MAR',
+  'Olanda': 'NED',
+  'Noua Zeelandă': 'NZL',
+  'Norvegia': 'NOR',
+  'Panama': 'PAN',
+  'Paraguay': 'PAR',
+  'Portugalia': 'POR',
+  'Qatar': 'QAT',
+  'Arabia Saudită': 'KSA',
+  'Scoția': 'SCO',
+  'Senegal': 'SEN',
+  'Africa de Sud': 'RSA',
+  'Coreea de Sud': 'KOR',
+  'Spania': 'ESP',
+  'Suedia': 'SWE',
+  'Elveția': 'SUI',
+  'Tunisia': 'TUN',
+  'Turcia': 'TUR',
+  'SUA': 'USA',
+  'Uruguay': 'URU',
+  'Uzbekistan': 'UZB',
+};
+
+// The scoreline shows the FIFA tricode (compact, uniform width). Returns null for
+// unknown/placeholder names so the caller can fall back to the full team name.
+export function teamCode(name) {
+  return TEAM_CODE[name] ?? null;
+}
+
 export const STATUS_LABEL = {
   ro: {
     'calificată': 'calificată',

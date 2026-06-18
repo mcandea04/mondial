@@ -1,6 +1,6 @@
 /* Renders a digest JSON into the page. Shared by index.html and arhiva.html. */
 
-import { localize, localizeTeam, UI_STRINGS, STATUS_LABEL, alarmIsWatch, alarmBadgeLabel, dateLabel } from './i18n.js';
+import { localize, localizeTeam, teamCode, UI_STRINGS, STATUS_LABEL, alarmIsWatch, alarmBadgeLabel, dateLabel } from './i18n.js';
 
 const STATUS_BADGE = {
   'calificată': 'badge-ok',
@@ -9,20 +9,12 @@ const STATUS_BADGE = {
   'eliminată': 'badge-danger',
 };
 
-// Drama 1-5 → one colored thermal face whose hue rises with the rating. The
-// data scale stays 1-5; only the rendering collapses to a single glyph. Returns
-// null for absent/non-positive ratings so missing data shows no face (matching
-// the old empty flame row), rather than a spurious cold face.
-const DRAMA_FACES = ['🥶', '😐', '🥵', '🤯', '🤯'];
-
+// The drama rating (1-5) renders as that many flames. The data scale stays 1-5;
+// this only bounds it for display. Returns null for absent/non-positive ratings
+// so missing data shows no flames at all, rather than a default count.
 export function clampDrama(n) {
   if (typeof n !== 'number' || !Number.isFinite(n) || n < 1) return null;
   return Math.min(5, Math.floor(n));
-}
-
-export function dramaFace(n) {
-  const rating = clampDrama(n);
-  return rating === null ? null : DRAMA_FACES[rating - 1];
 }
 
 function el(tag, className, text) {
@@ -42,11 +34,19 @@ function flagImg(code, sizeClass) {
   return img;
 }
 
-// A team name with its flag inline, so the flag flows with the text and stays
-// next to the name even when a long name wraps. `side` places the flag 'before'
-// the name (home) or 'after' it (away).
+// A team in the scoreline: the FIFA tricode (compact, uniform width) with its
+// flag inline. The full localized name rides along as the accessible label and
+// tooltip, so the code is never the sole identifier. `side` places the flag
+// 'before' the tricode (home) or 'after' it (away). Names with no known code
+// (knockout placeholders) fall back to the full name.
 function teamName(className, name, code, side, lang) {
-  const span = el('span', className, localizeTeam(name, lang));
+  const fullName = localizeTeam(name, lang);
+  const tricode = teamCode(name);
+  const span = el('span', className, tricode ?? fullName);
+  if (tricode) {
+    span.title = fullName;
+    span.setAttribute('aria-label', fullName);
+  }
   const flag = flagImg(code, 'flag-inline');
   if (flag) span[side === 'before' ? 'prepend' : 'append'](flag);
   return span;
@@ -80,14 +80,6 @@ function renderMatchCard(match, lang) {
     teamName('team-name away', match.away, match.awayCode, 'after', lang),
   );
   const actions = el('div', 'match-actions');
-  const rating = clampDrama(match.drama);
-  if (rating !== null) {
-    const label = UI_STRINGS[lang].drama(rating);
-    const faceSpan = el('span', 'drama-face', dramaFace(rating));
-    faceSpan.setAttribute('aria-label', label);
-    faceSpan.title = label;
-    actions.append(faceSpan);
-  }
   if (match.highlight) {
     const link = el('a', 'highlight-icon', '▷');
     link.href = match.highlight;
@@ -96,6 +88,19 @@ function renderMatchCard(match, lang) {
     link.setAttribute('aria-label', UI_STRINGS[lang].recapLabel);
     link.title = UI_STRINGS[lang].recapLabel;
     actions.append(link);
+  }
+  const rating = clampDrama(match.drama);
+  if (rating !== null) {
+    const label = UI_STRINGS[lang].drama(rating);
+    const flames = el('span', 'flames');
+    flames.setAttribute('aria-label', label);
+    flames.title = label;
+    for (let i = 0; i < rating; i += 1) {
+      const flame = el('span', 'flame');
+      flame.setAttribute('aria-hidden', 'true');
+      flames.append(flame);
+    }
+    actions.append(flames);
   }
   header.append(teams, actions);
   card.append(header);
