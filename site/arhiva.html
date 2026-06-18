@@ -40,7 +40,6 @@
     import { UI_STRINGS, dateLabel } from './assets/i18n.js';
 
     const meta = document.querySelector('.meta');
-    mountToggle(meta);
 
     const list = document.getElementById('archive-list');
     const digestRoot = document.getElementById('digest');
@@ -61,6 +60,7 @@
     }
 
     mountLangToggle(meta, applyLang);
+    mountToggle(meta);
 
     function renderList(lang) {
       const t = UI_STRINGS[lang];

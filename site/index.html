@@ -41,7 +41,6 @@
     import { UI_STRINGS } from './assets/i18n.js';
 
     const topbar = document.getElementById('topbar');
-    mountToggle(topbar);
 
     const app = document.getElementById('app');
     let currentDigest = null;
@@ -58,6 +57,7 @@
       if (currentDigest) renderDigest(app, currentDigest, lang);
       else if (loadError) showError(lang);
     });
+    mountToggle(topbar);
 
     loadDigest('data/latest.json')
       .then((digest) => {
