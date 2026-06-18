@@ -73,20 +73,68 @@ test('adding a scorer changes the hash (new narration material)', () => {
   assert.notEqual(factsHash(rich), factsHash(extra));
 });
 
-test('a late assist or card reason changes the hash', () => {
+test('a late assist, bodyPart, placement, or card reason does NOT change the hash', () => {
   const withAssist = structuredClone(rich);
   withAssist.finished[0].scorers[0].assist = 'Giménez';
-  assert.notEqual(factsHash(rich), factsHash(withAssist));
+  assert.equal(factsHash(rich), factsHash(withAssist));
+
+  const withBodyPart = structuredClone(rich);
+  withBodyPart.finished[0].scorers[0].bodyPart = 'cap';
+  assert.equal(factsHash(rich), factsHash(withBodyPart));
+
+  const withPlacement = structuredClone(rich);
+  withPlacement.finished[0].scorers[0].placement = 'colțul lung';
+  assert.equal(factsHash(rich), factsHash(withPlacement));
 
   const withReason = structuredClone(rich);
   withReason.finished[0].events[0].reason = 'pentru un fault dur';
-  assert.notEqual(factsHash(rich), factsHash(withReason));
+  assert.equal(factsHash(rich), factsHash(withReason));
 });
 
 test('reordering scorers does NOT change the hash', () => {
   const reordered = structuredClone(rich);
   reordered.finished[0].scorers.reverse();
   assert.equal(factsHash(rich), factsHash(reordered));
+});
+
+test('a changed scorer name changes the hash', () => {
+  const renamed = structuredClone(rich);
+  renamed.finished[0].scorers[0].name = 'Jiménez';
+  assert.notEqual(factsHash(rich), factsHash(renamed));
+});
+
+test('a changed scorer team changes the hash', () => {
+  const flipped = structuredClone(rich);
+  flipped.finished[0].scorers[0].team = 'away';
+  assert.notEqual(factsHash(rich), factsHash(flipped));
+});
+
+test('a flipped penalty flag changes the hash', () => {
+  const pen = structuredClone(rich);
+  pen.finished[0].scorers[0].penalty = true;
+  assert.notEqual(factsHash(rich), factsHash(pen));
+});
+
+test('a flipped ownGoal flag changes the hash', () => {
+  const og = structuredClone(rich);
+  og.finished[0].scorers[0].ownGoal = true;
+  assert.notEqual(factsHash(rich), factsHash(og));
+});
+
+test('removing a red card changes the hash', () => {
+  const noCard = structuredClone(rich);
+  noCard.finished[0].events = [];
+  assert.notEqual(factsHash(rich), factsHash(noCard));
+});
+
+test('two same-minute goals differing by a flag hash the same regardless of input order', () => {
+  const a = { name: 'A', minute: '45', team: 'home', penalty: true, ownGoal: false, assist: null, bodyPart: null, placement: null };
+  const b = { name: 'A', minute: '45', team: 'home', penalty: false, ownGoal: false, assist: null, bodyPart: null, placement: null };
+  const forward = structuredClone(rich);
+  forward.finished[0].scorers = [a, b];
+  const backward = structuredClone(rich);
+  backward.finished[0].scorers = [b, a];
+  assert.equal(factsHash(forward), factsHash(backward));
 });
 
 test('a changed stat does NOT change the hash (stats excluded from projection)', () => {
