@@ -80,6 +80,40 @@ test('--re-narrate forces fresh prose even when facts are unchanged', () => {
   assert.equal(readDigest(out).headline.ro, 'Proză regenerată la cerere');
 });
 
+// The assist on Giménez's 12' goal (match 760414) comes from the second
+// participant of the Goal keyEvent in this summary fixture. Rewriting it
+// simulates ESPN revising a soft field between polls.
+function setSummaryAssist(fixtures, assistName) {
+  const summaryPath = path.join(fixtures, 'summary-760414.json');
+  const summary = JSON.parse(readFileSync(summaryPath, 'utf8'));
+  const goal = summary.keyEvents.find((e) => e.type?.text === 'Goal' && e.scoringPlay);
+  goal.participants[1].athlete.displayName = assistName;
+  writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
+}
+
+test('a late assist correction reuses prose but still publishes the new assist', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const first = readDigest(out);
+  const firstScorer = first.matches.find((m) => m.id === 760414).scorers.find((s) => s.assist);
+  assert.equal(firstScorer.assist, 'Lozano', 'baseline assist published');
+
+  // ESPN revises only the assist (a soft field) and we offer different prose.
+  setSummaryAssist(fixtures, 'Vega');
+  setCannedHeadline(fixtures, 'Proză nouă care NU trebuie folosită');
+  const log = runPipeline({ fixtures, out });
+
+  // The narrated facts are unchanged, so the prose is frozen and not re-narrated.
+  assert.match(log, /facts unchanged, prose reused/);
+  const second = readDigest(out);
+  assert.equal(second.factsHash, first.factsHash, 'soft-field change leaves the hash');
+  assert.deepEqual(second.headline, first.headline, 'prose reused, canned headline ignored');
+
+  // But the corrected assist still flows into the published JSON.
+  const secondScorer = second.matches.find((m) => m.id === 760414).scorers.find((s) => s.name === firstScorer.name);
+  assert.equal(secondScorer.assist, 'Vega', 'corrected assist published despite prose reuse');
+});
+
 test('changed facts re-narrate automatically', () => {
   const { fixtures, out } = freshDirs();
   runPipeline({ fixtures, out });
