@@ -6,7 +6,7 @@
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Canadienii au zdrobit, Elveția s-a dezlănțuit, Mexic e deja acasă",
+    "ro": "Canadienii au zdrobit, Elveția s-a dezlănțuit, Mexic e deja calificată",
     "en": "Canada hits six, Swiss find their stride late"
   },
   "summary": {
@@ -355,17 +355,6 @@
           "status": "calificată"
         },
         {
-          "team": "Cehia",
-          "code": "cz",
-          "p": 2,
-          "w": 0,
-          "d": 1,
-          "l": 1,
-          "gd": -1,
-          "pts": 1,
-          "status": "în cărți"
-        },
-        {
           "team": "Coreea de Sud",
           "code": "kr",
           "p": 2,
@@ -374,6 +363,17 @@
           "l": 1,
           "gd": 0,
           "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Cehia",
+          "code": "cz",
+          "p": 2,
+          "w": 0,
+          "d": 1,
+          "l": 1,
+          "gd": -1,
+          "pts": 1,
           "status": "în cărți"
         },
         {
@@ -404,17 +404,6 @@
           "status": "în cărți"
         },
         {
-          "team": "Bosnia și Herțegovina",
-          "code": "ba",
-          "p": 2,
-          "w": 0,
-          "d": 1,
-          "l": 1,
-          "gd": -3,
-          "pts": 1,
-          "status": "în cărți"
-        },
-        {
           "team": "Elveția",
           "code": "ch",
           "p": 2,
@@ -423,6 +412,17 @@
           "l": 0,
           "gd": 3,
           "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Bosnia și Herțegovina",
+          "code": "ba",
+          "p": 2,
+          "w": 0,
+          "d": 1,
+          "l": 1,
+          "gd": -3,
+          "pts": 1,
           "status": "în cărți"
         },
         {
@@ -506,7 +506,7 @@
     }
   ],
   "teaser": {
-    "ro": "⚽ Canadienii au zdrobit, Elveția s-a dezlănțuit, Mexic e deja acasă · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "ro": "⚽ Canadienii au zdrobit, Elveția s-a dezlănțuit, Mexic e deja calificată · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
     "en": "⚽ Canada hits six, Swiss find their stride late · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }

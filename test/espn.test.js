@@ -136,6 +136,23 @@ test('parseStandings maps ESPN children into group tables', async () => {
   assert.equal(row.gd, 1);
 });
 
+test('parseStandings orders each table by points then goal difference', async () => {
+  const raw = {
+    children: [{
+      name: 'Group Z',
+      standings: { entries: [
+        { team: { displayName: 'Brazil' }, stats: [{ name: 'points', value: 1 }, { name: 'pointDifferential', value: 0 }] },
+        { team: { displayName: 'Germany' }, stats: [{ name: 'points', value: 3 }, { name: 'pointDifferential', value: 2 }] },
+        { team: { displayName: 'Spain' }, stats: [{ name: 'points', value: 3 }, { name: 'pointDifferential', value: 1 }] },
+        { team: { displayName: 'Japan' }, stats: [{ name: 'points', value: 0 }, { name: 'pointDifferential', value: -3 }] },
+      ] },
+    }],
+  };
+  const [group] = parseStandings(raw);
+  assert.deepEqual(group.table.map((r) => r.pts), [3, 3, 1, 0]);
+  assert.deepEqual(group.table.map((r) => r.gd), [2, 1, 0, -3]);
+});
+
 import {
   parseGoalManner,
   parseCardReason,

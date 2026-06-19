@@ -415,17 +415,6 @@
           "status": "în cărți"
         },
         {
-          "team": "Algeria",
-          "code": "dz",
-          "p": 1,
-          "w": 0,
-          "d": 0,
-          "l": 1,
-          "gd": -3,
-          "pts": 0,
-          "status": "în cărți"
-        },
-        {
           "team": "Iordania",
           "code": "jo",
           "p": 1,
@@ -433,6 +422,17 @@
           "d": 0,
           "l": 1,
           "gd": -2,
+          "pts": 0,
+          "status": "în cărți"
+        },
+        {
+          "team": "Algeria",
+          "code": "dz",
+          "p": 1,
+          "w": 0,
+          "d": 0,
+          "l": 1,
+          "gd": -3,
           "pts": 0,
           "status": "în cărți"
         }

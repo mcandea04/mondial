@@ -280,6 +280,7 @@ export function parseStandings(response) {
         pts: stat('points'),
       };
     });
+    table.sort((a, b) => b.pts - a.pts || b.gd - a.gd);
     return { name, table };
   });
 }
