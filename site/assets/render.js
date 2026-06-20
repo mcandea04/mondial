@@ -237,18 +237,18 @@ function renderTonight(tonight, lang) {
         flagImg(fixture.awayCode, 'flag-sm'),
       ].filter(Boolean),
     );
-    left.append(matchLine, el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`));
+    const watch = alarmIsWatch(localize(fixture.alarm, 'ro'));
+    const badgeClass = watch ? 'badge-ok' : 'badge-muted';
+    left.append(
+      matchLine,
+      el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`),
+      el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)),
+    );
     const whyText = localize(fixture.why, lang);
     if (whyText) {
       left.append(el('br'), el('span', 'tonight-why', whyText));
     }
-    // The watch/skip verdict is a single judgment, not a per-language opinion:
-    // the Romanian alarm is canonical, and the badge label is its localized form.
-    // Only the `why` wording differs by language. This keeps RO and EN from
-    // disagreeing on whether a match is worth the alarm.
-    const watch = alarmIsWatch(localize(fixture.alarm, 'ro'));
-    const badgeClass = watch ? 'badge-ok' : 'badge-muted';
-    row.append(left, el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)));
+    row.append(left);
     card.append(row);
   }
   return card;

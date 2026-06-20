@@ -200,14 +200,9 @@ tbody tr td { padding: 5px 0; }
 
 /* ── Tonight list ── */
 .tonight-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
   padding: 7px 0;
 }
-.tonight-row .badge { flex-shrink: 0; }
-.tonight-row > div { min-width: 0; }
+.tonight-row .badge { margin-left: 6px; vertical-align: middle; }
 .tonight-row + .tonight-row { border-top: 0.5px solid var(--border); }
 .tonight-match { font-size: 14px; }
 .tonight-time  { font-size: 13px; color: var(--muted); }
