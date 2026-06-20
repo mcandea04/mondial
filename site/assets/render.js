@@ -233,7 +233,7 @@ function renderTonight(tonight, lang) {
     matchLine.append(
       ...[
         flagImg(fixture.homeCode, 'flag-sm'),
-        el('span', 'tonight-match', `${localizeTeam(fixture.home, lang)} – ${localizeTeam(fixture.away, lang)}`),
+        el('span', 'tonight-match', `${teamCode(fixture.home) ?? localizeTeam(fixture.home, lang)} – ${teamCode(fixture.away) ?? localizeTeam(fixture.away, lang)}`),
         flagImg(fixture.awayCode, 'flag-sm'),
       ].filter(Boolean),
     );
