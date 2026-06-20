@@ -2,16 +2,16 @@
   "date": "2026-06-20",
   "factsHash": "f86eb218975466c80ef736dcb32f9acd660f64e9edd4c7afa81e82f2eb1cc1f9",
   "narrator": {
-    "ro": "gemini-polish",
-    "en": "gemini-polish"
+    "ro": "gemini",
+    "en": "gemini"
   },
   "headline": {
-    "ro": "Turcia, 32 de șuturi și zero puncte în paradis",
-    "en": "Thirty-two Turkish shots and a Brazilian half-shift"
+    "ro": "Turcia, degeaba cu mingea. Autogol american, calificare asigurată",
+    "en": "Thirty-two shots, zero goals, and a Turkish exit"
   },
   "summary": {
-    "ro": "Azi-noapte am văzut o Brazilie dezlănțuită în prima repriză, care și-a asigurat victoria devreme. De partea cealaltă, Turcia a tras de 32 de ori la poartă și a terminat meciul învinsă, deși a dominat partida.",
-    "en": "Turkey managed to lose despite firing 32 shots against ten-man Paraguay, while Brazil decided 45 minutes of football was quite enough to dismiss Haiti. Elsewhere, the USA moved to six points after Australia kindly provided an early own goal to settle American nerves."
+    "ro": "SUA și Brazilia au obținut victorii fără emoții, iar americanii și-au asigurat calificarea cu un autogol și o lovitură de cap. Turcia a dominat categoric meciul cu Paraguay, dar a pierdut la limită și a plecat acasă.",
+    "en": "Turkey managed to fire 32 shots without finding the net once, handing Paraguay a win and packing their own bags for an early flight home. Brazil and the USA enjoyed more efficient evenings, securing their progress while leaving Haiti and the Turkish squad to ponder what might have been."
   },
   "matches": [
     {
@@ -69,8 +69,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "SUA a deschis scorul rapid, profitând de un autogol al lui Cameron Burgess în minutul 11, apoi Alex Freeman a închis tabela cu capul în minutul 43. Australia a avut și ea doar două șuturi pe poartă și a rămas fără replică.",
-        "en": "Australia gave the Americans a head start through Cameron Burgess's 11th-minute own goal before Alex Freeman’s header left the Socceroos with it all to do. The US finished with two goals from exactly two shots on target, which is one way to define being clinical."
+        "ro": "SUA a deschis scorul prin autogolul lui Cameron Burgess în minutul 11, apoi Alex Freeman a marcat cu capul și a confirmat victoria. Americanii s-au calificat lejer, în timp ce Australia rămâne în cărți, dar cu emoții.",
+        "en": "Cameron Burgess handed the hosts a head start with an 11th-minute own goal, followed by Alex Freeman heading home a second to seal qualification. The Americans barely broke a sweat while Australia failed to test the keeper more than twice."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/1uOCG5cpsR45kemo4IdCO3"
@@ -120,8 +120,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Marocul a lovit fulgerător prin Ismael Saibari, care a marcat cu dreptul din dreapta careului în minutul 2, din pasa lui Brahim Díaz. Scoția n-a reușit să trimită niciun șut pe poartă în cele 90 de minute, complicându-și serios viața în grupă.",
-        "en": "Scotland spent 88 minutes failing to recover from falling behind to an Ismael Saibari goal and finished the night without registering a single shot on target. Brahim Díaz provided the early assist, leaving the Scots to huff and puff their way to a frustrating defeat."
+        "ro": "Maroc a rezolvat meciul cu Scoția încă din minutul 2, când Ismael Saibari a trimis mingea în plasă la pasa lui Brahim Díaz. Scoțienii au plecat acasă fără niciun șut pe poartă și cu un gust amar al înfrângerii.",
+        "en": "Ismael Saibari’s strike from the right of the box in the second minute proved an insurmountable mountain for a toothless Scotland. The Scots managed zero shots on target, ensuring Morocco’s early lead remained entirely unthreatened."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/lLPqiMKeKkrKkEqOj9dxU"
@@ -191,8 +191,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Brazilia a rezolvat rapid ecuația cu Haiti, Matheus Cunha reușind o dublă cu stângul în minutele 23 și 36, la care s-a adăugat golul lui Vinícius Júnior în prelungirile primei reprize. Seleção doarme liniștită după această victorie la scor.",
-        "en": "Brazil treated the first half like a light warm-up, with Matheus Cunha bagging two from inside the box before Vinícius Júnior added a third in stoppage time. After the three-goal burst before the break, the Seleção spent the rest of the match largely disinterested in further damage."
+        "ro": "Brazilia a bifat o victorie previzibilă în fața lui Haiti, care e eliminată din competiție. Matheus Cunha a marcat o dublă cu stângul, iar Vinícius Júnior a închis tabela chiar înainte de pauză, la o prestație fără emoții.",
+        "en": "Matheus Cunha’s left foot did the damage twice in the first half before Vinícius Júnior added a third in stoppage time to end Haiti’s World Cup journey. Brazil cruised with 56.7% possession, effectively turning the second half into a light jogging exercise."
       },
       "drama": 1,
       "highlight": "https://www.fifa.com/en/watch/4B1cORLHftHRri3QzyPvng"
@@ -249,10 +249,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Turcia a dat o lecție de ineficiență, cu 32 de șuturi la poartă și 78.5% posesie, dar a pierdut la limită, după ce Matías Galarza a marcat pentru Paraguay în minutul 2. Un singur șut pe poartă a fost de ajuns pentru sud-americani să ia toate cele trei puncte.",
-        "en": "Turkey produced the most industrious failure of the summer, racking up 32 shots and 78% possession only to lose to Matías Galarza’s early strike from distance. Despite Miguel Almirón’s red card just before half-time, Paraguay's ten men stood firm against a Turkish attack that couldn't find the net with a map."
+        "ro": "Turcia a ținut mingea în proporție de 78.5% și a tras de 32 de ori la poartă, dar Matías Galarza, cu un șut din afara careului, a adus victoria Paraguayului în minutul 2. Posesia copleșitoare n-a adus puncte și Turcia e eliminată.",
+        "en": "Turkey managed the impossible, taking 32 shots and controlling 78.5% of the ball only to lose to Matías Galarza’s 2nd-minute strike from outside the box. Paraguay defended for their lives to send the Turkish squad home after just two matches."
       },
-      "drama": 3,
+      "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/6gtrw3fGvuONahHQd4yE67"
     }
   ],
@@ -302,7 +302,7 @@
           "l": 2,
           "gd": -4,
           "pts": 0,
-          "status": "în cărți"
+          "status": "eliminată"
         }
       ]
     },
@@ -318,7 +318,7 @@
           "l": 0,
           "gd": 5,
           "pts": 6,
-          "status": "în cărți"
+          "status": "calificată"
         },
         {
           "team": "Australia",
@@ -351,7 +351,7 @@
           "l": 2,
           "gd": -3,
           "pts": 0,
-          "status": "în cărți"
+          "status": "eliminată"
         }
       ]
     }
@@ -369,8 +369,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "Olanda și Suedia se bat la 20:00 pentru șefia grupei, la o oră perfectă să vezi o confruntare europeană cu miză.",
-        "en": "Worth it: the Netherlands and Sweden meet at a reasonable 20:00 EEST for a massive game with real group implications."
+        "ro": "Olanda și Suedia, două naționale cu greutate în fotbalul european, se înfruntă pentru poziția de lider al grupei, la o oră accesibilă.",
+        "en": "A 20:00 kickoff for two European heavyweights like the Netherlands and Sweden is the definition of prime-time viewing."
       }
     },
     {
@@ -385,8 +385,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "Germania și Coasta de Fildeș, ambele cu victorii în prima etapă, se întâlnesc la 23:00 într-un duel direct pentru primul loc în grupă.",
-        "en": "Worth staying up: Germany and Ivory Coast face off at 23:00 EEST in a clash between two strong sides that justifies the late hour."
+        "ro": "Germania și Coasta de Fildeș, ambele cu start perfect în grupă, își dispută supremația la o oră la care poți savura un meci de top.",
+        "en": "Germany and Ivory Coast meet at 23:00 in a clash with enough technical quality to justify the late hour."
       }
     },
     {
@@ -401,8 +401,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "Ecuador și naționala din Curaçao joacă la 03:00, o oră la care e mai bine să te odihnești, pentru un meci fără miză colosală.",
-        "en": "You can check the result of Ecuador and Curaçao at 03:00 EEST when you wake up tomorrow."
+        "ro": "La 03:00, Ecuador întâlnește Curaçao într-o partidă cu o favorită clară, așa că poți afla deznodământul la trezire.",
+        "en": "You can safely sleep through Ecuador and Curacao at 03:00 and check if the favorites did their job over breakfast."
       }
     },
     {
@@ -417,13 +417,13 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "Tunisia și Japonia închid programul la 07:00, o oră la care majoritatea preferă să afle scorul la cafea decât să sacrifice somnul.",
-        "en": "Tunisia and Japan at 07:00 EEST is a scoreline to be read over your first coffee rather than watched live."
+        "ro": "Tunisia și Japonia închid programul la 07:00, o oră la care e mai degrabă ora de plecat la serviciu decât de urmărit fotbal.",
+        "en": "Tunisia against Japan at 07:00 is a result best discovered via a quick scroll through your notifications."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Turcia, 32 de șuturi și zero puncte în paradis · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Thirty-two Turkish shots and a Brazilian half-shift · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Turcia, degeaba cu mingea. Autogol american, calificare asigurată · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Thirty-two shots, zero goals, and a Turkish exit · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
