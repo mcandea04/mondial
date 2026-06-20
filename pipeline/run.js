@@ -461,6 +461,20 @@ async function recentProseBefore(dataDir, date, days = 3) {
   return prose.filter(Boolean);
 }
 
+/** Collects match results from all committed digests before `date` for H2H classification. */
+async function historicalMatches(date) {
+  if (!existsSync(DATA_DIR)) return [];
+  const files = (await readdir(DATA_DIR))
+    .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
+    .filter((name) => name.replace('.json', '') < date);
+  const matches = [];
+  for (const f of files) {
+    const digest = await readJsonOrNull(path.join(DATA_DIR, f));
+    if (digest?.matches) matches.push(...digest.matches);
+  }
+  return matches;
+}
+
 /** Drops avoid-list lines that are now blessed gold, so a promoted line is taught, not forbidden. */
 export function withoutGold(recentProse, gold) {
   if (!gold.length) return recentProse;
@@ -520,7 +534,8 @@ async function main() {
   }
 
   const facts = await gatherFacts({ date, fixtures: args.fixtures });
-  const standings = classifyStandings(facts.standings);
+  const historical = await historicalMatches(date);
+  const standings = classifyStandings(facts.standings, [...historical, ...facts.finished]);
 
   // Read the stored digest first: it both supplies prior enrichment (so a failed
   // ESPN poll can't strip detail off an already-rich match) and powers the freeze.

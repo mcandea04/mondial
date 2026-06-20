@@ -56,3 +56,39 @@ test('after all games: clear top-2 calificată, 4th eliminată, 3rd în cărți'
   assert.equal(classified.find((r) => r.team === 'C').status, 'în cărți');
   assert.equal(classified.find((r) => r.team === 'D').status, 'eliminată');
 });
+
+// ── H2H tiebreaker tests ──────────────────────────────────────────────────────
+
+function match(home, away, hGoals, aGoals) {
+  return { home, away, score: [hGoals, aGoals], group: 'X' };
+}
+
+test('leader who beat both point-equal chasers is calificată via H2H', () => {
+  // A: 6 pts (2 played). B and C: 3 pts (2 played), can each reach 6.
+  // Without H2H: two chasers can tie A on points → în cărți.
+  // With H2H wins over both: A is guaranteed top-2.
+  const table = [row('A', 2, 6), row('B', 2, 3), row('C', 2, 3), row('D', 2, 0)];
+  const matches = [match('A', 'B', 4, 1), match('A', 'C', 2, 0)];
+  assert.equal(statusOf(table, 'A'), 'în cărți');           // without H2H: ambiguous
+  assert.equal(classifyGroup(table, matches).find((r) => r.team === 'A').status, 'calificată');
+});
+
+test('trailer who lost H2H to all point-equal rivals is eliminată', () => {
+  // D: 0 pts (2 played), max 3. B and C: 3 pts (2 played) — equal to D's max.
+  // Without H2H: tie on points → not eliminated.
+  // With H2H losses to B and C: D cannot finish above either, so it's locked 4th.
+  const table = [row('A', 2, 6), row('B', 2, 3), row('C', 2, 3), row('D', 2, 0)];
+  const matches = [match('B', 'D', 2, 0), match('C', 'D', 1, 0)];
+  assert.equal(statusOf(table, 'D'), 'în cărți');           // without H2H: ambiguous
+  assert.equal(classifyGroup(table, matches).find((r) => r.team === 'D').status, 'eliminată');
+});
+
+test('H2H draw or missing result stays conservative (în cărți)', () => {
+  // Same setup as the elimination test but D drew both H2H matches.
+  const table = [row('A', 2, 6), row('B', 2, 3), row('C', 2, 3), row('D', 2, 0)];
+  const draws = [match('B', 'D', 1, 1), match('C', 'D', 0, 0)];
+  assert.equal(classifyGroup(table, draws).find((r) => r.team === 'D').status, 'în cărți');
+  // Also: only one H2H played — still conservative.
+  const partial = [match('B', 'D', 2, 0)];
+  assert.equal(classifyGroup(table, partial).find((r) => r.team === 'D').status, 'în cărți');
+});
