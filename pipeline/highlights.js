@@ -27,11 +27,6 @@ const WATCH_BASE = 'https://www.fifa.com/en/watch/';
 const MAX_ATTEMPTS = 3;
 const RETRY_BASE_MS = 1000;
 
-/** Floors an epoch-ms value to the whole minute (FIFA carries minute precision). */
-function floorToMinute(ms) {
-  return Math.floor(ms / 60_000) * 60_000;
-}
-
 /**
  * Parses "… on MM/DD/YYYY HH:mm UTC" into epoch ms via Date.UTC. Returns null
  * when the suffix is absent or unparseable. Never uses Date.parse, whose
@@ -80,20 +75,27 @@ function codesConfirmMatch(entry, match) {
   return entry.codes.some((code) => code === match.homeCode || code === match.awayCode);
 }
 
+// FIFA's match-tag kickoff timestamps can lag ESPN's by up to an hour (timezone
+// confusion in their metadata pipeline). 90 minutes covers observed offsets while
+// keeping games that are ≥2.5 hours apart uniquely resolvable.
+const KICKOFF_TOLERANCE_MS = 90 * 60 * 1_000;
+
 /**
- * Maps finished-match ids to highlight URLs. Keys each entry by kickoff minute;
- * when more than one finished match shares the minute (simultaneous group games)
- * the country-code guard disambiguates. An entry resolving to zero or, after the
- * guard, still more than one match is dropped (never guessed). First entry in
- * array order wins per match.
+ * Maps finished-match ids to highlight URLs. Entries are matched by kickoff time
+ * within a ±90-minute tolerance (FIFA metadata sometimes differs from ESPN by up
+ * to 60 min); when multiple matches fall within the window the country-code guard
+ * disambiguates. An entry resolving to zero or still more than one match is
+ * dropped (never guessed). First entry in feed order wins per match.
  */
 export function recapsFor(matches, entries) {
-  const kickoffMinuteOf = new Map(matches.map((m) => [m, floorToMinute(Date.parse(m.utcDate))]));
+  const kickoffMsOf = new Map(matches.map((m) => [m, Date.parse(m.utcDate)]));
   const recaps = new Map();
   for (const entry of entries) {
-    const sameMinute = matches.filter((m) => kickoffMinuteOf.get(m) === entry.kickoffMs);
+    const nearKickoff = matches.filter(
+      (m) => Math.abs(kickoffMsOf.get(m) - entry.kickoffMs) <= KICKOFF_TOLERANCE_MS
+    );
     const resolved =
-      sameMinute.length === 1 ? sameMinute : sameMinute.filter((m) => codesConfirmMatch(entry, m));
+      nearKickoff.length === 1 ? nearKickoff : nearKickoff.filter((m) => codesConfirmMatch(entry, m));
     if (resolved.length !== 1) continue;
     const match = resolved[0];
     if (!recaps.has(match.id)) recaps.set(match.id, entry.url);

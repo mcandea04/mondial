@@ -68,6 +68,15 @@ test('recapsFor disambiguates simultaneous kickoffs by flag code', () => {
   assert.equal(recaps.get(2), 'https://www.fifa.com/en/watch/bbb');
 });
 
+// 5b. FIFA metadata kickoff offset: entry timestamp can lag ESPN by up to 60 min.
+test('recapsFor matches when FIFA timestamp is 60 minutes off from ESPN', () => {
+  const entry = [
+    { url: 'https://www.fifa.com/en/watch/mexSudHighlight', kickoffMs: Date.UTC(2026, 5, 11, 20, 0), codes: ['mx', 'za'] },
+  ];
+  const recaps = recapsFor([mexicoMatch], entry);
+  assert.equal(recaps.get(537327), 'https://www.fifa.com/en/watch/mexSudHighlight');
+});
+
 // 6. A video matching no finished match is dropped.
 test('recapsFor drops a video whose kickoff matches no finished match', () => {
   const orphan = [{ url: 'https://www.fifa.com/en/watch/zzz', kickoffMs: Date.UTC(2026, 5, 1, 12, 0), codes: ['br', 'hr'] }];
