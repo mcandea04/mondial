@@ -1,20 +1,413 @@
 {
   "date": "2026-06-21",
-  "factsHash": "11d9c16786a2b05f254014cdaea933372e0765dc854c9bee4f0d98ed9cc858db",
+  "factsHash": "cca04f114055cc9f3ab8d88b7e4e88fc3a20b4b78a1407a7d9fa23db2148d927",
   "narrator": {
     "ro": "gemini-polish",
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Grupele G și H sunt în ceață: Spania și Belgia caută prima victorie",
-    "en": "Group H and G look to stop sharing points"
+    "ro": "Undav salvează Germania și Ecuador uită cum se marchează",
+    "en": "Dutch demolition and an Ecuadorian heist"
   },
   "summary": {
-    "ro": "Grupele G și H revin pe gazon după o rundă inaugurală în care toate echipele au remizat, lăsând ierarhia într-o stare de confuzie absolută. Favoritele Spania și Belgia se luptă pentru șefia grupei în fața unor adversari care au demonstrat deja că știu să închidă jocul.",
-    "en": "Yesterday was a ghost town with no matches on the schedule, leaving Groups G and H in their state of total equilibrium. There’s a packed schedule tonight as the heavyweights return to see if they can finally put some distance between themselves and the rest."
+    "ro": "Germania s-a calificat după ce Undav a decis soarta meciului în prelungiri, în timp ce Olanda a pedepsit dur ineficiența Suediei. Japonia a defilat cu o Tunisie care nu a nimerit poarta, iar Ecuador a irosit cu nemiluita 27 de ocazii fără să înscrie.",
+    "en": "The Netherlands dismantled the Swedish defence while Germany required a stoppage-time intervention to see off Ivory Coast. Elsewhere, Ecuador discovered that 27 shots are worth exactly zero points against a stubborn Curaçao."
   },
-  "matches": [],
-  "groups": [],
+  "matches": [
+    {
+      "id": 760447,
+      "home": "Olanda",
+      "away": "Suedia",
+      "homeCode": "nl",
+      "awayCode": "se",
+      "group": "F",
+      "utcDate": "2026-06-20T17:00Z",
+      "score": [
+        5,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Brian Brobbey",
+          "minute": "5",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Cody Gakpo",
+          "bodyPart": "dreptul",
+          "placement": null
+        },
+        {
+          "name": "Brian Brobbey",
+          "minute": "17",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Denzel Dumfries",
+          "bodyPart": "dreptul",
+          "placement": null
+        },
+        {
+          "name": "Cody Gakpo",
+          "minute": "47",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Denzel Dumfries",
+          "bodyPart": "stângul",
+          "placement": null
+        },
+        {
+          "name": "Cody Gakpo",
+          "minute": "54",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Crysencio Summerville",
+          "bodyPart": "dreptul",
+          "placement": "din stânga careului"
+        },
+        {
+          "name": "Anthony Elanga",
+          "minute": "59",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Alexander Isak",
+          "bodyPart": "stângul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Crysencio Summerville",
+          "minute": "89",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Memphis Depay",
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "9",
+          "wonCorners": "2",
+          "saves": "7",
+          "possessionPct": "50.9",
+          "totalShots": "10",
+          "shotsOnTarget": "7"
+        },
+        "away": {
+          "foulsCommitted": "12",
+          "wonCorners": "5",
+          "saves": "2",
+          "possessionPct": "49.1",
+          "totalShots": "16",
+          "shotsOnTarget": "8"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Suedia a tras de 16 ori la poartă doar ca să plece cu cinci goluri încasate. Brobbey și Gakpo au semnat câte o dublă, iar Summerville a închis tabela în minutul 89 cu o execuție din afara careului.",
+        "en": "The Dutch turned the Swedish defence into a farce, with Brian Brobbey needing only 17 minutes to help himself to a brace. Cody Gakpo added two more before Crysencio Summerville capped a dominant display with a strike from outside the area. Sweden's possession yielded plenty of ball but very little dignity."
+      },
+      "drama": 2,
+      "highlight": "https://www.fifa.com/en/watch/oQAXWFfSFtgXIEhnTdrE6"
+    },
+    {
+      "id": 760448,
+      "home": "Germania",
+      "away": "Coasta de Fildeș",
+      "homeCode": "de",
+      "awayCode": "ci",
+      "group": "E",
+      "utcDate": "2026-06-20T20:00Z",
+      "score": [
+        2,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Franck Kessié",
+          "minute": "30",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Deniz Undav",
+          "minute": "68",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": null
+        },
+        {
+          "name": "Deniz Undav",
+          "minute": "90+4",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Felix Nmecha",
+          "bodyPart": "stângul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "5",
+          "wonCorners": "8",
+          "saves": "1",
+          "possessionPct": "59.5",
+          "totalShots": "16",
+          "shotsOnTarget": "7"
+        },
+        "away": {
+          "foulsCommitted": "7",
+          "wonCorners": "3",
+          "saves": "5",
+          "possessionPct": "40.5",
+          "totalShots": "9",
+          "shotsOnTarget": "2"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Kessié a deschis scorul, dar Deniz Undav a decis că Germania nu pleacă învinsă. A marcat de două ori cu stângul, reușind golul victoriei în al patrulea minut de prelungiri.",
+        "en": "Deniz Undav saved Germany’s blushes with a 94th-minute winner from inside the box to secure qualification. After Franck Kessié’s opener, the Germans looked in danger of a frustrating night until Undav’s double put the result beyond doubt. A masterclass in leaving it until the last possible second!"
+      },
+      "drama": 5,
+      "highlight": "https://www.fifa.com/en/watch/2ofHeol8LZn44A3ThxLwdE"
+    },
+    {
+      "id": 760446,
+      "home": "Ecuador",
+      "away": "Curaçao",
+      "homeCode": "ec",
+      "awayCode": "cw",
+      "group": "E",
+      "utcDate": "2026-06-21T00:00Z",
+      "score": [
+        0,
+        0
+      ],
+      "scorers": [],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "7",
+          "wonCorners": "9",
+          "saves": "3",
+          "possessionPct": "74.6",
+          "totalShots": "27",
+          "shotsOnTarget": "15"
+        },
+        "away": {
+          "foulsCommitted": "10",
+          "wonCorners": "0",
+          "saves": "15",
+          "possessionPct": "25.4",
+          "totalShots": "10",
+          "shotsOnTarget": "3"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Ecuador a oferit un festival al ocaziilor irosite, trimițând 15 șuturi pe spațiul porții fără niciun rezultat. Portarul din Curaçao a blocat tot, reușind 15 intervenții salvatoare într-o dominare sterilă a sud-americanilor.",
+        "en": "Ecuador managed 27 shots yet still failed to find the net against a Curaçao side that defended like their lives depended on it. The flurry of saves from the opposition keeper made a mockery of a match that was played almost entirely in one half. A goalless draw that felt like a heist."
+      },
+      "drama": 3,
+      "highlight": "https://www.fifa.com/en/watch/6lI7ddpjskKW6dYr7nB7I4"
+    },
+    {
+      "id": 760449,
+      "home": "Tunisia",
+      "away": "Japonia",
+      "homeCode": "tn",
+      "awayCode": "jp",
+      "group": "F",
+      "utcDate": "2026-06-21T04:00Z",
+      "score": [
+        0,
+        4
+      ],
+      "scorers": [
+        {
+          "name": "Daichi Kamada",
+          "minute": "4",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Keito Nakamura",
+          "bodyPart": "stângul",
+          "placement": null
+        },
+        {
+          "name": "Ayase Ueda",
+          "minute": "31",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Kou Itakura",
+          "bodyPart": "dreptul",
+          "placement": "din dreapta careului"
+        },
+        {
+          "name": "Junya Ito",
+          "minute": "69",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Ayase Ueda",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Ayase Ueda",
+          "minute": "83",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "cu capul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "8",
+          "wonCorners": "3",
+          "saves": "1",
+          "possessionPct": "37.9",
+          "totalShots": "2",
+          "shotsOnTarget": "0"
+        },
+        "away": {
+          "foulsCommitted": "15",
+          "wonCorners": "5",
+          "saves": "0",
+          "possessionPct": "62.1",
+          "totalShots": "11",
+          "shotsOnTarget": "5"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Japonia a predat o lecție de pragmatism, cu Ueda marcând de două ori, inclusiv printr-o reluare cu capul din careu. Tunisia nu a nimerit poarta nici măcar o dată și părăsește competiția cu capul plecat.",
+        "en": "Japan strolled to victory against Tunisia, who reached the final whistle without managing a single shot on target. Ayase Ueda provided the highlight with an 83rd-minute header to complement earlier strikes from Kamada and Ito. Tunisia depart the tournament having spent the evening chasing Japanese shadows."
+      },
+      "drama": 1,
+      "highlight": null
+    }
+  ],
+  "groups": [
+    {
+      "name": "E",
+      "table": [
+        {
+          "team": "Germania",
+          "code": "de",
+          "p": 2,
+          "w": 2,
+          "d": 0,
+          "l": 0,
+          "gd": 7,
+          "pts": 6,
+          "status": "calificată"
+        },
+        {
+          "team": "Coasta de Fildeș",
+          "code": "ci",
+          "p": 2,
+          "w": 1,
+          "d": 0,
+          "l": 1,
+          "gd": 0,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Ecuador",
+          "code": "ec",
+          "p": 2,
+          "w": 0,
+          "d": 1,
+          "l": 1,
+          "gd": -1,
+          "pts": 1,
+          "status": "în cărți"
+        },
+        {
+          "team": "Curaçao",
+          "code": "cw",
+          "p": 2,
+          "w": 0,
+          "d": 1,
+          "l": 1,
+          "gd": -6,
+          "pts": 1,
+          "status": "în cărți"
+        }
+      ]
+    },
+    {
+      "name": "F",
+      "table": [
+        {
+          "team": "Olanda",
+          "code": "nl",
+          "p": 2,
+          "w": 1,
+          "d": 1,
+          "l": 0,
+          "gd": 4,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Japonia",
+          "code": "jp",
+          "p": 2,
+          "w": 1,
+          "d": 1,
+          "l": 0,
+          "gd": 4,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Suedia",
+          "code": "se",
+          "p": 2,
+          "w": 1,
+          "d": 0,
+          "l": 1,
+          "gd": 0,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Tunisia",
+          "code": "tn",
+          "p": 2,
+          "w": 0,
+          "d": 0,
+          "l": 2,
+          "gd": -8,
+          "pts": 0,
+          "status": "eliminată"
+        }
+      ]
+    }
+  ],
   "tonight": [
     {
       "id": 760453,
@@ -28,8 +421,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "La șapte seara, Spania vrea să scape de incertitudine contra Arabiei Saudite, un adversar care a rezistat onorabil în prima etapă.",
-        "en": "Spain and Saudi Arabia meet at 19:00 in a prime-time slot for two sides who couldn't be separated from their group rivals in the opener."
+        "ro": "La 19:00, Spania și Arabia Saudită se întâlnesc într-o partidă pe care o poți vedea fără efort.",
+        "en": "Spain and Saudi Arabia are worth your time at 19:00 for a clash that should offer more technical quality than your average Sunday evening."
       }
     },
     {
@@ -44,8 +437,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "Ora zece e momentul ideal să urmărești dacă Belgia poate sparge apărarea Iranului pentru a-și decide soarta în Grupa G.",
-        "en": "Belgium look to stamp their authority on Group G against Iran at 22:00, a perfect hour to see if the favorites can finally get a win on the board."
+        "ro": "Ora 22:00 e perfectă pentru a urmări cum Belgia încearcă să-și respecte statutul de favorită certă pe hârtie în fața Iranului.",
+        "en": "Belgium and Iran meet at 22:00 in a fixture where the European side's creative spark will be tested by a disciplined defensive unit."
       }
     },
     {
@@ -60,8 +453,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "Întâlnirea dintre Uruguay și Capul Verde începe la ora unu, un efort care se justifică doar dacă vrei să urmărești live cum se chinuie un nume mare; altfel, afli rezultatul la micul dejun.",
-        "en": "Uruguay and Cape Verde at 01:00 is a late-night formality that you can safely skip in favor of a full night's rest."
+        "ro": "La ora unu noaptea, sacrificiul de a pierde noaptea pentru duelul dintre Uruguay și Capul Verde pare exagerat.",
+        "en": "Uruguay against Cape Verde at 01:00 is a result you can comfortably digest from the headlines tomorrow morning."
       }
     },
     {
@@ -76,13 +469,13 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "La ora patru, Noua Zeelandă și Egipt închid programul, iar noi preferăm să consultăm deznodământul partidei direct în aplicație, la trezire.",
-        "en": "New Zealand and Egypt at 04:00 is strictly for the insomniacs who prefer highlights with their morning toast."
+        "ro": "La 04:00, confruntarea dintre Noua Zeelandă și Egipt nu merită deranjul de a pune alarma.",
+        "en": "Egypt and New Zealand at 04:00 is an engagement only for the most dedicated insomniacs."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Grupele G și H sunt în ceață: Spania și Belgia caută prima victorie · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Group H and G look to stop sharing points · no matches overnight\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Undav salvează Germania și Ecuador uită cum se marchează · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Dutch demolition and an Ecuadorian heist · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
