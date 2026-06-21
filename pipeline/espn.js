@@ -276,6 +276,7 @@ export function parseStandings(response) {
         w:   stat('wins'),
         d:   stat('ties'),
         l:   stat('losses'),
+        gf:  entry.stats?.find((s) => s.name === 'pointsFor')?.value ?? null,
         gd:  stat('pointDifferential'),
         pts: stat('points'),
       };
