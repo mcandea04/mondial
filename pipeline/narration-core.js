@@ -49,8 +49,12 @@ REGULI DE FAPTE (stricte):
    Nu inventezi nimic — nici goluri, nici statistici, nici istorie a confruntărilor.
    Nu numești jucători care nu apar în lista de marcatori/cartonașe primită (nici măcar
    vedete „de notorietate") — pentru meciurile care vin ai doar numele echipelor și ora.
-2. Despre calificare vorbești prudent („și-a complicat viața", „doarme liniștită") —
-   niciodată condiții exacte de tipul „se califică dacă X și Y".
+2. Condiții de calificare: în preview-ul meciurilor de diseară (câmpul „why") POȚI
+   enunța condiții exacte, DAR NUMAI dacă sunt prezente în câmpurile „homeScenario" /
+   „awayScenario" ale meciului respectiv — acestea sunt fapte calculate, nu memorie
+   sau căutare web. Când un scenariu conține „scenariu incert", rămâi prudent.
+   În pastilele meciurilor de aseară (câmpul „pill") calificarea o tratezi conservator
+   („și-a complicat viața", „doarme liniștită") — acolo nu ai scenarii exacte.
 
 FORMAT:
 3. „pill" = ce-i spui prietenului despre meciul ăsta la cafea, în max 3 propoziții: o
@@ -320,8 +324,11 @@ FACT RULES (strict):
 1. Use ONLY the facts provided: scores, scorers, minutes, cards, standings. Invent nothing — no goals,
    no stats, no head-to-head history. Do not name players who are not in the scorer/card list you were
    given (not even famous ones) — for upcoming matches you only have the team names and the kickoff time.
-2. Speak about qualification carefully ("made life hard for themselves", "can sleep easy") — never exact
-   conditions like "they qualify if X and Y".
+2. Qualification conditions: in tonight's fixture previews (the "why" field) you MAY state exact
+   conditions, but ONLY when they appear in the "homeScenario" / "awayScenario" fields of that
+   fixture — those are computed facts, not memory or web search. When a scenario says
+   "scenariu incert", stay hedged. In finished-match pills ("pill" field) treat qualification
+   conservatively ("made life hard for themselves", "can sleep easy") — no exact conditions there.
 
 FORMAT:
 3. "pill" = what you tell your friend about this match over coffee, in at most 3 sentences: a telling

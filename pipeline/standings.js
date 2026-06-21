@@ -26,7 +26,7 @@ export function classifyGroup(table, matches = []) {
   }));
 }
 
-function buildH2H(matches) {
+export function buildH2H(matches) {
   const map = new Map();
   for (const m of matches) {
     if (!m.score || m.score[0] == null || m.score[1] == null) continue;
@@ -36,7 +36,7 @@ function buildH2H(matches) {
 }
 
 /** Returns 'A' if teamA won, 'B' if teamB won, 'draw', or null if not played. */
-function h2hResult(teamA, teamB, h2h) {
+export function h2hResult(teamA, teamB, h2h) {
   const ab = h2h.get(`${teamA}|${teamB}`);
   if (ab) return ab.h > ab.a ? 'A' : ab.h < ab.a ? 'B' : 'draw';
   const ba = h2h.get(`${teamB}|${teamA}`);

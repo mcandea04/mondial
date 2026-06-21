@@ -46,6 +46,7 @@ import {
   CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
   localizeProse, factsWithEnglishVerdicts, englishVerdict,
 } from './narration-core.js';
+import { computeScenarios, scenarioFor } from './scenarios.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser, buildTeaserEn } from './teaser.js';
@@ -550,7 +551,24 @@ async function main() {
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
-  const factsForNarration = { date, finished: facts.finished, tonight: facts.tonight, standings };
+  // Scenario facts: attach homeScenario/awayScenario to each tonight fixture so
+  // the narrator can state exact qualification conditions in the "why" field.
+  // Scenarios are computed from raw ESPN standings (before classifyStandings so we
+  // work with the undecorated table shape). They are not added to factsHash because
+  // they are derived deterministically from scores/standings already in the hash.
+  const allMatchesForScenarios = [...historical, ...facts.finished];
+  const scenarios = computeScenarios(facts.standings, allMatchesForScenarios);
+  const tonightWithScenarios = facts.tonight.map((f) => {
+    const hs = scenarioFor(f.home, scenarios);
+    const as = scenarioFor(f.away, scenarios);
+    return {
+      ...f,
+      ...(hs != null && { homeScenario: hs }),
+      ...(as != null && { awayScenario: as }),
+    };
+  });
+
+  const factsForNarration = { date, finished: facts.finished, tonight: tonightWithScenarios, standings };
   // Hashed AFTER mergeEnrichment so a transient outage doesn't flip the hash.
   const hash = factsHash(factsForNarration);
 
