@@ -391,28 +391,28 @@
           "status": "în cărți"
         },
         {
-          "team": "Iordania",
-          "code": "jo",
-          "p": 1,
-          "w": 0,
+          "team": "Algeria",
+          "code": "dz",
+          "p": 2,
+          "w": 1,
           "d": 0,
           "l": 1,
-          "gf": 1,
+          "gf": 2,
           "gd": -2,
-          "pts": 0,
+          "pts": 3,
           "status": "în cărți"
         },
         {
-          "team": "Algeria",
-          "code": "dz",
-          "p": 1,
+          "team": "Iordania",
+          "code": "jo",
+          "p": 2,
           "w": 0,
           "d": 0,
-          "l": 1,
-          "gf": 0,
+          "l": 2,
+          "gf": 2,
           "gd": -3,
           "pts": 0,
-          "status": "în cărți"
+          "status": "eliminată"
         }
       ]
     }
