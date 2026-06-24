@@ -1150,11 +1150,12 @@ test('decisive scenario: returns null unless exactly two matches remain', () => 
 test('synthesized paragraph names every team condition (RO) from the structured tags', () => {
   const d = { name: 'E', ...computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES) };
   const ro = synthesizeGroupParagraph(d, 'ro');
-  // Leads with the group, then one sentence per team in table order.
-  assert.match(ro, /^Grupa E se decide diseară/);
+  // No boilerplate "simultaneous matches" lead — straight to the conditions.
+  assert.doesNotMatch(ro, /meciuri simultane/);
   assert.match(ro, /Germania e deja calificată\./);                    // qualified
   assert.match(ro, /Coasta de Fildeș se califică dacă nu pierde cu Curaçao\./); // no_loss
-  assert.match(ro, /Ecuador mai poate trece doar la golaveraj\./);     // goal_diff
+  // goal_diff says what the team must DO, not just "decided on goal difference".
+  assert.match(ro, /Ecuador trebuie să bată Germania, și chiar și-atunci calificarea se decide la golaveraj\./);
   assert.match(ro, /Curaçao se califică dacă bate Coasta de Fildeș și /); // conditional + helper
   // Never invents a goal-difference margin.
   assert.doesNotMatch(ro, /\d+ goluri|cu \d/);
@@ -1163,10 +1164,10 @@ test('synthesized paragraph names every team condition (RO) from the structured 
 test('synthesized paragraph localizes team names for the English side', () => {
   const d = { name: 'E', ...computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES) };
   const en = synthesizeGroupParagraph(d, 'en', (name) => (name === 'Coasta de Fildeș' ? 'Ivory Coast' : name));
-  assert.match(en, /^Group E is settled tonight/);
+  assert.doesNotMatch(en, /simultaneous matches/);
   assert.match(en, /Germania are already through\./);
   assert.match(en, /Ivory Coast go through if they avoid defeat to Curaçao\./);
-  assert.match(en, /Ecuador can only advance on goal difference\./);
+  assert.match(en, /Ecuador must beat Germania, and even then it comes down to goal difference\./);
 });
 
 test('synthesized paragraph covers an eliminated team and a must-win team', () => {
@@ -1179,8 +1180,7 @@ test('synthesized paragraph covers an eliminated team and a must-win team', () =
   const d = { name: 'F', ...computeDecisiveGroupScenario(table, matches) };
   assert.ok(d.teams.length === 4, 'all four teams classified');
   const ro = synthesizeGroupParagraph(d, 'ro');
-  // Every team appears exactly once, lead included.
   for (const t of ['A', 'B', 'C', 'D']) {
-    assert.ok(ro.includes(` ${t} `) || ro.includes(`${t} `), `${t} named`);
+    assert.ok(ro.includes(`${t} `), `${t} named`);
   }
 });

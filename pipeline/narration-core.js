@@ -70,9 +70,13 @@ REGULI DE FAPTE (stricte):
      • „win" = are nevoie de victorie cu „opponent";
      • „conditional" = victorie cu „opponent" ȘI condiția din „helper" (un rezultat din celălalt
        meci: „needs":„not_win" = echipa numită să nu câștige; „win" = să câștige; „draw"/„not_draw");
-     • „goal_diff" = mai poate trece DOAR la golaveraj — spui „se decide la golaveraj" și NU
-       declari cine câștigă departajarea (n-ai cifrele, nu inventezi marje).
-   Închei cu o propoziție-rezumat („pe scurt: X la egal, Y la victorie, Z doar la golaveraj").
+     • „goal_diff" = drumul ei trece prin golaveraj. NU te opri la „se decide la golaveraj" — e
+       prea vag; spui întâi ce TREBUIE să facă (de regulă să câștige, vezi rezultatul ei care duce
+       la „gd") și abia apoi că, chiar și-așa, contează golaverajul. NU declari cine câștigă
+       departajarea și NU inventezi marje (n-ai cifrele).
+   Începe direct cu socoteala, nu cu o formulă-șablon de tip „grupa se decide în două meciuri
+   simultane" (titlul de deasupra o spune deja); și nu repeta aceeași introducere la fiecare grupă.
+   Închei cu o propoziție-rezumat („pe scurt: X la egal, Y la victorie, Z trebuie să câștige").
    Ton de cafea, nu de calculator — e o poveste, nu un tabel. Niciun număr de golaveraj.
 
 FORMAT:
@@ -370,9 +374,13 @@ FACT RULES (strict):
      • "win" = needs to beat "opponent";
      • "conditional" = beat "opponent" AND the "helper" condition (a result in the other match:
        "needs":"not_win" = the named team must not win; "win" = must win; "draw"/"not_draw");
-     • "goal_diff" = can still go through ONLY on goal difference — say "comes down to goal
-       difference" and do NOT declare who wins the tiebreak (you lack the numbers, invent no margins).
-   End with a one-line summary ("in short: X need a draw, Y a win, Z only on goal difference").
+     • "goal_diff" = its route runs through goal difference. Do NOT stop at "comes down to goal
+       difference" — too vague; first say what it MUST do (usually win — see which of its results
+       reaches "gd"), then that even so the goal difference decides. Do NOT declare who wins the
+       tiebreak and invent no margins (you lack the numbers).
+   Open straight with the maths, not a boilerplate "the group is decided across two simultaneous
+   matches" line (the heading above already says so); and do not repeat the same opener for every group.
+   End with a one-line summary ("in short: X need a draw, Y a win, Z must win").
    Coffee tone, not a calculator — it is a story, not a table. No goal-difference numbers.
 
 FORMAT:
