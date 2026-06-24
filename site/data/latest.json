@@ -3,15 +3,15 @@
   "factsHash": "e3dab7a10c24d8c6d8ea0655a456e708940ef96125c5a0c5ddd88fe5b0f6ff92",
   "narrator": {
     "ro": "gemini-polish",
-    "en": "gemini"
+    "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Anglia, cu 19 șuturi, dar fără busolă",
-    "en": "Ronaldo at the double, England's 78% possession for nothing"
+    "ro": "Ronaldo, dublă de poveste. Anglia, 19 șuturi degeaba",
+    "en": "Ronaldo and Colombia feast, England's attack goes missing"
   },
   "summary": {
-    "ro": "Portugalia a defilat în fața Uzbekistanului cu o demonstrație de forță, marcând cinci goluri fără emoții. Pe de altă parte, Anglia a tras de 19 ori la poartă și tot nu a reușit să găsească drumul spre gol, remizând alb cu Ghana.",
-    "en": "Cristiano Ronaldo scored twice in Portugal's comfortable win, while England managed to turn nearly 80% possession into a goalless stalemate. Colombia left it late to secure their victory, and Croatia did just enough to get past Panama."
+    "ro": "Portugalia s-a distrat cu Uzbekistan, cu o dublă a lui Cristiano Ronaldo, în timp ce Anglia a dominat-o steril pe Ghana, dar nu a reușit să spargă gheața. În această seară, trei grupe ajung la final, iar meciurile decisive se joacă în paralel pentru un loc în optimi.",
+    "en": "Portugal's veterans put on a clinic against Uzbekistan, while Colombia earned a hard-fought win. Elsewhere, England's forward line forgot its boots, managing a goalless draw against Ghana."
   },
   "matches": [
     {
@@ -99,10 +99,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Cristiano Ronaldo a deschis scorul din careu în minutul 6 și a reușit o dublă înainte de pauză, la o pasă a lui Bruno Fernandes. Nuno Mendes a adăugat și el un gol dintr-o lovitură liberă, iar autogolul lui Abduvohid Nematov a confirmat că Uzbekistanul nu a avut nicio șansă în fața portughezilor, care au închis tabela la 5-0 prin Rafael Leão.",
-        "en": "Portugal brought the fireworks, with Cristiano Ronaldo bagging a brace, first from inside the box in the 6th minute and again from the right of the penalty area in the 39th, set up by Bruno Fernandes. Uzbekistan even chipped in with an own goal in the 60th minute, making it a rather straightforward evening for the Portuguese."
+        "ro": "Portugalia s-a plimbat pe teren, cu un Cristiano Ronaldo autor al unei duble, deschizând scorul în minutul 6 cu dreptul din careu. Nuno Mendes a majorat diferența dintr-o lovitură liberă în minutul 17, iar un autogol a completat tabloul unui meci fără istoric. Uzbekistanul pleacă acasă cu un singur șut pe spațiul porții.",
+        "en": "Cristiano Ronaldo rolled back the years, opening the scoring from inside the box in the 6th minute and adding another from the right of the box, set up by Bruno Fernandes, by the 39th. An own goal followed on the hour mark, before Rafael Leão sealed a dominant 5-0 win in the 87th minute. Uzbekistan could only muster two shots on target against Portugal's nine."
       },
-      "drama": 1,
+      "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/4se3Lqdtrvu86pMuaqlUpn"
     },
     {
@@ -139,8 +139,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Anglia și-a testat răbdarea în fața Ghanei, cu o posesie de aproape 79% și 19 șuturi la poartă, dar niciun gol. Ghanezii au reușit să smulgă un punct prețios cu doar două șuturi și o singură tentativă pe spațiul porții, lăsând favorita să mediteze la ce a putut irosi.",
-        "en": "England dominated possession with a whopping 78.9% against Ghana, only to produce a masterclass in how not to score a goal. Despite 19 shots, just three found the target, leaving the Three Lions with a point that feels like two dropped."
+        "ro": "Anglia a dominat-o steril pe Ghana, trăgând de 19 ori la poartă fără să găsească drumul spre gol. Portarul ghanez a fost îngerul păzitor al unui punct nesperat, în timp ce \"leii\" își complică singuri viața în grupă.",
+        "en": "England dominated the ball with nearly 79% possession and recorded 19 shots, but only three of them troubled the Ghana keeper. It was a masterclass in how to not score, with Ghana holding firm for a goalless draw. England's attack went missing, leaving them to rue a point dropped against a team with just two attempts at goal."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/YMV6IJCxemtC0s8HtqPn3"
@@ -190,10 +190,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Croația a obținut o victorie la limită în fața Panamei, prin golul marcat cu stângul de Ante Budimir în minutul 54. Panama a plecat cu mâinile goale și fără gol marcat în grupă, confirmând eliminarea din competiție.",
-        "en": "Croatia secured a narrow 1-0 victory against Panama, with Ante Budimir finding the net in the 54th minute. Panama had more corners but couldn't convert their chances, meaning Croatia did precisely what was needed to take all three points."
+        "ro": "Croația a smuls o victorie la limită grație golului marcat de Ante Budimir în minutul 54. Panama, deși a tras de 8 ori la poartă, a reușit performanța de a nu marca și își ia adio de la turneu, fiind deja eliminată.",
+        "en": "Croatia secured a narrow 1-0 victory against Panama, with Ante Budimir finally breaking the deadlock in the 54th minute. Panama had seven corners to Croatia's two but couldn't find an equaliser, leaving them eliminated with zero points. A functional win for Croatia, who now stay in contention."
       },
-      "drama": 2,
+      "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/5ewcE9E2gBUvXwyGfkEz1n"
     },
     {
@@ -241,8 +241,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Columbia a avut nevoie de un gol marcat pe final, în minutul 76, prin Daniel Muñoz, la pasa lui Juan Fernando Quintero, pentru a învinge Republica Democrată Congo. Portarul african a avut opt intervenții salvatoare și a ținut meciul în viață până aproape de final, într-o seară în care columbienii au tras de 20 de ori la poartă.",
-        "en": "Colombia made heavy weather of it, needing a 76th-minute strike from Daniel Muñoz, assisted by Juan Fernando Quintero, to break DR Congo's resistance. The Congolese keeper was kept busy, making eight saves to keep the score respectable despite Colombia's 20 shots."
+        "ro": "Columbia a avut nevoie de unicul gol marcat de Daniel Muñoz, din pasa lui Juan Fernando Quintero, în minutul 76, pentru a-și asigura victoria. Portarul din RD Congo a făcut 8 intervenții salvatoare, dar nu a putut opri calificarea columbienilor.",
+        "en": "Colombia left it late against DR Congo, with Daniel Muñoz finding the net from the right of the box in the 76th minute, assisted by Juan Fernando Quintero. Despite Colombia having 20 shots and DR Congo's keeper making eight saves, the single goal was enough to cap a dominant performance. Colombia now boast six points and are safely through."
       },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/26nrhBN70NStG6P9xmqto7"
@@ -366,12 +366,12 @@
       "group": "B",
       "kickoffEEST": "22:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "merită văzut",
+        "en": "worth watching"
       },
       "why": {
-        "ro": "La 22:00, Bosnia și Herțegovina și Qatar se bat într-un meci cu miză incertă, așa că poți afla rezultatul la micul dejun.",
-        "en": "Bosnia and Herzegovina versus Qatar at 22:00 is a fixture with uncertain scenarios for both sides, so you can easily catch up on the score over morning coffee."
+        "ro": "La 22:00, finalul grupei se joacă în paralel — urmărește live.",
+        "en": "At 22:00, Group B's finale kicks off simultaneously, making Bosnia and Herzegovina vs. Qatar worth watching live."
       }
     },
     {
@@ -387,8 +387,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "Tot la 22:00, Elveția și Canada luptă pentru calificare într-un meci unde ambele pot merge mai departe dacă nu pierd, deci merită să urmărești live.",
-        "en": "Switzerland and Canada face off at 22:00 in a proper battle where both teams can secure qualification if they avoid defeat."
+        "ro": "La 22:00, finalul grupei se joacă în paralel — urmărește live.",
+        "en": "The 22:00 kick-off for Switzerland vs. Canada is another must-see as the group's fate hangs in the balance."
       }
     },
     {
@@ -404,8 +404,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "La 01:00, Marocul are nevoie doar de un egal cu Haiti, deja eliminată, deci poți alege somnul fără regrete.",
-        "en": "Morocco playing Haiti at 01:00 is a match where the North Africans are expected to comfortably secure their progress, making it one for the highlights reel tomorrow."
+        "ro": "La 01:00, Marocul joacă o formalitate contra unei echipe deja eliminate, mai bine afli scorul la prima oră.",
+        "en": "Morocco vs. Haiti at 01:00 is a formality for one side and a dead rubber for the other, so you can catch the score over coffee."
       }
     },
     {
@@ -417,12 +417,12 @@
       "group": "C",
       "kickoffEEST": "01:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "merită văzut",
+        "en": "worth watching"
       },
       "why": {
-        "ro": "La ora 01:00, Brazilia, care nu trebuie să piardă pentru a se califica, este mare favorită în fața Scoției, care are nevoie de victorie, așa că nu merită să pierzi noaptea.",
-        "en": "Scotland need a win against Brazil at 01:00 to advance, but it's a big ask against a side that only needs a draw, so you might want to prioritise sleep."
+        "ro": "La 01:00, Scoția o întâlnește pe Brazilia într-un meci decisiv pentru calificare, care merită sacrificat somnul.",
+        "en": "Group C's simultaneous deciders include Scotland vs. Brazil at 01:00, which promises late-night drama and is worth staying up for."
       }
     },
     {
@@ -438,8 +438,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "La 04:00 dimineața, Mexicul este deja calificat, iar Cehia are nevoie de o victorie la golaveraj, un scenariu prea complicat ca să-ți fure din somn.",
-        "en": "Czechia's clash with Mexico at 04:00 promises little more than a late-night formality for the already qualified Mexicans."
+        "ro": "La 04:00, Mexicul este deja calificat, iar pentru Cehia ar fi nevoie de un miracol, deci rezultatul îl citești la trezire.",
+        "en": "A 04:00 clash between the Czech Republic and Mexico can comfortably be left for the highlights reel tomorrow morning."
       }
     },
     {
@@ -455,13 +455,36 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "La 04:00, Coreea de Sud se califică dacă nu pierde cu Africa de Sud, dar la o oră atât de târzie, e mai bine de citit la cafea.",
-        "en": "South Africa's hopes against South Korea at 04:00 depend on multiple outcomes, making it a match you can check the result of later rather than watch live."
+        "ro": "La 04:00, Coreea de Sud are prima șansă la calificare, iar Africa de Sud depinde de alte rezultate, deci nu merită să stai treaz.",
+        "en": "South Africa and South Korea at 04:00 marks the end of a long night, but you'll find the outcome awaiting you with your breakfast."
+      }
+    }
+  ],
+  "groupScenarios": [
+    {
+      "name": "A",
+      "prose": {
+        "ro": "Mexicul este deja calificat și joacă doar pentru onoare. Coreea de Sud își asigură locul în optimi dacă nu pierde cu Africa de Sud. Cehia are nevoie de o victorie contra Mexicului, dar chiar și așa, soarta ei depinde de golaveraj. Africa de Sud se califică doar dacă învinge Coreea de Sud și, în același timp, Cehia nu câștigă cu Mexic. Pe scurt: Coreea de Sud la egal, Cehia la victorie cu golaveraj, Africa de Sud la victorie condiționată.",
+        "en": "Mexico are already through, so their match against the Czech Republic is about deciding who tops the group. South Korea needs to avoid a loss against South Africa to qualify. The Czech Republic needs a win against Mexico and then depends on goal difference to progress. South Africa must beat South Korea and also needs the Czech Republic not to win against Mexico. In short: Mexico qualified, South Korea needs a draw, the Czech Republic must win and hope for results to go their way, and South Africa needs a win and a favour."
+      }
+    },
+    {
+      "name": "B",
+      "prose": {
+        "ro": "Canada și Elveția au amândouă prima șansă la calificare, având nevoie doar să nu piardă în meciul direct. Dacă una dintre ele pierde, depinde de rezultatul celuilalt meci din grupă. Bosnia și Herțegovina și Qatar își joacă ultima carte într-un duel direct, dar chiar și o victorie le trimite la socoteala golaverajului. Pe scurt: Canada și Elveția la egal, Bosnia și Qatar au nevoie de victorie și golaveraj.",
+        "en": "Canada and Switzerland are both in a strong position, needing only to avoid defeat against each other to qualify. If they draw, both go through. If either loses, their qualification depends on Bosnia and Herzegovina not winning against Qatar, or on goal difference. Bosnia and Herzegovina and Qatar both need a win in their head-to-head match, and then will rely on goal difference to have any chance of progressing. In short: Canada and Switzerland need a draw, Bosnia and Herzegovina and Qatar must win and hope for luck with goal difference."
+      }
+    },
+    {
+      "name": "C",
+      "prose": {
+        "ro": "Brazilia și Maroc au amândouă prima șansă la calificare, trebuind doar să nu piardă. Scoția are nevoie de o victorie împotriva Braziliei pentru a merge mai departe. Dacă Brazilia pierde, soarta ei se joacă la golaveraj. Marocul se califică în aceleași condiții ca Brazilia, excepția fiind dacă pierde cu Haiti, caz în care depinde de un rezultat favorabil al meciului dintre Scoția și Brazilia. Haiti este deja eliminată. Pe scurt: Brazilia și Maroc la egal, Scoția are nevoie de victorie.",
+        "en": "Haiti is already eliminated, making their match against Morocco a formality for them. Brazil and Morocco both need to avoid a loss to secure qualification. Scotland needs a win against Brazil to go through. If Brazil loses, they still have a chance on goal difference. If Morocco loses, they can still qualify if Scotland does not win against Brazil. In short: Haiti eliminated, Brazil and Morocco need a draw, Scotland must win."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Anglia, cu 19 șuturi, dar fără busolă · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Ronaldo at the double, England's 78% possession for nothing · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Ronaldo, dublă de poveste. Anglia, 19 șuturi degeaba · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Ronaldo and Colombia feast, England's attack goes missing · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
