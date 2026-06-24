@@ -61,6 +61,20 @@ export const responseSchema = {
         },
       },
     },
+    // Decisive-matchday joint paragraphs. Declared (but not required) so Gemini can
+    // emit one per group on a decisive night and omit the field entirely otherwise —
+    // without this property Gemini's structured output cannot return groups at all.
+    groups: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['name', 'scenario'],
+        properties: {
+          name: { type: 'STRING' },
+          scenario: { type: 'STRING' },
+        },
+      },
+    },
   },
 };
 
@@ -93,6 +107,20 @@ export const responseSchemaEn = {
           id: { type: 'INTEGER' },
           alarm: { type: 'STRING', enum: ['worth watching', 'catch it later'] },
           why: { type: 'STRING' },
+        },
+      },
+    },
+    // Decisive-matchday joint paragraphs. Declared (but not required) so Gemini can
+    // emit one per group on a decisive night and omit the field entirely otherwise —
+    // without this property Gemini's structured output cannot return groups at all.
+    groups: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['name', 'scenario'],
+        properties: {
+          name: { type: 'STRING' },
+          scenario: { type: 'STRING' },
         },
       },
     },
