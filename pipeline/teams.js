@@ -143,6 +143,15 @@ export function fifaRank(name) {
 }
 
 /**
+ * Canonical English display name for a stored (Romanian exonym) team name.
+ * Unknown names (knockout placeholders, or names already English) pass through
+ * unchanged, so callers can localize a Romanian-keyed fact for the English side.
+ */
+export function englishTeamName(name) {
+  return ENGLISH_BY_ROMANIAN[name] ?? name;
+}
+
+/**
  * flag-icons codes keyed by the same canonical English names ROMANIAN_NAMES
  * uses. Lowercase ISO 3166-1 alpha-2, except the home nations which use
  * flag-icons sub-national codes (gb-eng, gb-sct). Unknown names (knockout

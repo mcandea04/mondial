@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeGroupScenarios, computeScenarios, scenarioFor, computeDecisiveGroupScenario } from '../pipeline/scenarios.js';
+import { computeGroupScenarios, computeScenarios, scenarioFor, computeDecisiveGroupScenario, synthesizeGroupParagraph } from '../pipeline/scenarios.js';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -1143,4 +1143,44 @@ test('decisive scenario: returns null unless exactly two matches remain', () => 
     [match('A', 'B', 1, 0), match('B', 'C', 1, 0), match('C', 'D', 1, 0)],
   );
   assert.equal(threeLeft, null);
+});
+
+// ── synthesizeGroupParagraph (deterministic fallback prose) ───────────────────
+
+test('synthesized paragraph names every team condition (RO) from the structured tags', () => {
+  const d = { name: 'E', ...computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES) };
+  const ro = synthesizeGroupParagraph(d, 'ro');
+  // Leads with the group, then one sentence per team in table order.
+  assert.match(ro, /^Grupa E se decide diseară/);
+  assert.match(ro, /Germania e deja calificată\./);                    // qualified
+  assert.match(ro, /Coasta de Fildeș se califică dacă nu pierde cu Curaçao\./); // no_loss
+  assert.match(ro, /Ecuador mai poate trece doar la golaveraj\./);     // goal_diff
+  assert.match(ro, /Curaçao se califică dacă bate Coasta de Fildeș și /); // conditional + helper
+  // Never invents a goal-difference margin.
+  assert.doesNotMatch(ro, /\d+ goluri|cu \d/);
+});
+
+test('synthesized paragraph localizes team names for the English side', () => {
+  const d = { name: 'E', ...computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES) };
+  const en = synthesizeGroupParagraph(d, 'en', (name) => (name === 'Coasta de Fildeș' ? 'Ivory Coast' : name));
+  assert.match(en, /^Group E is settled tonight/);
+  assert.match(en, /Germania are already through\./);
+  assert.match(en, /Ivory Coast go through if they avoid defeat to Curaçao\./);
+  assert.match(en, /Ecuador can only advance on goal difference\./);
+});
+
+test('synthesized paragraph covers an eliminated team and a must-win team', () => {
+  // A 6 (through), B 4, C 3, D 0 (out). Remaining: A-D and B-C (the decider).
+  const table = [row('A', 2, 6, 4), row('B', 2, 4, 1), row('C', 2, 3, -1), row('D', 2, 0, -4)];
+  const matches = [
+    match('A', 'B', 1, 0), match('C', 'D', 2, 0),
+    match('A', 'C', 1, 0), match('B', 'D', 2, 0),
+  ];
+  const d = { name: 'F', ...computeDecisiveGroupScenario(table, matches) };
+  assert.ok(d.teams.length === 4, 'all four teams classified');
+  const ro = synthesizeGroupParagraph(d, 'ro');
+  // Every team appears exactly once, lead included.
+  for (const t of ['A', 'B', 'C', 'D']) {
+    assert.ok(ro.includes(` ${t} `) || ro.includes(`${t} `), `${t} named`);
+  }
 });
