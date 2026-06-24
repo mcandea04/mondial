@@ -123,3 +123,27 @@ test('narrate threads gold into the user message', async () => {
   assert.match(userText, /EXEMPLE DE TON REUȘIT/);
   assert.match(userText, /PILL: aur/);
 });
+
+// Guard against schema drift: the Gemini structured-output schema controls which
+// fields the model can physically emit. A field present in the zod schema but
+// missing here means the model can never return it (the bug that silently dropped
+// every decisive-matchday `groups` paragraph in production).
+test('Gemini response schema declares every field the zod schema accepts', async () => {
+  const { responseSchema, responseSchemaEn } = await import('../pipeline/narrate.js');
+  const { narrationSchema, narrationSchemaEn } = await import('../pipeline/narration-core.js');
+  for (const [gemini, zod] of [[responseSchema, narrationSchema], [responseSchemaEn, narrationSchemaEn]]) {
+    for (const key of Object.keys(zod.shape)) {
+      assert.ok(gemini.properties[key], `Gemini schema missing "${key}" the model could never emit`);
+    }
+  }
+});
+
+test('Gemini response schema exposes the decisive-group paragraph shape', async () => {
+  const { responseSchema, responseSchemaEn } = await import('../pipeline/narrate.js');
+  for (const schema of [responseSchema, responseSchemaEn]) {
+    const groups = schema.properties.groups;
+    assert.equal(groups.type, 'ARRAY');
+    assert.deepEqual(groups.items.required, ['name', 'scenario']);
+    assert.ok(!schema.required.includes('groups'), 'groups must stay optional (non-decisive nights omit it)');
+  }
+});
