@@ -416,3 +416,70 @@ export function computeDecisiveGroupScenario(table, allGroupMatches) {
 
   return { remaining, teams };
 }
+
+// ── Deterministic fallback paragraph ──────────────────────────────────────────
+// Used ONLY when the narrator omits a decisive group's `groups` entry. The
+// model's voice is always preferred; this just guarantees a decisive night never
+// ships with the qualification picture missing. Plain, factual prose straight
+// from the structured conditions — no invented numbers, GD ties stay named.
+
+const GROUP_PHRASES = {
+  ro: {
+    lead: (name) => `Grupa ${name} se decide diseară în două meciuri simultane.`,
+    helper: (h, n) => {
+      if (!h) return 'rezultatele din celălalt meci o ajută';
+      if (h.needs === 'not_win') return `${n(h.team)} n-o bate pe ${n(h.vs)}`;
+      if (h.needs === 'win') return `${n(h.team)} o bate pe ${n(h.vs)}`;
+      if (h.needs === 'draw') return `${n(h.home)} și ${n(h.away)} remizează`;
+      if (h.needs === 'not_draw') return `${n(h.home)} și ${n(h.away)} nu remizează`;
+      return 'celălalt meci iese cum trebuie';
+    },
+    team: (t, n, h) => {
+      switch (t.tag) {
+        case 'qualified': return `${n(t.team)} e deja calificată.`;
+        case 'eliminated': return `${n(t.team)} e deja eliminată.`;
+        case 'no_loss': return `${n(t.team)} se califică dacă nu pierde cu ${n(t.opponent)}.`;
+        case 'win': return `${n(t.team)} are nevoie de victorie cu ${n(t.opponent)}.`;
+        case 'conditional': return `${n(t.team)} se califică dacă bate ${n(t.opponent)} și ${h}.`;
+        case 'goal_diff': return `${n(t.team)} mai poate trece doar la golaveraj.`;
+        default: return `${n(t.team)} mai are șanse, dar calificarea atârnă de alte rezultate.`;
+      }
+    },
+  },
+  en: {
+    lead: (name) => `Group ${name} is settled tonight across two simultaneous matches.`,
+    helper: (h, n) => {
+      if (!h) return 'the other match falls their way';
+      if (h.needs === 'not_win') return `${n(h.team)} fail to beat ${n(h.vs)}`;
+      if (h.needs === 'win') return `${n(h.team)} beat ${n(h.vs)}`;
+      if (h.needs === 'draw') return `${n(h.home)} and ${n(h.away)} draw`;
+      if (h.needs === 'not_draw') return `${n(h.home)} and ${n(h.away)} avoid a draw`;
+      return 'the other match falls their way';
+    },
+    team: (t, n, h) => {
+      switch (t.tag) {
+        case 'qualified': return `${n(t.team)} are already through.`;
+        case 'eliminated': return `${n(t.team)} are already out.`;
+        case 'no_loss': return `${n(t.team)} go through if they avoid defeat to ${n(t.opponent)}.`;
+        case 'win': return `${n(t.team)} need to beat ${n(t.opponent)}.`;
+        case 'conditional': return `${n(t.team)} go through if they beat ${n(t.opponent)} and ${h}.`;
+        case 'goal_diff': return `${n(t.team)} can only advance on goal difference.`;
+        default: return `${n(t.team)} are still alive, but it hinges on the other results.`;
+      }
+    },
+  },
+};
+
+/**
+ * Builds the fallback prose paragraph for one decisive group in `lang`.
+ * `localizeName` maps a stored (Romanian) team name to the active language —
+ * identity for RO, englishTeamName for EN.
+ */
+export function synthesizeGroupParagraph(decisive, lang = 'ro', localizeName = (name) => name) {
+  const phrases = GROUP_PHRASES[lang] ?? GROUP_PHRASES.ro;
+  const n = (name) => localizeName(name);
+  const sentences = decisive.teams.map((t) =>
+    phrases.team(t, n, phrases.helper(t.result.win.helper, n)),
+  );
+  return [phrases.lead(decisive.name), ...sentences].join(' ');
+}

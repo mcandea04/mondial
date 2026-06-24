@@ -46,7 +46,8 @@ import {
   CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
   localizeProse, factsWithEnglishVerdicts, englishVerdict,
 } from './narration-core.js';
-import { computeScenarios, scenarioFor, computeDecisiveGroupScenario } from './scenarios.js';
+import { computeScenarios, scenarioFor, computeDecisiveGroupScenario, synthesizeGroupParagraph } from './scenarios.js';
+import { englishTeamName } from './teams.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser, buildTeaserEn } from './teaser.js';
@@ -560,22 +561,7 @@ async function main() {
   // Only groups that played last night get a snapshot on the page.
   const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
-  // Scenario facts: attach homeScenario/awayScenario to each tonight fixture so
-  // the narrator can state exact qualification conditions in the "why" field.
-  // Scenarios are computed from raw ESPN standings (before classifyStandings so we
-  // work with the undecorated table shape). They are not added to factsHash because
-  // they are derived deterministically from scores/standings already in the hash.
   const allMatchesForScenarios = [...historical, ...facts.finished];
-  const scenarios = computeScenarios(facts.standings, allMatchesForScenarios);
-  const tonightWithScenarios = facts.tonight.map((f) => {
-    const hs = scenarioFor(f.home, scenarios);
-    const as = scenarioFor(f.away, scenarios);
-    return {
-      ...f,
-      ...(hs != null && { homeScenario: hs }),
-      ...(as != null && { awayScenario: as }),
-    };
-  });
 
   // Decisive groups: a group whose two final matches both kick off tonight (the
   // simultaneous final matchday). For each, the narrator gets the structured
@@ -594,6 +580,32 @@ async function main() {
     );
     if (bothTonight) decisiveGroups.push({ name: g.name, ...decisive });
   }
+
+  // The two fixtures of a decisive group carry their qualification math ONLY in
+  // the joint group paragraph, never in their own `why`. Withholding
+  // homeScenario/awayScenario here removes the duplicate fact source the narrator
+  // would otherwise pour into `why` — that escape hatch is exactly why the model
+  // skipped the (optional) group paragraph and left the per-fixture lines heavy.
+  const decisivePairs = new Set(
+    decisiveGroups.flatMap((d) => d.remaining.map(([h, a]) => [h, a].sort().join('|'))),
+  );
+
+  // Scenario facts: attach homeScenario/awayScenario to each NON-decisive tonight
+  // fixture so the narrator can state exact qualification conditions in the "why"
+  // field. Scenarios are computed from raw ESPN standings (before classifyStandings
+  // so we work with the undecorated table shape). They are not added to factsHash
+  // because they are derived deterministically from scores/standings already hashed.
+  const scenarios = computeScenarios(facts.standings, allMatchesForScenarios);
+  const tonightWithScenarios = facts.tonight.map((f) => {
+    if (decisivePairs.has([f.home, f.away].sort().join('|'))) return { ...f };
+    const hs = scenarioFor(f.home, scenarios);
+    const as = scenarioFor(f.away, scenarios);
+    return {
+      ...f,
+      ...(hs != null && { homeScenario: hs }),
+      ...(as != null && { awayScenario: as }),
+    };
+  });
 
   const factsForNarration = {
     date, finished: facts.finished, tonight: tonightWithScenarios, standings,
@@ -677,12 +689,18 @@ async function main() {
     (existing?.matches ?? []).map((m) => [m.id, m.highlight]),
   );
 
-  // Joint group-scenario paragraphs (decisive matchday), keyed by group name.
+  // Joint group-scenario paragraphs (decisive matchday), keyed by group name. The
+  // narrator's prose is preferred; when it omits a decisive group, a deterministic
+  // paragraph synthesized from the structured conditions fills in, so a decisive
+  // night never ships with the qualification picture missing.
   const roGroups = new Map((narration.groups ?? []).map((g) => [g.name, g.scenario]));
   const enGroups = new Map((enNarration?.groups ?? []).map((g) => [g.name, g.scenario]));
-  const groupScenarios = decisiveGroups
-    .map((d) => ({ name: d.name, prose: bilingual(roGroups.get(d.name) ?? '', enGroups.get(d.name)) }))
-    .filter((g) => g.prose.ro);
+  const groupScenarios = decisiveGroups.map((d) => {
+    const ro = roGroups.get(d.name) || synthesizeGroupParagraph(d, 'ro');
+    const en = enGroups.get(d.name)
+      || (enNarration ? synthesizeGroupParagraph(d, 'en', englishTeamName) : undefined);
+    return { name: d.name, prose: bilingual(ro, en) };
+  });
 
   const digest = {
     date,
