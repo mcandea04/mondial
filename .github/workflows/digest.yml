@@ -22,6 +22,10 @@ on:
         description: "One-shot steering note for the narration (optional)"
         type: string
         default: ""
+      date:
+        description: "Override date (YYYY-MM-DD). Defaults to last night."
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -75,11 +79,13 @@ jobs:
         # Scheduled polls gate on completeness; a manual run without "force"
         # gates too, but force=true (re-run / backfill) skips the gate.
         run: |
+          DATE_ARG=""
+          if [ -n "${{ inputs.date }}" ]; then DATE_ARG="--date ${{ inputs.date }}"; fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
-            node pipeline/run.js --re-narrate --steer "$STEER"
+            node pipeline/run.js --re-narrate --steer "$STEER" $DATE_ARG
             echo "published=true" >> "$GITHUB_OUTPUT"
           else
-            node pipeline/run.js --require-complete --steer "$STEER"
+            node pipeline/run.js --require-complete --steer "$STEER" $DATE_ARG
           fi
         env:
           STEER: ${{ inputs.steer }}
