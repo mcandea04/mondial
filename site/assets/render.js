@@ -254,28 +254,32 @@ function renderTonight(tonight, groupScenarios, lang) {
   const card = el('div', 'card');
   card.append(el('p', 'card-label', t.tonightTitle));
 
-  // Decisive groups (both finals simultaneous tonight) cluster their pair of
-  // fixtures under a header with the joint scenario paragraph beneath; every
-  // other fixture stays in the flat list below.
-  const clustered = new Set();
-
-  for (const { name, prose } of groupScenarios ?? []) {
-    const fixtures = tonight.filter((f) => f.group === name);
-    if (fixtures.length < 2) continue; // need the simultaneous pair to cluster
-    const block = el('div', 'tonight-group');
-    block.append(el('p', 'tonight-group-label', t.decisiveRound(name)));
-    for (const f of fixtures) {
-      clustered.add(f);
-      block.append(tonightRow(f, lang));
-    }
-    const proseText = localize(prose, lang);
-    if (proseText) block.append(el('p', 'tonight-group-scenario', proseText));
-    card.append(block);
-  }
+  // `tonight` arrives in kickoff order. Walk it once and emit each fixture in
+  // place, so a decisive group's cluster (its pair of finals + the joint scenario
+  // paragraph) appears at the chronological slot of its first kickoff rather than
+  // jumping to the front. Every non-decisive fixture stays inline in the same
+  // chronological flow.
+  const byGroup = new Map((groupScenarios ?? []).map((g) => [g.name, g]));
+  const rendered = new Set();
 
   for (const fixture of tonight) {
-    if (clustered.has(fixture)) continue;
-    card.append(tonightRow(fixture, lang));
+    if (rendered.has(fixture)) continue;
+    const group = fixture.group != null ? byGroup.get(fixture.group) : null;
+    const fixtures = group ? tonight.filter((f) => f.group === fixture.group) : [];
+    if (group && fixtures.length >= 2) {
+      const block = el('div', 'tonight-group');
+      block.append(el('p', 'tonight-group-label', t.decisiveRound(fixture.group)));
+      for (const f of fixtures) {
+        rendered.add(f);
+        block.append(tonightRow(f, lang));
+      }
+      const proseText = localize(group.prose, lang);
+      if (proseText) block.append(el('p', 'tonight-group-scenario', proseText));
+      card.append(block);
+    } else {
+      rendered.add(fixture);
+      card.append(tonightRow(fixture, lang));
+    }
   }
   return card;
 }

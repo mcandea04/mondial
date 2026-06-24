@@ -1,149 +1,467 @@
 {
-  "date": "2026-06-25",
-  "factsHash": "e5fb7ca13a21cfe72e8cf0447e52f99482aa722f00b2e5667f6db085f2d2dc89",
+  "date": "2026-06-24",
+  "factsHash": "e3dab7a10c24d8c6d8ea0655a456e708940ef96125c5a0c5ddd88fe5b0f6ff92",
   "narrator": {
     "ro": "gemini-polish",
-    "en": "gemini-polish"
+    "en": "gemini"
   },
   "headline": {
-    "ro": "Finalul grupelor: Olanda și Japonia cu inima-n dinți, Ecuador la golaveraj",
-    "en": "Germany secure, others hold their breath"
+    "ro": "Anglia, cu 19 șuturi, dar fără busolă",
+    "en": "Ronaldo at the double, England's 78% possession for nothing"
   },
   "summary": {
-    "ro": "Astăzi trecem la ultima etapă a grupelor, cu trei grupe hotărâte să-și decidă calificările, unele până la golaveraj. Pregătește-te pentru o noapte lungă, cu meciuri în paralel, unde fiecare gol poate schimba soarta unei națiuni.",
-    "en": "The final group stage matches are upon us, with plenty of qualification spots still up for grabs. Germany and the USA can relax, but for many, it's a make-or-break night."
+    "ro": "Portugalia a defilat în fața Uzbekistanului cu o demonstrație de forță, marcând cinci goluri fără emoții. Pe de altă parte, Anglia a tras de 19 ori la poartă și tot nu a reușit să găsească drumul spre gol, remizând alb cu Ghana.",
+    "en": "Cristiano Ronaldo scored twice in Portugal's comfortable win, while England managed to turn nearly 80% possession into a goalless stalemate. Colombia left it late to secure their victory, and Croatia did just enough to get past Panama."
   },
-  "matches": [],
-  "groups": [],
-  "tonight": [
+  "matches": [
     {
-      "id": 760473,
-      "home": "Curaçao",
-      "away": "Coasta de Fildeș",
-      "homeCode": "cw",
-      "awayCode": "ci",
-      "group": "E",
-      "kickoffEEST": "23:00",
-      "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+      "id": 760461,
+      "home": "Portugalia",
+      "away": "Uzbekistan",
+      "homeCode": "pt",
+      "awayCode": "uz",
+      "group": "K",
+      "utcDate": "2026-06-23T17:00Z",
+      "score": [
+        5,
+        0
+      ],
+      "scorers": [
+        {
+          "name": "Cristiano Ronaldo",
+          "minute": "6",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Nuno Mendes",
+          "minute": "17",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": "din lovitură liberă"
+        },
+        {
+          "name": "Cristiano Ronaldo",
+          "minute": "39",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Bruno Fernandes",
+          "bodyPart": "dreptul",
+          "placement": "din dreapta careului"
+        },
+        {
+          "name": "Abduvohid Nematov",
+          "minute": "60",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
+        },
+        {
+          "name": "Rafael Leão",
+          "minute": "87",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "14",
+          "wonCorners": "3",
+          "saves": "2",
+          "possessionPct": "65.9",
+          "totalShots": "17",
+          "shotsOnTarget": "9"
+        },
+        "away": {
+          "foulsCommitted": "15",
+          "wonCorners": "2",
+          "saves": "4",
+          "possessionPct": "34.1",
+          "totalShots": "7",
+          "shotsOnTarget": "2"
+        }
       },
-      "why": {
-        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live.",
-        "en": "At 23:00, Group E’s final matches kick off simultaneously; this one features Ivory Coast trying to hold off a plucky Curaçao side."
-      }
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Cristiano Ronaldo a deschis scorul din careu în minutul 6 și a reușit o dublă înainte de pauză, la o pasă a lui Bruno Fernandes. Nuno Mendes a adăugat și el un gol dintr-o lovitură liberă, iar autogolul lui Abduvohid Nematov a confirmat că Uzbekistanul nu a avut nicio șansă în fața portughezilor, care au închis tabela la 5-0 prin Rafael Leão.",
+        "en": "Portugal brought the fireworks, with Cristiano Ronaldo bagging a brace, first from inside the box in the 6th minute and again from the right of the penalty area in the 39th, set up by Bruno Fernandes. Uzbekistan even chipped in with an own goal in the 60th minute, making it a rather straightforward evening for the Portuguese."
+      },
+      "drama": 1,
+      "highlight": "https://www.fifa.com/en/watch/4se3Lqdtrvu86pMuaqlUpn"
     },
     {
-      "id": 760468,
-      "home": "Ecuador",
-      "away": "Germania",
-      "homeCode": "ec",
-      "awayCode": "de",
-      "group": "E",
-      "kickoffEEST": "23:00",
-      "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+      "id": 760458,
+      "home": "Anglia",
+      "away": "Ghana",
+      "homeCode": "gb-eng",
+      "awayCode": "gh",
+      "group": "L",
+      "utcDate": "2026-06-23T20:00Z",
+      "score": [
+        0,
+        0
+      ],
+      "scorers": [],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "14",
+          "wonCorners": "9",
+          "saves": "0",
+          "possessionPct": "78.9",
+          "totalShots": "19",
+          "shotsOnTarget": "3"
+        },
+        "away": {
+          "foulsCommitted": "24",
+          "wonCorners": "2",
+          "saves": "3",
+          "possessionPct": "21.1",
+          "totalShots": "2",
+          "shotsOnTarget": "1"
+        }
       },
-      "why": {
-        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live.",
-        "en": "At 23:00, the other Group E finale pits Germany against Ecuador, with much still on the line for the South Americans."
-      }
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Anglia și-a testat răbdarea în fața Ghanei, cu o posesie de aproape 79% și 19 șuturi la poartă, dar niciun gol. Ghanezii au reușit să smulgă un punct prețios cu doar două șuturi și o singură tentativă pe spațiul porții, lăsând favorita să mediteze la ce a putut irosi.",
+        "en": "England dominated possession with a whopping 78.9% against Ghana, only to produce a masterclass in how not to score a goal. Despite 19 shots, just three found the target, leaving the Three Lions with a point that feels like two dropped."
+      },
+      "drama": 2,
+      "highlight": "https://www.fifa.com/en/watch/YMV6IJCxemtC0s8HtqPn3"
     },
     {
-      "id": 760471,
-      "home": "Japonia",
-      "away": "Suedia",
-      "homeCode": "jp",
-      "awayCode": "se",
-      "group": "F",
-      "kickoffEEST": "02:00",
-      "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+      "id": 760460,
+      "home": "Panama",
+      "away": "Croația",
+      "homeCode": "pa",
+      "awayCode": "hr",
+      "group": "L",
+      "utcDate": "2026-06-23T23:00Z",
+      "score": [
+        0,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Ante Budimir",
+          "minute": "54",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": null
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "19",
+          "wonCorners": "7",
+          "saves": "1",
+          "possessionPct": "42",
+          "totalShots": "8",
+          "shotsOnTarget": "1"
+        },
+        "away": {
+          "foulsCommitted": "12",
+          "wonCorners": "2",
+          "saves": "1",
+          "possessionPct": "58",
+          "totalShots": "6",
+          "shotsOnTarget": "2"
+        }
       },
-      "why": {
-        "ro": "la 02:00, finalul grupei se joacă în paralel — merită să sacrifici câteva ore de somn.",
-        "en": "At 02:00, Group F's climax sees Japan and Sweden duke it out in a must-watch affair."
-      }
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Croația a obținut o victorie la limită în fața Panamei, prin golul marcat cu stângul de Ante Budimir în minutul 54. Panama a plecat cu mâinile goale și fără gol marcat în grupă, confirmând eliminarea din competiție.",
+        "en": "Croatia secured a narrow 1-0 victory against Panama, with Ante Budimir finding the net in the 54th minute. Panama had more corners but couldn't convert their chances, meaning Croatia did precisely what was needed to take all three points."
+      },
+      "drama": 2,
+      "highlight": "https://www.fifa.com/en/watch/5ewcE9E2gBUvXwyGfkEz1n"
     },
     {
-      "id": 760472,
-      "home": "Tunisia",
-      "away": "Olanda",
-      "homeCode": "tn",
-      "awayCode": "nl",
-      "group": "F",
-      "kickoffEEST": "02:00",
-      "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+      "id": 760459,
+      "home": "Columbia",
+      "away": "RD Congo",
+      "homeCode": "co",
+      "awayCode": "cd",
+      "group": "K",
+      "utcDate": "2026-06-24T02:00Z",
+      "score": [
+        1,
+        0
+      ],
+      "scorers": [
+        {
+          "name": "Daniel Muñoz",
+          "minute": "76",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Juan Fernando Quintero",
+          "bodyPart": "stângul",
+          "placement": "din dreapta careului"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "12",
+          "wonCorners": "5",
+          "saves": "1",
+          "possessionPct": "63.6",
+          "totalShots": "20",
+          "shotsOnTarget": "9"
+        },
+        "away": {
+          "foulsCommitted": "16",
+          "wonCorners": "4",
+          "saves": "8",
+          "possessionPct": "36.4",
+          "totalShots": "8",
+          "shotsOnTarget": "1"
+        }
       },
-      "why": {
-        "ro": "la 02:00, Olanda, mare favorită, joacă împotriva unei echipe deja eliminate, așa că poți afla liniștit scorul mâine.",
-        "en": "The Netherlands face an already eliminated Tunisia at 02:00, a match you can easily catch the score of over breakfast."
-      }
-    },
-    {
-      "id": 760469,
-      "home": "Paraguay",
-      "away": "Australia",
-      "homeCode": "py",
-      "awayCode": "au",
-      "group": "D",
-      "kickoffEEST": "05:00",
-      "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Columbia a avut nevoie de un gol marcat pe final, în minutul 76, prin Daniel Muñoz, la pasa lui Juan Fernando Quintero, pentru a învinge Republica Democrată Congo. Portarul african a avut opt intervenții salvatoare și a ținut meciul în viață până aproape de final, într-o seară în care columbienii au tras de 20 de ori la poartă.",
+        "en": "Colombia made heavy weather of it, needing a 76th-minute strike from Daniel Muñoz, assisted by Juan Fernando Quintero, to break DR Congo's resistance. The Congolese keeper was kept busy, making eight saves to keep the score respectable despite Colombia's 20 shots."
       },
-      "why": {
-        "ro": "la 05:00, finalul grupei se joacă în paralel — rezultatele le afli abia dimineața, la cafea.",
-        "en": "At 05:00, the stakes are high for Paraguay and Australia, but it’s a late one to follow live unless you’re an insomniac."
-      }
-    },
-    {
-      "id": 760470,
-      "home": "Turcia",
-      "away": "SUA",
-      "homeCode": "tr",
-      "awayCode": "us",
-      "group": "D",
-      "kickoffEEST": "05:00",
-      "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
-      },
-      "why": {
-        "ro": "la 05:00, o formalitate pentru SUA, deja calificată, iar Turcia este eliminată — un meci ce nu merită să-ți fure somnul.",
-        "en": "The USA, already through, take on an eliminated Turkey at 05:00, a contest best enjoyed via highlights with your morning coffee."
-      }
+      "drama": 3,
+      "highlight": "https://www.fifa.com/en/watch/26nrhBN70NStG6P9xmqto7"
     }
   ],
-  "groupScenarios": [
+  "groups": [
     {
-      "name": "D",
-      "prose": {
-        "ro": "SUA e deja calificată, iar Turcia este eliminată. Bătălia pentru locul doi se dă direct între Australia și Paraguay, care joacă totul pe cartea victoriei. În caz de egalitate, ambele echipe va depinde de golaveraj. Pe scurt: Australia și Paraguay merg mai departe doar dacă înving.",
-        "en": "The USA are already safely through, leaving Australia and Paraguay to battle it out for the second spot. Both teams need a win against each other; a draw for either means it all comes down to goal difference, which is always a nail-biter. Turkey are already out of the running and play only for pride. In short: USA are through, Australia and Paraguay need a win or face a goal difference gamble."
+      "name": "K",
+      "table": [
+        {
+          "team": "Columbia",
+          "code": "co",
+          "p": 2,
+          "w": 2,
+          "d": 0,
+          "l": 0,
+          "gf": 4,
+          "gd": 3,
+          "pts": 6,
+          "status": "calificată"
+        },
+        {
+          "team": "Portugalia",
+          "code": "pt",
+          "p": 2,
+          "w": 1,
+          "d": 1,
+          "l": 0,
+          "gf": 6,
+          "gd": 5,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "RD Congo",
+          "code": "cd",
+          "p": 2,
+          "w": 0,
+          "d": 1,
+          "l": 1,
+          "gf": 1,
+          "gd": -1,
+          "pts": 1,
+          "status": "în cărți"
+        },
+        {
+          "team": "Uzbekistan",
+          "code": "uz",
+          "p": 2,
+          "w": 0,
+          "d": 0,
+          "l": 2,
+          "gf": 1,
+          "gd": -7,
+          "pts": 0,
+          "status": "în cărți"
+        }
+      ]
+    },
+    {
+      "name": "L",
+      "table": [
+        {
+          "team": "Anglia",
+          "code": "gb-eng",
+          "p": 2,
+          "w": 1,
+          "d": 1,
+          "l": 0,
+          "gf": 4,
+          "gd": 2,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Ghana",
+          "code": "gh",
+          "p": 2,
+          "w": 1,
+          "d": 1,
+          "l": 0,
+          "gf": 1,
+          "gd": 1,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Croația",
+          "code": "hr",
+          "p": 2,
+          "w": 1,
+          "d": 0,
+          "l": 1,
+          "gf": 3,
+          "gd": -1,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Panama",
+          "code": "pa",
+          "p": 2,
+          "w": 0,
+          "d": 0,
+          "l": 2,
+          "gf": 0,
+          "gd": -2,
+          "pts": 0,
+          "status": "eliminată"
+        }
+      ]
+    }
+  ],
+  "tonight": [
+    {
+      "id": 760462,
+      "home": "Bosnia și Herțegovina",
+      "away": "Qatar",
+      "homeCode": "ba",
+      "awayCode": "qa",
+      "group": "B",
+      "kickoffEEST": "22:00",
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "La 22:00, Bosnia și Herțegovina și Qatar se bat într-un meci cu miză incertă, așa că poți afla rezultatul la micul dejun.",
+        "en": "Bosnia and Herzegovina versus Qatar at 22:00 is a fixture with uncertain scenarios for both sides, so you can easily catch up on the score over morning coffee."
       }
     },
     {
-      "name": "E",
-      "prose": {
-        "ro": "Germania e deja calificată și joacă doar pentru prestigiul primului loc. Coastei de Fildeș îi este suficient un egal împotriva selecționatei din Curaçao pentru a merge mai departe. Curaçao se poate califica doar dacă învinge și Ecuador nu câștigă contra Germaniei. Ecuador, pe de altă parte, are nevoie de victorie la scor pentru a spera la golaveraj. Pe scurt: Germania e calificată, Coastei de Fildeș îi ajunge un egal, Curaçao are nevoie de victorie și o conjunctură, iar Ecuador doar la golaveraj.",
-        "en": "Germany have already secured their spot and are playing for top bragging rights against Ecuador. Ivory Coast only need a point against Curaçao to progress, which sounds like a comfortable evening. Curaçao, however, could still pull off a miracle if they beat Ivory Coast and Ecuador doesn’t beat Germany. Ecuador's path is the most precarious, needing a win against the Germans to even have a sniff at qualification through goal difference. In short: Germany are through, Ivory Coast need a draw, Curaçao need a win and help, Ecuador only on goal difference."
+      "id": 760463,
+      "home": "Elveția",
+      "away": "Canada",
+      "homeCode": "ch",
+      "awayCode": "ca",
+      "group": "B",
+      "kickoffEEST": "22:00",
+      "alarm": {
+        "ro": "merită văzut",
+        "en": "worth watching"
+      },
+      "why": {
+        "ro": "Tot la 22:00, Elveția și Canada luptă pentru calificare într-un meci unde ambele pot merge mai departe dacă nu pierd, deci merită să urmărești live.",
+        "en": "Switzerland and Canada face off at 22:00 in a proper battle where both teams can secure qualification if they avoid defeat."
       }
     },
     {
-      "name": "F",
-      "prose": {
-        "ro": "Tunisia este eliminată, așa că meciul lor cu Olanda e mai mult o formalitate. Olandei și Japoniei le ajunge un rezultat de egalitate ca să se califice în faza următoare. Suedia merge mai departe doar dacă învinge Japonia, iar dacă Olanda pierde, Suedia poate trece chiar și la egalitate de puncte cu Olanda, la golaveraj. Pe scurt: Olandei și Japoniei le ajunge un egal, iar Suedia merge mai departe doar dacă învinge.",
-        "en": "The Netherlands only need a point against an already eliminated Tunisia to progress, which should be straightforward. Japan, meanwhile, also only need a point against Sweden to secure their spot. Sweden, however, must win against Japan to go through, otherwise their World Cup journey ends here. Tunisia are already out. In short: Netherlands and Japan need a draw, Sweden need a win, Tunisia are out."
+      "id": 760464,
+      "home": "Maroc",
+      "away": "Haiti",
+      "homeCode": "ma",
+      "awayCode": "ht",
+      "group": "C",
+      "kickoffEEST": "01:00",
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "La 01:00, Marocul are nevoie doar de un egal cu Haiti, deja eliminată, deci poți alege somnul fără regrete.",
+        "en": "Morocco playing Haiti at 01:00 is a match where the North Africans are expected to comfortably secure their progress, making it one for the highlights reel tomorrow."
+      }
+    },
+    {
+      "id": 760465,
+      "home": "Scoția",
+      "away": "Brazilia",
+      "homeCode": "gb-sct",
+      "awayCode": "br",
+      "group": "C",
+      "kickoffEEST": "01:00",
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "La ora 01:00, Brazilia, care nu trebuie să piardă pentru a se califica, este mare favorită în fața Scoției, care are nevoie de victorie, așa că nu merită să pierzi noaptea.",
+        "en": "Scotland need a win against Brazil at 01:00 to advance, but it's a big ask against a side that only needs a draw, so you might want to prioritise sleep."
+      }
+    },
+    {
+      "id": 760467,
+      "home": "Cehia",
+      "away": "Mexic",
+      "homeCode": "cz",
+      "awayCode": "mx",
+      "group": "A",
+      "kickoffEEST": "04:00",
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "La 04:00 dimineața, Mexicul este deja calificat, iar Cehia are nevoie de o victorie la golaveraj, un scenariu prea complicat ca să-ți fure din somn.",
+        "en": "Czechia's clash with Mexico at 04:00 promises little more than a late-night formality for the already qualified Mexicans."
+      }
+    },
+    {
+      "id": 760466,
+      "home": "Africa de Sud",
+      "away": "Coreea de Sud",
+      "homeCode": "za",
+      "awayCode": "kr",
+      "group": "A",
+      "kickoffEEST": "04:00",
+      "alarm": {
+        "ro": "citești dimineața",
+        "en": "catch it later"
+      },
+      "why": {
+        "ro": "La 04:00, Coreea de Sud se califică dacă nu pierde cu Africa de Sud, dar la o oră atât de târzie, e mai bine de citit la cafea.",
+        "en": "South Africa's hopes against South Korea at 04:00 depend on multiple outcomes, making it a match you can check the result of later rather than watch live."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Finalul grupelor: Olanda și Japonia cu inima-n dinți, Ecuador la golaveraj · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Germany secure, others hold their breath · no matches overnight\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Anglia, cu 19 șuturi, dar fără busolă · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Ronaldo at the double, England's 78% possession for nothing · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }

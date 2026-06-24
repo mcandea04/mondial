@@ -425,7 +425,6 @@ export function computeDecisiveGroupScenario(table, allGroupMatches) {
 
 const GROUP_PHRASES = {
   ro: {
-    lead: (name) => `Grupa ${name} se decide diseară în două meciuri simultane.`,
     helper: (h, n) => {
       if (!h) return 'rezultatele din celălalt meci o ajută';
       if (h.needs === 'not_win') return `${n(h.team)} n-o bate pe ${n(h.vs)}`;
@@ -439,15 +438,16 @@ const GROUP_PHRASES = {
         case 'qualified': return `${n(t.team)} e deja calificată.`;
         case 'eliminated': return `${n(t.team)} e deja eliminată.`;
         case 'no_loss': return `${n(t.team)} se califică dacă nu pierde cu ${n(t.opponent)}.`;
-        case 'win': return `${n(t.team)} are nevoie de victorie cu ${n(t.opponent)}.`;
+        case 'win': return `${n(t.team)} trebuie să bată ${n(t.opponent)} ca să meargă mai departe.`;
         case 'conditional': return `${n(t.team)} se califică dacă bate ${n(t.opponent)} și ${h}.`;
-        case 'goal_diff': return `${n(t.team)} mai poate trece doar la golaveraj.`;
+        case 'goal_diff': return t.result.win.kind === 'gd'
+          ? `${n(t.team)} trebuie să bată ${n(t.opponent)}, și chiar și-atunci calificarea se decide la golaveraj.`
+          : `${n(t.team)} mai poate spera doar la un golaveraj favorabil.`;
         default: return `${n(t.team)} mai are șanse, dar calificarea atârnă de alte rezultate.`;
       }
     },
   },
   en: {
-    lead: (name) => `Group ${name} is settled tonight across two simultaneous matches.`,
     helper: (h, n) => {
       if (!h) return 'the other match falls their way';
       if (h.needs === 'not_win') return `${n(h.team)} fail to beat ${n(h.vs)}`;
@@ -461,9 +461,11 @@ const GROUP_PHRASES = {
         case 'qualified': return `${n(t.team)} are already through.`;
         case 'eliminated': return `${n(t.team)} are already out.`;
         case 'no_loss': return `${n(t.team)} go through if they avoid defeat to ${n(t.opponent)}.`;
-        case 'win': return `${n(t.team)} need to beat ${n(t.opponent)}.`;
+        case 'win': return `${n(t.team)} must beat ${n(t.opponent)} to go through.`;
         case 'conditional': return `${n(t.team)} go through if they beat ${n(t.opponent)} and ${h}.`;
-        case 'goal_diff': return `${n(t.team)} can only advance on goal difference.`;
+        case 'goal_diff': return t.result.win.kind === 'gd'
+          ? `${n(t.team)} must beat ${n(t.opponent)}, and even then it comes down to goal difference.`
+          : `${n(t.team)} can only hope a favourable goal difference is enough.`;
         default: return `${n(t.team)} are still alive, but it hinges on the other results.`;
       }
     },
@@ -473,13 +475,14 @@ const GROUP_PHRASES = {
 /**
  * Builds the fallback prose paragraph for one decisive group in `lang`.
  * `localizeName` maps a stored (Romanian) team name to the active language —
- * identity for RO, englishTeamName for EN.
+ * identity for RO, englishTeamName for EN. No boilerplate "decided in two
+ * simultaneous matches" lead — the render already heads the cluster with the
+ * group + round, so the paragraph goes straight to what each team needs.
  */
 export function synthesizeGroupParagraph(decisive, lang = 'ro', localizeName = (name) => name) {
   const phrases = GROUP_PHRASES[lang] ?? GROUP_PHRASES.ro;
   const n = (name) => localizeName(name);
-  const sentences = decisive.teams.map((t) =>
-    phrases.team(t, n, phrases.helper(t.result.win.helper, n)),
-  );
-  return [phrases.lead(decisive.name), ...sentences].join(' ');
+  return decisive.teams
+    .map((t) => phrases.team(t, n, phrases.helper(t.result.win.helper, n)))
+    .join(' ');
 }
