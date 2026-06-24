@@ -30,5 +30,10 @@ export function reuseNarration(stored, facts) {
     tonight.push({ id: f.id, alarm: s.alarm, why: s.why });
   }
 
-  return { headline: stored.headline, summary: stored.summary, matches, tonight };
+  // Decisive-group paragraphs ride along as-stored (bilingual); the caller
+  // localizes. Absent on ordinary nights and on pre-feature days — an empty list
+  // just means no joint paragraph, never a reason to unfreeze the morning.
+  const groups = (stored.groupScenarios ?? []).map((g) => ({ name: g.name, scenario: g.prose }));
+
+  return { headline: stored.headline, summary: stored.summary, matches, tonight, groups };
 }
