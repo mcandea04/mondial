@@ -6,12 +6,12 @@
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Faza grupelor se încheie: ultimul tren spre optimi",
-    "en": "Final whistle looms: Group stages reach a fever pitch"
+    "ro": "Finalul grupelor: Olanda și Japonia cu inima-n dinți, Ecuador la golaveraj",
+    "en": "Germany secure, others hold their breath"
   },
   "summary": {
-    "ro": "Faza grupelor D, E și F își decide diseară soarta, cu meciuri în paralel care pot schimba totul în ultimele minute. Pregătește-te pentru o noapte lungă de calcule și emoții, dacă vrei să prinzi în direct toate jocurile decisive.",
-    "en": "Tonight, the group stage concludes with do-or-die clashes across Groups D, E, and F. Several teams are fighting for their lives, while a few have already secured their passage to the knockouts."
+    "ro": "Astăzi trecem la ultima etapă a grupelor, cu trei grupe hotărâte să-și decidă calificările, unele până la golaveraj. Pregătește-te pentru o noapte lungă, cu meciuri în paralel, unde fiecare gol poate schimba soarta unei națiuni.",
+    "en": "The final group stage matches are upon us, with plenty of qualification spots still up for grabs. Germany and the USA can relax, but for many, it's a make-or-break night."
   },
   "matches": [],
   "groups": [],
@@ -29,8 +29,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live",
-        "en": "At 23:00, the final Group E games kick off simultaneously, with a place in the knockouts at stake for both Curaçao and Ivory Coast."
+        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live.",
+        "en": "At 23:00, Group E’s final matches kick off simultaneously; this one features Ivory Coast trying to hold off a plucky Curaçao side."
       }
     },
     {
@@ -46,8 +46,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live",
-        "en": "Kicking off at 23:00, this is the other crucial Group E fixture, where Ecuador fights to stay in the competition against the already qualified Germans."
+        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live.",
+        "en": "At 23:00, the other Group E finale pits Germany against Ecuador, with much still on the line for the South Americans."
       }
     },
     {
@@ -63,8 +63,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 02:00, ultimul meci din grupă se joacă în paralel, îți pune rezistența la încercare",
-        "en": "At 02:00, the final acts of Group F unfold with Japan and Sweden battling for a spot in the next round."
+        "ro": "la 02:00, finalul grupei se joacă în paralel — merită să sacrifici câteva ore de somn.",
+        "en": "At 02:00, Group F's climax sees Japan and Sweden duke it out in a must-watch affair."
       }
     },
     {
@@ -80,8 +80,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 02:00, naționala Tunisiei, eliminată deja, dispută un meci fără presiune — poți afla scorul dimineața",
-        "en": "Tunisia and the Netherlands meet at 02:00, but with the Dutch favourites and Tunisia already out, this is one to catch up on."
+        "ro": "la 02:00, Olanda, mare favorită, joacă împotriva unei echipe deja eliminate, așa că poți afla liniștit scorul mâine.",
+        "en": "The Netherlands face an already eliminated Tunisia at 02:00, a match you can easily catch the score of over breakfast."
       }
     },
     {
@@ -97,8 +97,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 05:00, un duel direct pentru calificare la o oră la care te lupți cu somnul",
-        "en": "Paraguay faces Australia at 05:00 in a match where both need a win, but the early hour means checking the result later is a sensible option."
+        "ro": "la 05:00, finalul grupei se joacă în paralel — rezultatele le afli abia dimineața, la cafea.",
+        "en": "At 05:00, the stakes are high for Paraguay and Australia, but it’s a late one to follow live unless you’re an insomniac."
       }
     },
     {
@@ -114,8 +114,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 05:00, americanii sunt deja calificați și Turcia eliminată, deci nu merită să-ți sacrifici odihna",
-        "en": "The USA, already through, plays eliminated Turkey at 05:00, making this fixture a formality you can easily read about over coffee."
+        "ro": "la 05:00, o formalitate pentru SUA, deja calificată, iar Turcia este eliminată — un meci ce nu merită să-ți fure somnul.",
+        "en": "The USA, already through, take on an eliminated Turkey at 05:00, a contest best enjoyed via highlights with your morning coffee."
       }
     }
   ],
@@ -123,27 +123,27 @@
     {
       "name": "D",
       "prose": {
-        "ro": "Grupa D se decide diseară în două meciuri simultane. SUA e deja calificată. Australia are nevoie de victorie cu Paraguay. Paraguay are nevoie de victorie cu Australia. Turcia e deja eliminată.",
-        "en": "Group D is settled tonight across two simultaneous matches. United States are already through. Australia need to beat Paraguay. Paraguay need to beat Australia. Türkiye are already out."
+        "ro": "SUA e deja calificată, iar Turcia este eliminată. Bătălia pentru locul doi se dă direct între Australia și Paraguay, care joacă totul pe cartea victoriei. În caz de egalitate, ambele echipe va depinde de golaveraj. Pe scurt: Australia și Paraguay merg mai departe doar dacă înving.",
+        "en": "The USA are already safely through, leaving Australia and Paraguay to battle it out for the second spot. Both teams need a win against each other; a draw for either means it all comes down to goal difference, which is always a nail-biter. Turkey are already out of the running and play only for pride. In short: USA are through, Australia and Paraguay need a win or face a goal difference gamble."
       }
     },
     {
       "name": "E",
       "prose": {
-        "ro": "Grupa E se decide diseară în două meciuri simultane. Germania e deja calificată. Coasta de Fildeș se califică dacă nu pierde cu Curaçao. Ecuador mai poate trece doar la golaveraj. Curaçao se califică dacă bate Coasta de Fildeș și Ecuador n-o bate pe Germania.",
-        "en": "Group E is settled tonight across two simultaneous matches. Germany are already through. Ivory Coast go through if they avoid defeat to Curaçao. Ecuador can only advance on goal difference. Curaçao go through if they beat Ivory Coast and Ecuador fail to beat Germany."
+        "ro": "Germania e deja calificată și joacă doar pentru prestigiul primului loc. Coastei de Fildeș îi este suficient un egal împotriva selecționatei din Curaçao pentru a merge mai departe. Curaçao se poate califica doar dacă învinge și Ecuador nu câștigă contra Germaniei. Ecuador, pe de altă parte, are nevoie de victorie la scor pentru a spera la golaveraj. Pe scurt: Germania e calificată, Coastei de Fildeș îi ajunge un egal, Curaçao are nevoie de victorie și o conjunctură, iar Ecuador doar la golaveraj.",
+        "en": "Germany have already secured their spot and are playing for top bragging rights against Ecuador. Ivory Coast only need a point against Curaçao to progress, which sounds like a comfortable evening. Curaçao, however, could still pull off a miracle if they beat Ivory Coast and Ecuador doesn’t beat Germany. Ecuador's path is the most precarious, needing a win against the Germans to even have a sniff at qualification through goal difference. In short: Germany are through, Ivory Coast need a draw, Curaçao need a win and help, Ecuador only on goal difference."
       }
     },
     {
       "name": "F",
       "prose": {
-        "ro": "Grupa F se decide diseară în două meciuri simultane. Olanda se califică dacă nu pierde cu Tunisia. Japonia se califică dacă nu pierde cu Suedia. Suedia are nevoie de victorie cu Japonia. Tunisia e deja eliminată.",
-        "en": "Group F is settled tonight across two simultaneous matches. Netherlands go through if they avoid defeat to Tunisia. Japan go through if they avoid defeat to Sweden. Sweden need to beat Japan. Tunisia are already out."
+        "ro": "Tunisia este eliminată, așa că meciul lor cu Olanda e mai mult o formalitate. Olandei și Japoniei le ajunge un rezultat de egalitate ca să se califice în faza următoare. Suedia merge mai departe doar dacă învinge Japonia, iar dacă Olanda pierde, Suedia poate trece chiar și la egalitate de puncte cu Olanda, la golaveraj. Pe scurt: Olandei și Japoniei le ajunge un egal, iar Suedia merge mai departe doar dacă învinge.",
+        "en": "The Netherlands only need a point against an already eliminated Tunisia to progress, which should be straightforward. Japan, meanwhile, also only need a point against Sweden to secure their spot. Sweden, however, must win against Japan to go through, otherwise their World Cup journey ends here. Tunisia are already out. In short: Netherlands and Japan need a draw, Sweden need a win, Tunisia are out."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Faza grupelor se încheie: ultimul tren spre optimi · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Final whistle looms: Group stages reach a fever pitch · no matches overnight\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Finalul grupelor: Olanda și Japonia cu inima-n dinți, Ecuador la golaveraj · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Germany secure, others hold their breath · no matches overnight\nhttps://mcandea04.github.io/mondial/"
   }
 }
