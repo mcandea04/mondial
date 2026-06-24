@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeGroupScenarios, computeScenarios, scenarioFor } from '../pipeline/scenarios.js';
+import { computeGroupScenarios, computeScenarios, scenarioFor, computeDecisiveGroupScenario } from '../pipeline/scenarios.js';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -1073,4 +1073,74 @@ test('scenarioFor looks up team across groups', () => {
   // All should be null.
   assert.equal(scenarioFor('W', scenarios), null);
   assert.equal(scenarioFor('NONEXISTENT', scenarios), null);
+});
+
+// ── computeDecisiveGroupScenario (joint, two simultaneous finals) ─────────────
+
+// Real Group E shape: Germania 6 (through), CdF 3, Ecuador 1, Curaçao 1.
+// Remaining (simultaneous): Germania-Ecuador and CdF-Curaçao.
+const GROUP_E_TABLE = [
+  row('Germania', 2, 6, 7),
+  row('Coasta de Fildeș', 2, 3, 0),
+  row('Ecuador', 2, 1, -1),
+  row('Curaçao', 2, 1, -6),
+];
+const GROUP_E_MATCHES = [
+  match('Germania', 'Curaçao', 7, 1),
+  match('Coasta de Fildeș', 'Ecuador', 1, 0),
+  match('Germania', 'Coasta de Fildeș', 2, 1),
+  match('Ecuador', 'Curaçao', 0, 0),
+];
+
+function teamCond(decisive, team) {
+  return decisive.teams.find((t) => t.team === team);
+}
+
+test('decisive scenario: already-through leader is tagged qualified', () => {
+  const d = computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES);
+  assert.equal(teamCond(d, 'Germania').tag, 'qualified');
+});
+
+test('decisive scenario: a draw-is-enough team is tagged no_loss against its opponent', () => {
+  const d = computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES);
+  const cdf = teamCond(d, 'Coasta de Fildeș');
+  assert.equal(cdf.tag, 'no_loss');
+  assert.equal(cdf.opponent, 'Curaçao');
+  assert.equal(cdf.result.win.kind, 'through');
+  assert.equal(cdf.result.draw.kind, 'through');
+});
+
+test('decisive scenario: a GD-only path is tagged goal_diff, never resolved', () => {
+  const d = computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES);
+  assert.equal(teamCond(d, 'Ecuador').tag, 'goal_diff');
+});
+
+test('decisive scenario: a win-and-help path is conditional with a cross-match helper', () => {
+  const d = computeDecisiveGroupScenario(GROUP_E_TABLE, GROUP_E_MATCHES);
+  const cw = teamCond(d, 'Curaçao');
+  assert.equal(cw.tag, 'conditional');
+  assert.equal(cw.opponent, 'Coasta de Fildeș');
+  // Only a win keeps Curaçao alive, and only if Ecuador does not beat Germania.
+  assert.equal(cw.result.win.kind, 'through_if');
+  assert.equal(cw.result.win.helper.needs, 'not_win');
+  assert.equal(cw.result.win.helper.team, 'Ecuador');
+});
+
+test('decisive scenario: returns null unless exactly two matches remain', () => {
+  // One match left (5 played) → not the simultaneous final pair.
+  const oneLeft = computeDecisiveGroupScenario(
+    [row('A', 2, 6), row('B', 3, 6), row('C', 3, 3), row('D', 2, 0)],
+    [
+      match('A', 'B', 1, 0), match('A', 'C', 1, 0),
+      match('B', 'C', 1, 0), match('B', 'D', 1, 0), match('C', 'D', 1, 0),
+    ],
+  );
+  assert.equal(oneLeft, null);
+
+  // Three matches left (3 played) → too early.
+  const threeLeft = computeDecisiveGroupScenario(
+    [row('A', 1, 3), row('B', 2, 3), row('C', 2, 3), row('D', 1, 0)],
+    [match('A', 'B', 1, 0), match('B', 'C', 1, 0), match('C', 'D', 1, 0)],
+  );
+  assert.equal(threeLeft, null);
 });

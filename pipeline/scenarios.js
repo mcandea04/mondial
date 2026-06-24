@@ -126,7 +126,11 @@ function isTop2(team, table, realH2H, remaining, outcomes) {
   if (totalAbove >= 2) return false;
   if (stillTied.length === 0) return totalAbove < 2;
 
-  // Remaining tie needs GD → uncertain.
+  // The team sits in an unresolved GD tie with `stillTied`. It is still guaranteed
+  // top-2 when even the worst case — every tied rival ranked above it on goal
+  // difference — leaves fewer than two teams above (the tie only settles 1st vs
+  // 2nd, not who qualifies). Only when GD could push it to 3rd is it uncertain.
+  if (totalAbove + stillTied.length <= 1) return true;
   return 'uncertain';
 }
 
@@ -312,4 +316,103 @@ export function scenarioFor(teamName, scenarios) {
     if (groupMap.has(teamName)) return groupMap.get(teamName) ?? null;
   }
   return null;
+}
+
+// ── Decisive-matchday joint scenario ──────────────────────────────────────────
+
+/**
+ * Describes the condition on the "other" simultaneous match [home, away] implied
+ * by which of its outcomes (home_win / draw / away_win) keep a team's path alive.
+ * Returns a small structured helper the narrator can voice, or null when every
+ * outcome (or none) helps.
+ */
+function helperFor([home, away], helpingOutcomes) {
+  const set = new Set(helpingOutcomes);
+  if (set.size === 0 || set.size === 3) return null;
+  const has = (o) => set.has(o);
+  if (has('home_win') && has('draw') && !has('away_win')) return { needs: 'not_win', team: away, vs: home };
+  if (!has('home_win') && has('draw') && has('away_win')) return { needs: 'not_win', team: home, vs: away };
+  if (has('home_win') && !has('draw') && !has('away_win')) return { needs: 'win', team: home, vs: away };
+  if (!has('home_win') && !has('draw') && has('away_win')) return { needs: 'win', team: away, vs: home };
+  if (has('home_win') && has('away_win') && !has('draw')) return { needs: 'not_draw', home, away };
+  if (set.size === 1 && has('draw')) return { needs: 'draw', home, away };
+  return { needs: 'other', home, away, outcomes: [...set] };
+}
+
+/** Collapses a team's per-result (win/draw/loss) classification into one primary tag. */
+function summariseTag(result) {
+  const k = (r) => r.kind;
+  if (k(result.win) === 'through' && k(result.draw) === 'through' && k(result.loss) === 'through') return 'qualified';
+  if (k(result.win) === 'out' && k(result.draw) === 'out' && k(result.loss) === 'out') return 'eliminated';
+  if (k(result.win) === 'through' && k(result.draw) === 'through') return 'no_loss';
+  if (k(result.win) === 'through_if') return 'conditional';
+  if (k(result.win) === 'through') return 'win';
+  if (k(result.win) === 'gd' || k(result.draw) === 'gd') return 'goal_diff';
+  return 'contention';
+}
+
+/**
+ * Structured per-team conditions for a group whose two final matches are
+ * simultaneous (the decisive matchday). Returns null unless exactly two matches
+ * remain. The narrator turns these facts into one prose paragraph.
+ *
+ * Per team we report, for each of its own three results (win/draw/loss), whether
+ * that lands the team in the top 2 ('through'), keeps it alive only on a specific
+ * other-match result ('through_if' + helper), comes down to goal difference
+ * ('gd'), or is hopeless ('out'). Nothing here resolves a GD tie — those surface
+ * as kind:'gd' / tag:'goal_diff' for the narrator to name, never compute.
+ */
+export function computeDecisiveGroupScenario(table, allGroupMatches) {
+  const teamSet = new Set(table.map((r) => r.team));
+  const remaining = deriveRemaining(teamSet, allGroupMatches);
+  if (remaining.length !== 2) return null;
+
+  const realH2H = buildH2H(allGroupMatches);
+  const outcomes = enumerateOutcomes(2);
+
+  const classifyOwn = (arr, otherMatch) => {
+    const vals = arr.map((x) => x.result);
+    if (vals.every((v) => v === true)) return { kind: 'through' };
+    if (vals.every((v) => v === false)) return { kind: 'out' };
+    const trueOthers = arr.filter((x) => x.result === true).map((x) => x.other);
+    if (trueOthers.length > 0) return { kind: 'through_if', helper: helperFor(otherMatch, trueOthers) };
+    if (vals.some((v) => v === 'uncertain')) return { kind: 'gd' };
+    return { kind: 'out' };
+  };
+
+  const teams = table.map((row) => {
+    const team = row.team;
+    const ownIdx = remaining.findIndex(([h, a]) => h === team || a === team);
+    const otherIdx = ownIdx === 0 ? 1 : 0;
+    const [oh, oa] = remaining[ownIdx];
+    const opponent = oh === team ? oa : oh;
+    const teamIsHome = oh === team;
+    const otherMatch = remaining[otherIdx];
+
+    const byOwn = { win: [], draw: [], loss: [] };
+    for (const o of outcomes) {
+      const result = isTop2(team, table, realH2H, remaining, o);
+      const own = o[ownIdx];
+      const key = teamIsHome
+        ? (own === 'home_win' ? 'win' : own === 'draw' ? 'draw' : 'loss')
+        : (own === 'away_win' ? 'win' : own === 'draw' ? 'draw' : 'loss');
+      byOwn[key].push({ other: o[otherIdx], result });
+    }
+
+    const resultByOwn = {
+      win: classifyOwn(byOwn.win, otherMatch),
+      draw: classifyOwn(byOwn.draw, otherMatch),
+      loss: classifyOwn(byOwn.loss, otherMatch),
+    };
+
+    return {
+      team,
+      opponent,
+      otherMatch: { home: otherMatch[0], away: otherMatch[1] },
+      result: resultByOwn,
+      tag: summariseTag(resultByOwn),
+    };
+  });
+
+  return { remaining, teams };
 }

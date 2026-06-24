@@ -222,34 +222,60 @@ function renderGroupCard(group, lang) {
   return card;
 }
 
-function renderTonight(tonight, lang) {
+function tonightRow(fixture, lang) {
+  const t = UI_STRINGS[lang];
+  const row = el('div', 'tonight-row');
+  const left = el('div');
+  const matchLine = el('span', 'team');
+  matchLine.append(
+    ...[
+      flagImg(fixture.homeCode, 'flag-sm'),
+      el('span', 'tonight-match', `${teamCode(fixture.home) ?? localizeTeam(fixture.home, lang)} – ${teamCode(fixture.away) ?? localizeTeam(fixture.away, lang)}`),
+      flagImg(fixture.awayCode, 'flag-sm'),
+    ].filter(Boolean),
+  );
+  const watch = alarmIsWatch(localize(fixture.alarm, 'ro'));
+  const badgeClass = watch ? 'badge-ok' : 'badge-muted';
+  left.append(
+    matchLine,
+    el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`),
+    el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)),
+  );
+  const whyText = localize(fixture.why, lang);
+  if (whyText) {
+    left.append(el('br'), el('span', 'tonight-why', whyText));
+  }
+  row.append(left);
+  return row;
+}
+
+function renderTonight(tonight, groupScenarios, lang) {
   const t = UI_STRINGS[lang];
   const card = el('div', 'card');
   card.append(el('p', 'card-label', t.tonightTitle));
-  for (const fixture of tonight) {
-    const row = el('div', 'tonight-row');
-    const left = el('div');
-    const matchLine = el('span', 'team');
-    matchLine.append(
-      ...[
-        flagImg(fixture.homeCode, 'flag-sm'),
-        el('span', 'tonight-match', `${teamCode(fixture.home) ?? localizeTeam(fixture.home, lang)} – ${teamCode(fixture.away) ?? localizeTeam(fixture.away, lang)}`),
-        flagImg(fixture.awayCode, 'flag-sm'),
-      ].filter(Boolean),
-    );
-    const watch = alarmIsWatch(localize(fixture.alarm, 'ro'));
-    const badgeClass = watch ? 'badge-ok' : 'badge-muted';
-    left.append(
-      matchLine,
-      el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`),
-      el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)),
-    );
-    const whyText = localize(fixture.why, lang);
-    if (whyText) {
-      left.append(el('br'), el('span', 'tonight-why', whyText));
+
+  // Decisive groups (both finals simultaneous tonight) cluster their pair of
+  // fixtures under a header with the joint scenario paragraph beneath; every
+  // other fixture stays in the flat list below.
+  const clustered = new Set();
+
+  for (const { name, prose } of groupScenarios ?? []) {
+    const fixtures = tonight.filter((f) => f.group === name);
+    if (fixtures.length < 2) continue; // need the simultaneous pair to cluster
+    const block = el('div', 'tonight-group');
+    block.append(el('p', 'tonight-group-label', t.decisiveRound(name)));
+    for (const f of fixtures) {
+      clustered.add(f);
+      block.append(tonightRow(f, lang));
     }
-    row.append(left);
-    card.append(row);
+    const proseText = localize(prose, lang);
+    if (proseText) block.append(el('p', 'tonight-group-scenario', proseText));
+    card.append(block);
+  }
+
+  for (const fixture of tonight) {
+    if (clustered.has(fixture)) continue;
+    card.append(tonightRow(fixture, lang));
   }
   return card;
 }
@@ -286,7 +312,7 @@ export function renderDigest(root, digest, lang = 'ro') {
   }
   for (const match of digest.matches) root.append(renderMatchCard(match, lang));
   for (const group of digest.groups) root.append(renderGroupCard(group, lang));
-  if (digest.tonight.length) root.append(renderTonight(digest.tonight, lang));
+  if (digest.tonight.length) root.append(renderTonight(digest.tonight, digest.groupScenarios, lang));
   root.append(renderShareBar(digest, lang));
 }
 

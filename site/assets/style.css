@@ -208,6 +208,28 @@ tbody tr td { padding: 5px 0; }
 .tonight-time  { font-size: 13px; color: var(--muted); }
 .tonight-why   { font-size: 12px; color: var(--muted); }
 
+/* Decisive-matchday cluster: the two simultaneous group finals + joint scenario. */
+.tonight-group {
+  margin: 4px 0 10px;
+  padding: 8px 10px;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+}
+.tonight-group + .tonight-group { margin-top: 10px; }
+.tonight-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+.tonight-group-scenario {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
 /* ── WhatsApp share ── */
 .share-bar {
   display: flex;

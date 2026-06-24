@@ -22,6 +22,7 @@ test('rebuilds narration from a stored digest', () => {
     summary: 'Două propoziții. Exact două.',
     matches: [{ id: 1, pill: 'Pastila 1', drama: 4 }],
     tonight: [{ id: 3, alarm: 'merită văzut', why: 'Motivul' }],
+    groups: [],
   });
 });
 
@@ -62,6 +63,7 @@ test('reuseNarrationEn rebuilds the English side', () => {
     headline: 'EN h', summary: 'EN s',
     matches: [{ id: 1, pill: 'EN p', drama: 4 }],
     tonight: [{ id: 3, alarm: 'worth watching', why: 'EN w' }],
+    groups: [],
   });
 });
 

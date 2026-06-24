@@ -46,7 +46,7 @@ import {
   CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
   localizeProse, factsWithEnglishVerdicts, englishVerdict,
 } from './narration-core.js';
-import { computeScenarios, scenarioFor } from './scenarios.js';
+import { computeScenarios, scenarioFor, computeDecisiveGroupScenario } from './scenarios.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser, buildTeaserEn } from './teaser.js';
@@ -200,7 +200,16 @@ export function reuseNarrationEn(stored, facts) {
     if (!why || !alarm) return null;
     tonight.push({ id: f.id, alarm, why });
   }
-  return { headline, summary, matches, tonight };
+
+  // EN group paragraphs are optional: include those with an EN side, never block
+  // EN reuse over a missing one (older decisive days may have RO-only group prose).
+  const groups = [];
+  for (const g of stored.groupScenarios ?? []) {
+    const scenario = enOrNull(g.prose);
+    if (scenario) groups.push({ name: g.name, scenario });
+  }
+
+  return { headline, summary, matches, tonight, groups };
 }
 
 function requireEnv(name) {
@@ -568,8 +577,31 @@ async function main() {
     };
   });
 
-  const factsForNarration = { date, finished: facts.finished, tonight: tonightWithScenarios, standings };
+  // Decisive groups: a group whose two final matches both kick off tonight (the
+  // simultaneous final matchday). For each, the narrator gets the structured
+  // per-team conditions and writes one unified paragraph in `groups`.
+  const tonightPairs = new Set(facts.tonight.map((f) => [f.home, f.away].sort().join('|')));
+  const decisiveGroups = [];
+  for (const g of facts.standings) {
+    const groupTeams = new Set(g.table.map((r) => r.team));
+    const groupMatches = allMatchesForScenarios.filter(
+      (m) => groupTeams.has(m.home) && groupTeams.has(m.away),
+    );
+    const decisive = computeDecisiveGroupScenario(g.table, groupMatches);
+    if (!decisive) continue;
+    const bothTonight = decisive.remaining.every(
+      ([h, a]) => tonightPairs.has([h, a].sort().join('|')),
+    );
+    if (bothTonight) decisiveGroups.push({ name: g.name, ...decisive });
+  }
+
+  const factsForNarration = {
+    date, finished: facts.finished, tonight: tonightWithScenarios, standings,
+    ...(decisiveGroups.length > 0 && { decisiveGroups }),
+  };
   // Hashed AFTER mergeEnrichment so a transient outage doesn't flip the hash.
+  // decisiveGroups is excluded from the hash for the same reason as the per-fixture
+  // scenarios: it derives deterministically from scores/standings already hashed.
   const hash = factsHash(factsForNarration);
 
   // Freeze: when the stored digest was built from the same facts, reuse its
@@ -601,6 +633,10 @@ async function main() {
           id: t.id,
           alarm: localizeProse(t.alarm, 'ro'),
           why: localizeProse(t.why, 'ro'),
+        })),
+        groups: (reusedRo.groups ?? []).map((g) => ({
+          name: g.name,
+          scenario: localizeProse(g.scenario, 'ro'),
         })),
       };
       narratorRo = localizeNarrator(existing.narrator, 'ro') ?? 'gemini';
@@ -641,6 +677,13 @@ async function main() {
     (existing?.matches ?? []).map((m) => [m.id, m.highlight]),
   );
 
+  // Joint group-scenario paragraphs (decisive matchday), keyed by group name.
+  const roGroups = new Map((narration.groups ?? []).map((g) => [g.name, g.scenario]));
+  const enGroups = new Map((enNarration?.groups ?? []).map((g) => [g.name, g.scenario]));
+  const groupScenarios = decisiveGroups
+    .map((d) => ({ name: d.name, prose: bilingual(roGroups.get(d.name) ?? '', enGroups.get(d.name)) }))
+    .filter((g) => g.prose.ro);
+
   const digest = {
     date,
     factsHash: hash,
@@ -660,6 +703,7 @@ async function main() {
       away: m.away,
       homeCode: m.homeCode ?? null,
       awayCode: m.awayCode ?? null,
+      group: m.group ?? null,
       kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
       // The watch verdict is canonical (Romanian); the English alarm is its
       // mapped form, never the English model's own call — so the two never
@@ -670,6 +714,7 @@ async function main() {
       ),
       why: bilingual(narrationByFixture.get(m.id)?.why ?? '', enByFixture.get(m.id)?.why),
     })),
+    ...(groupScenarios.length > 0 && { groupScenarios }),
     teaser: bilingual(
       buildTeaser({ headline: narration.headline, matchCount: facts.finished.length, siteUrl }),
       enNarration ? buildTeaserEn({ headline: enNarration.headline, matchCount: facts.finished.length, siteUrl }) : undefined,
