@@ -2,16 +2,13 @@
   "date": "2026-06-24",
   "factsHash": "e3dab7a10c24d8c6d8ea0655a456e708940ef96125c5a0c5ddd88fe5b0f6ff92",
   "narrator": {
-    "ro": "gemini-polish",
-    "en": "gemini-polish"
+    "ro": "gemini"
   },
   "headline": {
-    "ro": "Ronaldo a scos racheta, Anglia a dormit cu golul în brațe",
-    "en": "Ronaldo's Rout, England's Blank"
+    "ro": "Ronaldo a marcat de două ori, Anglia a chinuit mingea"
   },
   "summary": {
-    "ro": "Portugalia a făcut instrucție cu Uzbekistanul, Ronaldo bifând o dublă pe tabelă. În schimb, Anglia a arătat că posesia nu înseamnă puncte, remizând alb cu Ghana.",
-    "en": "Cristiano Ronaldo bagged a brace as Portugal were in rampant mood, while England drew a blank in a frustrating stalemate. Colombia secured their qualification with a late winner, leaving the group stage finely poised for some of the big names."
+    "ro": "Portugalia a defilat cu Uzbekistan, unde Cristiano Ronaldo a reușit o dublă, în timp ce Anglia a demonstrat că posesia nu aduce întotdeauna goluri, remizând alb cu Ghana. Croația și Columbia au obținut victorii strânse, încheind o zi cu puține surprize majore."
   },
   "matches": [
     {
@@ -99,8 +96,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Ronaldo a scos racheta din minutul 6, iar Portugalia a defilat fără emoții în fața Uzbekistanului. Cristiano a făcut dubla până la pauză, cu un șut din careu și o execuție din dreapta careului la pasa lui Bruno Fernandes, iar Abduvohid Nematov i-a dat o mână de ajutor cu un autogol. A fost o plimbare, nu un meci.",
-        "en": "Portugal were in rampant mood, with Cristiano Ronaldo bagging a brace early on, including a 6th-minute opener from close range. An own goal and Rafael Leão's late strike sealed a five-goal rout, leaving Uzbekistan wondering what hit them."
+        "ro": "Portugalia a defilat cu Uzbekistan, iar Cristiano Ronaldo a semnat o dublă încă din prima repriză. Chiar și un autogol a contribuit la scorul fluviu, lăsând adversarii să plece cu cinci valize de regrete."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/4se3Lqdtrvu86pMuaqlUpn"
@@ -139,8 +135,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Englezii au ținut mingea aproape 80% din timp și au tras de 19 ori la poartă, dar au uitat să marcheze. Ghana a plecat cu un punct nesperat, lăsând selecționata lui Southgate să mediteze la diferența dintre dominare și eficiență.",
-        "en": "England drew a blank against Ghana, despite hoarding 78.9% possession and firing 19 shots. Ghana's keeper must have been on holiday, as only three of those were on target. A point they'll likely not be proud of."
+        "ro": "Anglia a demonstrat că poți ține mingea aproape 80% din timp și să nu înscrii niciun gol, plecând cu un punct amar împotriva Ghanei. Cele 19 șuturi spre poartă au fost doar cifre seci, fără sare."
       },
       "drama": 1,
       "highlight": "https://www.fifa.com/en/watch/YMV6IJCxemtC0s8HtqPn3"
@@ -190,8 +185,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Croația a câștigat la limită, grație golului marcat cu stângul de Ante Budimir în minutul 54. Defensiva Panamei a rezistat aproape o oră, dar tot acasă a plecat cu mâna goală.",
-        "en": "Croatia managed a narrow 1-0 win against Panama, thanks to Ante Budimir's 54th-minute strike. Panama fought hard but couldn't find the net, now staring down elimination."
+        "ro": "Croația a obținut o victorie la limită împotriva Panamei, prin golul lui Ante Budimir din minutul 54. Echipa din America Centrală a tras de 8 ori la poartă, dar n-a reușit să pună probleme serioase portarului croat."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/5ewcE9E2gBUvXwyGfkEz1n"
@@ -241,8 +235,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Columbia a forțat mult, cu 20 de șuturi și 9 pe poartă, dar a spart gheața abia în minutul 76, când Daniel Muñoz a marcat cu stângul din dreapta careului, la pasa lui Quintero. Portarul congolez a reușit opt parade, păstrând diferența minimă până spre final.",
-        "en": "Colombia secured their qualification with a 1-0 win over Democratic Republic of the Congo, Daniel Muñoz converting Juan Fernando Quintero's cross in the 76th minute. The Democratic Republic of the Congo keeper earned his wages with 8 saves to keep the score respectable."
+        "ro": "Columbia s-a chinuit serios să deschidă scorul împotriva unei Republici Democrate Congo bine organizate, portarul african bifând 8 intervenții salvatoare. Daniel Muñoz a găsit drumul spre poartă abia în minutul 76, la pasa lui Quintero, oferind o victorie muncită."
       },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/26nrhBN70NStG6P9xmqto7"
@@ -363,14 +356,13 @@
       "away": "Qatar",
       "homeCode": "ba",
       "awayCode": "qa",
+      "group": "B",
       "kickoffEEST": "22:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "citești dimineața"
       },
       "why": {
-        "ro": "La 22:00, ambele echipe au calcule de calificare complicate, așa că poți afla rezultatul mâine.",
-        "en": "Bosnia and Herzegovina against Qatar at 22:00 has little riding on it, with both teams needing a miracle to progress."
+        "ro": "La 22:00, este un meci al speranțelor firave pentru Bosnia și Herțegovina și Qatar, ambele dependente de golaveraj."
       }
     },
     {
@@ -379,14 +371,13 @@
       "away": "Canada",
       "homeCode": "ch",
       "awayCode": "ca",
+      "group": "B",
       "kickoffEEST": "22:00",
       "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+        "ro": "merită văzut"
       },
       "why": {
-        "ro": "La 22:00, Elveția și Canada își joacă șansele de a avansa, iar un meci cu miză la o oră rezonabilă merită urmărit.",
-        "en": "Switzerland and Canada clash at 22:00 with both sides still in the qualification math, making it a compelling watch."
+        "ro": "La 22:00, Elveția și Canada se duelează direct pentru un loc în optimi, iar un egal le-ar trimite pe amândouă mai departe."
       }
     },
     {
@@ -395,14 +386,13 @@
       "away": "Haiti",
       "homeCode": "ma",
       "awayCode": "ht",
+      "group": "C",
       "kickoffEEST": "01:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "citești dimineața"
       },
       "why": {
-        "ro": "La 01:00, Marocul joacă împotriva lui Haiti, o echipă eliminată, deci nu merită să-ți sacrifici somnul.",
-        "en": "Morocco and Haiti at 01:00 is a late one that you can skip and simply check the score over breakfast."
+        "ro": "La 01:00, Maroc are nevoie de un punct împotriva deja eliminatei Haiti, așa că poți afla rezultatul la cafeaua de dimineață."
       }
     },
     {
@@ -411,14 +401,13 @@
       "away": "Brazilia",
       "homeCode": "gb-sct",
       "awayCode": "br",
+      "group": "C",
       "kickoffEEST": "01:00",
       "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+        "ro": "citești dimineața"
       },
       "why": {
-        "ro": "La 01:00, Scoția poate produce o victorie-șoc în fața Braziliei și să se califice, un scenariu care face noaptea mai scurtă.",
-        "en": "Scotland need to beat Brazil at 01:00 to qualify, making this late-night fixture a must-see for sheer drama."
+        "ro": "La 01:00, Scoția trebuie să învingă Brazilia pentru a se califica, dar acest duel nu-ți cere să pierzi noaptea."
       }
     },
     {
@@ -427,14 +416,13 @@
       "away": "Mexic",
       "homeCode": "cz",
       "awayCode": "mx",
+      "group": "A",
       "kickoffEEST": "04:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "citești dimineața"
       },
       "why": {
-        "ro": "La 04:00, Mexicul este deja calificat, iar Cehia are calcule complicate, așa că poți recupera somnul.",
-        "en": "The Czech Republic facing Mexico at 04:00 is one for the insomniacs, with the Czechs only having an outside chance to advance."
+        "ro": "La 04:00, Mexic e deja calificată, iar Cehia are șanse minime la golaveraj, deci e mai bine să te pregătești de muncă."
       }
     },
     {
@@ -443,19 +431,17 @@
       "away": "Coreea de Sud",
       "homeCode": "za",
       "awayCode": "kr",
+      "group": "A",
       "kickoffEEST": "04:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "citești dimineața"
       },
       "why": {
-        "ro": "La o oră atât de timpurie, ambele Corei de Sud (și Africa de Sud) au scenarii complicate de calificare, deci e mai bine să aștepți rezumatul.",
-        "en": "South Africa and South Korea at 04:00 offers some qualification math, but it's probably best to catch the highlights tomorrow."
+        "ro": "La 04:00, Africa de Sud are o misiune complicată pentru calificare, iar Coreea de Sud are nevoie doar de un egal, așa că somnul e mai bun."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Ronaldo a scos racheta, Anglia a dormit cu golul în brațe · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Ronaldo's Rout, England's Blank · 4 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Ronaldo a marcat de două ori, Anglia a chinuit mingea · 4 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
   }
 }
