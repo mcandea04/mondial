@@ -1,20 +1,627 @@
 {
   "date": "2026-06-25",
-  "factsHash": "e5fb7ca13a21cfe72e8cf0447e52f99482aa722f00b2e5667f6db085f2d2dc89",
+  "factsHash": "a693eb2a6ee8ecb004cccdb26458e9f595b89b3ec5523595519a04524dc3ff74",
   "narrator": {
     "ro": "gemini-polish",
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Finalul grupelor: Olanda și Japonia cu inima-n dinți, Ecuador la golaveraj",
-    "en": "Germany secure, others hold their breath"
+    "ro": "Bounou a lăsat poarta deschisă; Vini Jr. a făcut dubla.",
+    "en": "Morocco's keeper gifts one, then bags four. Brazil cruising."
   },
   "summary": {
-    "ro": "Astăzi trecem la ultima etapă a grupelor, cu trei grupe hotărâte să-și decidă calificările, unele până la golaveraj. Pregătește-te pentru o noapte lungă, cu meciuri în paralel, unde fiecare gol poate schimba soarta unei națiuni.",
-    "en": "The final group stage matches are upon us, with plenty of qualification spots still up for grabs. Germany and the USA can relax, but for many, it's a make-or-break night."
+    "ro": "Brazilia și Mexicul au impresionat pe teren, în timp ce Africa de Sud a reușit o victorie la limită în fața Coreei de Sud, deși a avut o posesie modestă. Marocul a înscris patru goluri, însă a primit două, inclusiv un autogol al portarului, iar Elveția a muncit serios pentru cele trei puncte cu Canada.",
+    "en": "Morocco came from behind twice in a six-goal thriller to secure their place, while the Seleção qualified with a comfortable win over Scotland. Mexico and South Africa moved on from Group A, with Switzerland also punching their ticket."
   },
-  "matches": [],
-  "groups": [],
+  "matches": [
+    {
+      "id": 760462,
+      "home": "Bosnia și Herțegovina",
+      "away": "Qatar",
+      "homeCode": "ba",
+      "awayCode": "qa",
+      "group": "B",
+      "utcDate": "2026-06-24T19:00Z",
+      "score": [
+        3,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Kerim Alajbegovic",
+          "minute": "29",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Ivan Basic",
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
+        },
+        {
+          "name": "Mahmoud Abunada",
+          "minute": "34",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
+        },
+        {
+          "name": "Hassan Al-Haydos",
+          "minute": "42",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Edmílson Junior",
+          "bodyPart": "dreptul",
+          "placement": null
+        },
+        {
+          "name": "Ermin Mahmic",
+          "minute": "80",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Dennis Hadzikadunic",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "9",
+          "wonCorners": "5",
+          "saves": "2",
+          "possessionPct": "54.4",
+          "totalShots": "14",
+          "shotsOnTarget": "5"
+        },
+        "away": {
+          "foulsCommitted": "14",
+          "wonCorners": "5",
+          "saves": "3",
+          "possessionPct": "45.6",
+          "totalShots": "9",
+          "shotsOnTarget": "3"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Bosnia a deschis scorul prin Alajbegovic, iar Abunada le-a oferit un autogol generos qatarezilor. Chiar dacă Al-Haydos a redus din diferență, Mahmic a asigurat victoria în minutul 80.",
+        "en": "Bosnia and Herzegovina did well to score three, though Qatar's Mahmoud Abunada decided to help them out with an own goal in the 34th minute. Ermin Mahmic's late strike in the 80th minute secured the win, keeping Bosnia's knockout hopes alive."
+      },
+      "drama": 3,
+      "highlight": "https://www.fifa.com/en/watch/5CVV8X8QSnZDr6uKOh31ff"
+    },
+    {
+      "id": 760463,
+      "home": "Elveția",
+      "away": "Canada",
+      "homeCode": "ch",
+      "awayCode": "ca",
+      "group": "B",
+      "utcDate": "2026-06-24T19:00Z",
+      "score": [
+        2,
+        1
+      ],
+      "scorers": [
+        {
+          "name": "Rubén Vargas",
+          "minute": "46",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Johan Manzambi",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Johan Manzambi",
+          "minute": "57",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Breel Embolo",
+          "bodyPart": "dreptul",
+          "placement": "din dreapta careului"
+        },
+        {
+          "name": "Promise David",
+          "minute": "76",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "19",
+          "wonCorners": "2",
+          "saves": "6",
+          "possessionPct": "55.3",
+          "totalShots": "6",
+          "shotsOnTarget": "4"
+        },
+        "away": {
+          "foulsCommitted": "13",
+          "wonCorners": "7",
+          "saves": "2",
+          "possessionPct": "44.7",
+          "totalShots": "13",
+          "shotsOnTarget": "7"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Elveția a marcat de două ori după pauză prin Vargas și Manzambi, în minutele 46 și 57. Degeaba a tras Canada de șapte ori pe poartă, că portarul elvețian a avut șase intervenții salvatoare și a ținut-o la respect până la final.",
+        "en": "Switzerland made hard work of it, but two goals within twelve minutes of the second half kicking off from Rubén Vargas and Johan Manzambi were enough to see them through. Canada pulled one back through Promise David, but it wasn't enough to spoil Switzerland's party."
+      },
+      "drama": 3,
+      "highlight": "https://www.fifa.com/en/watch/1KiU2uFEKhMDYVNebmF5Zg"
+    },
+    {
+      "id": 760464,
+      "home": "Maroc",
+      "away": "Haiti",
+      "homeCode": "ma",
+      "awayCode": "ht",
+      "group": "C",
+      "utcDate": "2026-06-24T22:00Z",
+      "score": [
+        4,
+        2
+      ],
+      "scorers": [
+        {
+          "name": "Yassine Bounou",
+          "minute": "10",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": true,
+          "assist": null,
+          "bodyPart": null,
+          "placement": null
+        },
+        {
+          "name": "Achraf Hakimi",
+          "minute": "39",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "stângul",
+          "placement": null
+        },
+        {
+          "name": "Wilson Isidor",
+          "minute": "43",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Jean-Kévin Duverne",
+          "bodyPart": "dreptul",
+          "placement": "din afara careului"
+        },
+        {
+          "name": "Ismael Saibari",
+          "minute": "45+1",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Achraf Hakimi",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Soufiane Rahimi",
+          "minute": "78",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Chadi Riad",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Gessime Yassine",
+          "minute": "89",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Soufiane Rahimi",
+          "bodyPart": "stângul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "10",
+          "wonCorners": "9",
+          "saves": "1",
+          "possessionPct": "69",
+          "totalShots": "22",
+          "shotsOnTarget": "11"
+        },
+        "away": {
+          "foulsCommitted": "18",
+          "wonCorners": "1",
+          "saves": "8",
+          "possessionPct": "31",
+          "totalShots": "9",
+          "shotsOnTarget": "2"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Marocul a început cu stângul, Yassine Bounou înscriind un autogol de cascadorii râsului în minutul 10. Chiar dacă au condus la pauză după golurile lui Hakimi și Saibari, marocanii au avut nevoie de patru reușite pentru a o învinge pe Haiti, care a marcat și ea de două ori.",
+        "en": "Morocco truly made a meal of this one, falling behind to a Yassine Bounou own goal after just ten minutes and then a second through Wilson Isidor. They came from behind twice, with Achraf Hakimi and Ismael Saibari levelling before half-time, then Soufiane Rahimi and Gessime Yassine sealed a frantic win."
+      },
+      "drama": 4,
+      "highlight": "https://www.fifa.com/en/watch/4lDtvGJGbp8eEdlUUUZo3I"
+    },
+    {
+      "id": 760465,
+      "home": "Scoția",
+      "away": "Brazilia",
+      "homeCode": "gb-sct",
+      "awayCode": "br",
+      "group": "C",
+      "utcDate": "2026-06-24T22:00Z",
+      "score": [
+        0,
+        3
+      ],
+      "scorers": [
+        {
+          "name": "Vinícius Júnior",
+          "minute": "7",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Rayan",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Vinícius Júnior",
+          "minute": "45+3",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": null,
+          "bodyPart": "cu capul",
+          "placement": null
+        },
+        {
+          "name": "Matheus Cunha",
+          "minute": "60",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Bruno Guimarães",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "10",
+          "wonCorners": "7",
+          "saves": "5",
+          "possessionPct": "46",
+          "totalShots": "14",
+          "shotsOnTarget": "5"
+        },
+        "away": {
+          "foulsCommitted": "11",
+          "wonCorners": "7",
+          "saves": "5",
+          "possessionPct": "54",
+          "totalShots": "21",
+          "shotsOnTarget": "9"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Vinícius Júnior a făcut dubla, deschizând scorul în minutul 7 și închizând prima repriză cu o lovitură de cap. Brazilia a dominat clar, iar Scoția, deși a tras de 14 ori la poartă, n-a găsit calea spre gol și își complică serios viața în grupă.",
+        "en": "The Seleção were cruising to victory against Scotland, with Vinícius Júnior bagging a brace before half-time. Matheus Cunha added a third on the hour mark, securing Brazil's top spot in the group."
+      },
+      "drama": 2,
+      "highlight": "https://www.fifa.com/en/watch/xuXoaffqDTNw6l4ejzMrz"
+    },
+    {
+      "id": 760467,
+      "home": "Cehia",
+      "away": "Mexic",
+      "homeCode": "cz",
+      "awayCode": "mx",
+      "group": "A",
+      "utcDate": "2026-06-25T01:00Z",
+      "score": [
+        0,
+        3
+      ],
+      "scorers": [
+        {
+          "name": "Mateo Chávez",
+          "minute": "55",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Luis Romo",
+          "bodyPart": "stângul",
+          "placement": "din careu"
+        },
+        {
+          "name": "Julián Quiñones",
+          "minute": "61",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Jorge Sánchez",
+          "bodyPart": "dreptul",
+          "placement": null
+        },
+        {
+          "name": "Álvaro Fidalgo",
+          "minute": "90+4",
+          "team": "away",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Roberto Alvarado",
+          "bodyPart": "dreptul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "9",
+          "wonCorners": "5",
+          "saves": "2",
+          "possessionPct": "51.6",
+          "totalShots": "13",
+          "shotsOnTarget": "1"
+        },
+        "away": {
+          "foulsCommitted": "13",
+          "wonCorners": "1",
+          "saves": "1",
+          "possessionPct": "48.4",
+          "totalShots": "11",
+          "shotsOnTarget": "5"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Mexicul a rezolvat meciul în repriza secundă, cu trei goluri marcate de Chávez, Quiñones și Fidalgo, ultimul în prelungiri. Cehia a avut mai multă posesie, dar doar un șut pe poartă și a plecat acasă cu zero puncte.",
+        "en": "Mexico left it late to break the deadlock, but Mateo Chávez's 55th-minute strike opened the floodgates for a comfortable win against the Czech Republic. Julián Quiñones and Álvaro Fidalgo added a second and third, sending the Czechs home empty-handed."
+      },
+      "drama": 2,
+      "highlight": null
+    },
+    {
+      "id": 760466,
+      "home": "Africa de Sud",
+      "away": "Coreea de Sud",
+      "homeCode": "za",
+      "awayCode": "kr",
+      "group": "A",
+      "utcDate": "2026-06-25T01:00Z",
+      "score": [
+        1,
+        0
+      ],
+      "scorers": [
+        {
+          "name": "Thapelo Maseko",
+          "minute": "63",
+          "team": "home",
+          "penalty": false,
+          "ownGoal": false,
+          "assist": "Tshepang Moremi",
+          "bodyPart": "stângul",
+          "placement": "din careu"
+        }
+      ],
+      "events": [],
+      "stats": {
+        "home": {
+          "foulsCommitted": "7",
+          "wonCorners": "4",
+          "saves": "2",
+          "possessionPct": "31.6",
+          "totalShots": "13",
+          "shotsOnTarget": "4"
+        },
+        "away": {
+          "foulsCommitted": "9",
+          "wonCorners": "6",
+          "saves": "3",
+          "possessionPct": "68.4",
+          "totalShots": "8",
+          "shotsOnTarget": "3"
+        }
+      },
+      "decidedOnPenalties": false,
+      "pill": {
+        "ro": "Africa de Sud a dat lovitura în minutul 63 prin Maseko, obținând prima ei victorie din grupă. Coreea de Sud a dominat la posesie, cu aproape 70%, dar degeaba a ținut mingea, că punctele au plecat în altă direcție.",
+        "en": "South Africa secured their qualification with a tidy finish from Thapelo Maseko in the 63rd minute, despite South Korea dominating possession. The Bafana Bafana keeper, who made two saves, earned his wages and a spot in the next round."
+      },
+      "drama": 3,
+      "highlight": null
+    }
+  ],
+  "groups": [
+    {
+      "name": "A",
+      "table": [
+        {
+          "team": "Mexic",
+          "code": "mx",
+          "p": 3,
+          "w": 3,
+          "d": 0,
+          "l": 0,
+          "gf": 6,
+          "gd": 6,
+          "pts": 9,
+          "status": "calificată"
+        },
+        {
+          "team": "Africa de Sud",
+          "code": "za",
+          "p": 3,
+          "w": 1,
+          "d": 1,
+          "l": 1,
+          "gf": 2,
+          "gd": -1,
+          "pts": 4,
+          "status": "calificată"
+        },
+        {
+          "team": "Coreea de Sud",
+          "code": "kr",
+          "p": 3,
+          "w": 1,
+          "d": 0,
+          "l": 2,
+          "gf": 2,
+          "gd": -1,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Cehia",
+          "code": "cz",
+          "p": 3,
+          "w": 0,
+          "d": 1,
+          "l": 2,
+          "gf": 2,
+          "gd": -4,
+          "pts": 1,
+          "status": "eliminată"
+        }
+      ]
+    },
+    {
+      "name": "B",
+      "table": [
+        {
+          "team": "Elveția",
+          "code": "ch",
+          "p": 3,
+          "w": 2,
+          "d": 1,
+          "l": 0,
+          "gf": 7,
+          "gd": 4,
+          "pts": 7,
+          "status": "calificată"
+        },
+        {
+          "team": "Canada",
+          "code": "ca",
+          "p": 3,
+          "w": 1,
+          "d": 1,
+          "l": 1,
+          "gf": 8,
+          "gd": 5,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Bosnia și Herțegovina",
+          "code": "ba",
+          "p": 3,
+          "w": 1,
+          "d": 1,
+          "l": 1,
+          "gf": 5,
+          "gd": -1,
+          "pts": 4,
+          "status": "în cărți"
+        },
+        {
+          "team": "Qatar",
+          "code": "qa",
+          "p": 3,
+          "w": 0,
+          "d": 1,
+          "l": 2,
+          "gf": 2,
+          "gd": -8,
+          "pts": 1,
+          "status": "eliminată"
+        }
+      ]
+    },
+    {
+      "name": "C",
+      "table": [
+        {
+          "team": "Brazilia",
+          "code": "br",
+          "p": 3,
+          "w": 2,
+          "d": 1,
+          "l": 0,
+          "gf": 7,
+          "gd": 6,
+          "pts": 7,
+          "status": "calificată"
+        },
+        {
+          "team": "Maroc",
+          "code": "ma",
+          "p": 3,
+          "w": 2,
+          "d": 1,
+          "l": 0,
+          "gf": 6,
+          "gd": 3,
+          "pts": 7,
+          "status": "calificată"
+        },
+        {
+          "team": "Scoția",
+          "code": "gb-sct",
+          "p": 3,
+          "w": 1,
+          "d": 0,
+          "l": 2,
+          "gf": 1,
+          "gd": -3,
+          "pts": 3,
+          "status": "în cărți"
+        },
+        {
+          "team": "Haiti",
+          "code": "ht",
+          "p": 3,
+          "w": 0,
+          "d": 0,
+          "l": 3,
+          "gf": 2,
+          "gd": -6,
+          "pts": 0,
+          "status": "eliminată"
+        }
+      ]
+    }
+  ],
   "tonight": [
     {
       "id": 760473,
@@ -29,8 +636,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live.",
-        "en": "At 23:00, Group E’s final matches kick off simultaneously; this one features Ivory Coast trying to hold off a plucky Curaçao side."
+        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live",
+        "en": "At 23:00, the Group E finale unfolds simultaneously, a crucial clash worth catching live."
       }
     },
     {
@@ -46,8 +653,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live.",
-        "en": "At 23:00, the other Group E finale pits Germany against Ecuador, with much still on the line for the South Americans."
+        "ro": "la 23:00, finalul grupei se joacă în paralel — urmărește live",
+        "en": "Also at 23:00, Germany and Ecuador play their decisive Group E fixture, making for a compelling late-night watch."
       }
     },
     {
@@ -59,12 +666,12 @@
       "group": "F",
       "kickoffEEST": "02:00",
       "alarm": {
-        "ro": "merită văzut",
-        "en": "worth watching"
+        "ro": "citești dimineața",
+        "en": "catch it later"
       },
       "why": {
-        "ro": "la 02:00, finalul grupei se joacă în paralel — merită să sacrifici câteva ore de somn.",
-        "en": "At 02:00, Group F's climax sees Japan and Sweden duke it out in a must-watch affair."
+        "ro": "la 02:00, se decide soarta grupei în paralel — poți vedea rezultatul la micul dejun",
+        "en": "Japan and Sweden clash at 02:00, with plenty at stake in Group F, but you can check the score over coffee."
       }
     },
     {
@@ -80,8 +687,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 02:00, Olanda, mare favorită, joacă împotriva unei echipe deja eliminate, așa că poți afla liniștit scorul mâine.",
-        "en": "The Netherlands face an already eliminated Tunisia at 02:00, a match you can easily catch the score of over breakfast."
+        "ro": "la 02:00, se decide soarta grupei în paralel — poți vedea rezultatul la micul dejun",
+        "en": "The Netherlands and Tunisia also play at 02:00, a parallel Group F decider, but it's one for the morning recap."
       }
     },
     {
@@ -97,8 +704,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 05:00, finalul grupei se joacă în paralel — rezultatele le afli abia dimineața, la cafea.",
-        "en": "At 05:00, the stakes are high for Paraguay and Australia, but it’s a late one to follow live unless you’re an insomniac."
+        "ro": "la 05:00, finalul grupei se joacă în paralel — îl afli la cafea",
+        "en": "Paraguay and Australia fight for a knockout spot at 05:00, an hour better suited for the gym than live football."
       }
     },
     {
@@ -114,8 +721,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 05:00, o formalitate pentru SUA, deja calificată, iar Turcia este eliminată — un meci ce nu merită să-ți fure somnul.",
-        "en": "The USA, already through, take on an eliminated Turkey at 05:00, a contest best enjoyed via highlights with your morning coffee."
+        "ro": "la 05:00, finalul grupei se joacă în paralel — îl afli la cafea",
+        "en": "The USA face Turkey at 05:00, with the Americans already through, so you can safely sleep on this Group D encounter."
       }
     }
   ],
@@ -123,27 +730,27 @@
     {
       "name": "D",
       "prose": {
-        "ro": "SUA e deja calificată, iar Turcia este eliminată. Bătălia pentru locul doi se dă direct între Australia și Paraguay, care joacă totul pe cartea victoriei. În caz de egalitate, ambele echipe va depinde de golaveraj. Pe scurt: Australia și Paraguay merg mai departe doar dacă înving.",
-        "en": "The USA are already safely through, leaving Australia and Paraguay to battle it out for the second spot. Both teams need a win against each other; a draw for either means it all comes down to goal difference, which is always a nail-biter. Turkey are already out of the running and play only for pride. In short: USA are through, Australia and Paraguay need a win or face a goal difference gamble."
+        "ro": "Grupa D are deja o calificată, SUA, și o eliminată, Turcia. Lupta se dă între Australia și Paraguay, care se înfruntă direct pentru al doilea loc. Ambele au nevoie de victorie pentru a fi sigure de calificare, dar un egal le-ar putea trimite acasă pe amândouă, în funcție de golaveraj. Pe scurt: cine câștigă, merge mai departe.",
+        "en": "The USA are already through, leaving Australia and Paraguay to battle it out for the second spot. Whoever wins their head-to-head match qualifies, but a draw for either side would throw it to goal difference. Turkey are out of the running. In short: The USA are qualified; Australia and Paraguay need a win."
       }
     },
     {
       "name": "E",
       "prose": {
-        "ro": "Germania e deja calificată și joacă doar pentru prestigiul primului loc. Coastei de Fildeș îi este suficient un egal împotriva selecționatei din Curaçao pentru a merge mai departe. Curaçao se poate califica doar dacă învinge și Ecuador nu câștigă contra Germaniei. Ecuador, pe de altă parte, are nevoie de victorie la scor pentru a spera la golaveraj. Pe scurt: Germania e calificată, Coastei de Fildeș îi ajunge un egal, Curaçao are nevoie de victorie și o conjunctură, iar Ecuador doar la golaveraj.",
-        "en": "Germany have already secured their spot and are playing for top bragging rights against Ecuador. Ivory Coast only need a point against Curaçao to progress, which sounds like a comfortable evening. Curaçao, however, could still pull off a miracle if they beat Ivory Coast and Ecuador doesn’t beat Germany. Ecuador's path is the most precarious, needing a win against the Germans to even have a sniff at qualification through goal difference. In short: Germany are through, Ivory Coast need a draw, Curaçao need a win and help, Ecuador only on goal difference."
+        "ro": "Germania este deja calificată, așa că meciul cu Ecuador e pentru onoare. Coasta de Fildeș se califică dacă nu pierde cu Curaçao. Curaçao are nevoie de victorie și ca Ecuador să nu câștige cu Germania. Ecuador, chiar și cu o victorie, depinde de golaveraj. Pe scurt: Coasta de Fildeș la egal, Curaçao trebuie să câștige și să spere, Ecuador trebuie să bată Germania la scor.",
+        "en": "Germany have secured their place, but the other three teams are still in contention. Ivory Coast need only get a draw against Curaçao to progress. Curaçao must beat Ivory Coast and hope Ecuador do not beat Germany. Ecuador must beat Germany, and even then, goal difference will decide their fate. In short: Germany are through; Ivory Coast need a draw; Curaçao and Ecuador need wins and help."
       }
     },
     {
       "name": "F",
       "prose": {
-        "ro": "Tunisia este eliminată, așa că meciul lor cu Olanda e mai mult o formalitate. Olandei și Japoniei le ajunge un rezultat de egalitate ca să se califice în faza următoare. Suedia merge mai departe doar dacă învinge Japonia, iar dacă Olanda pierde, Suedia poate trece chiar și la egalitate de puncte cu Olanda, la golaveraj. Pe scurt: Olandei și Japoniei le ajunge un egal, iar Suedia merge mai departe doar dacă învinge.",
-        "en": "The Netherlands only need a point against an already eliminated Tunisia to progress, which should be straightforward. Japan, meanwhile, also only need a point against Sweden to secure their spot. Sweden, however, must win against Japan to go through, otherwise their World Cup journey ends here. Tunisia are already out. In short: Netherlands and Japan need a draw, Sweden need a win, Tunisia are out."
+        "ro": "Olanda și Japonia sunt în poziții similare: se califică dacă nu pierd. Suedia are nevoie de victorie cu Japonia pentru a merge mai departe, altfel e eliminată. Tunisia este deja eliminată și joacă doar pentru statistică. Pe scurt: Olanda și Japonia au nevoie de cel puțin un egal, Suedia trebuie să câștige.",
+        "en": "Tunisia are already eliminated, leaving The Netherlands, Japan, and Sweden to fight for the two qualification spots. The Netherlands need only get a draw against Tunisia, and even a loss could see them through if Sweden do not beat Japan. Japan also need to get a draw against Sweden to qualify, though a loss would mean it comes down to goal difference. Sweden must beat Japan to go through. In short: Tunisia are out; The Netherlands and Japan need a draw; Sweden need a win."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Finalul grupelor: Olanda și Japonia cu inima-n dinți, Ecuador la golaveraj · pauză azi-noapte\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Germany secure, others hold their breath · no matches overnight\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Bounou a lăsat poarta deschisă; Vini Jr. a făcut dubla. · 6 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Morocco's keeper gifts one, then bags four. Brazil cruising. · 6 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
