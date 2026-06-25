@@ -92,3 +92,51 @@ test('H2H draw or missing result stays conservative (în cărți)', () => {
   const partial = [match('B', 'D', 2, 0)];
   assert.equal(classifyGroup(table, partial).find((r) => r.team === 'D').status, 'în cărți');
 });
+
+// ── Completed-group classification ──────────────────────────────────────────────
+// Once every game is played the group order is final, so 2nd place is qualified even
+// when a points-tie was only separated by a later tiebreaker (GD), not by H2H.
+
+test('completed group: 2nd place on a drawn H2H is calificată via goal difference', () => {
+  // Real Group B (2026-06-25): Canada and Bosnia both on 4 pts, drew their H2H,
+  // Canada ahead on overall GD (+5 vs -1). Canada is the 2nd qualifier.
+  const table = [row('A', 3, 7, 4), row('B', 3, 4, 5), row('C', 3, 4, -1), row('D', 3, 1, -8)];
+  const matches = [match('B', 'C', 1, 1)];
+  const classified = classifyGroup(table, matches);
+  assert.equal(classified.find((r) => r.team === 'A').status, 'calificată');
+  assert.equal(classified.find((r) => r.team === 'B').status, 'calificată');
+  assert.equal(classified.find((r) => r.team === 'C').status, 'în cărți'); // 3rd: best-thirds race open
+  assert.equal(classified.find((r) => r.team === 'D').status, 'eliminată');
+});
+
+test('completed group: H2H outranks goal difference for the 2nd slot', () => {
+  // B and C tie on 4 pts; C has the better GD but lost the H2H to B, so B takes 2nd.
+  const table = [row('A', 3, 7, 4), row('B', 3, 4, 1), row('C', 3, 4, 6), row('D', 3, 1, -8)];
+  const matches = [match('B', 'C', 1, 0)];
+  const classified = classifyGroup(table, matches);
+  assert.equal(classified.find((r) => r.team === 'B').status, 'calificată');
+  assert.equal(classified.find((r) => r.team === 'C').status, 'în cărți');
+});
+
+test('completed group: 3-way tie resolved by the H2H mini-table', () => {
+  // A clear winner on 9; B, C, D all on 3 pts. Mini-table among the tied three:
+  // B beat C, C beat D, D beat B → all 3 pts in the mini-table, so overall GD breaks it.
+  // Give B the best GD, then C, then D → B 2nd (calificată), C 3rd (în cărți), D 4th (eliminată).
+  const table = [row('A', 3, 9, 9), row('B', 3, 3, 2), row('C', 3, 3, 0), row('D', 3, 3, -2)];
+  const matches = [match('B', 'C', 1, 0), match('C', 'D', 1, 0), match('D', 'B', 1, 0)];
+  const classified = classifyGroup(table, matches);
+  assert.equal(classified.find((r) => r.team === 'A').status, 'calificată');
+  assert.equal(classified.find((r) => r.team === 'B').status, 'calificată');
+  assert.equal(classified.find((r) => r.team === 'C').status, 'în cărți');
+  assert.equal(classified.find((r) => r.team === 'D').status, 'eliminată');
+});
+
+test('incomplete group with the same drawn H2H tie stays conservative', () => {
+  // Identical points/GD to the Group B case but a game still to play (p=2): the tie
+  // could still flip, so both tied teams remain undecided.
+  const table = [row('A', 2, 7, 4), row('B', 2, 4, 5), row('C', 2, 4, -1), row('D', 2, 1, -8)];
+  const matches = [match('B', 'C', 1, 1)];
+  const classified = classifyGroup(table, matches);
+  assert.equal(classified.find((r) => r.team === 'B').status, 'în cărți');
+  assert.equal(classified.find((r) => r.team === 'C').status, 'în cărți');
+});
