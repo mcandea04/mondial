@@ -70,6 +70,14 @@ REGULI DE FAPTE (stricte):
    sau căutare web. Când un scenariu conține „scenariu incert", rămâi prudent.
    În pastilele meciurilor de aseară (câmpul „pill") calificarea o tratezi conservator
    („și-a complicat viața", „doarme liniștită") — acolo nu ai scenarii exacte.
+2a. CINE E CALIFICAT / ELIMINAT — singura autoritate e câmpul „status" al fiecărei echipe
+   din clasament: „calificată" = sigur mai departe; „eliminată" = sigur afară; „în cărți" =
+   ÎNCĂ în joc (poate prinde și un loc de pe 3). Regula asta bate orice scor: a câștiga un
+   meci NU înseamnă a-ți elimina adversarul. NU scrie „a eliminat-o", „a trimis-o acasă",
+   „a scos-o din competiție" despre o echipă care NU are „status: eliminată" — chiar dacă
+   tocmai a pierdut. O echipă „în cărți" rămâne în cărți; despre ea spui cel mult „și-a
+   complicat situația", niciodată că e afară. Asta se aplică PESTE TOT — headline, summary,
+   pastile — nu doar în preview-uri.
 2b. SCENARII DE GRUPĂ (etapa decisivă) — OBLIGATORIU: dacă primești câmpul „decisiveGroups",
    fiecare intrare e o grupă ale cărei DOUĂ meciuri se joacă SIMULTAN diseară. Pentru FIECARE
    astfel de grupă TREBUIE să returnezi câte o intrare în „groups" (același „name") — nu sări
@@ -388,6 +396,13 @@ FACT RULES (strict):
    fixture — those are computed facts, not memory or web search. When a scenario says
    "scenariu incert", stay hedged. In finished-match pills ("pill" field) treat qualification
    conservatively ("made life hard for themselves", "can sleep easy") — no exact conditions there.
+2a. WHO IS THROUGH / OUT — the ONLY authority is each team's "status" field in the standings:
+   "calificată" = through for sure; "eliminată" = out for sure; "în cărți" = STILL alive (may
+   still grab a third-place spot). This overrides any scoreline: winning a match does NOT mean
+   you eliminated your opponent. Do NOT write "knocked them out", "sent them home", "dumped them
+   out" about a team that does NOT have "status: eliminată" — even if it just lost. A team that
+   is "în cărți" stays in contention; at most say it "made things harder for itself", never that
+   it is out. This applies EVERYWHERE — headline, summary, pills — not just previews.
 2b. GROUP SCENARIOS (the decisive matchday) — REQUIRED: if you receive a "decisiveGroups" field,
    each entry is a group whose TWO matches kick off SIMULTANEOUSLY tonight. For EVERY such group
    you MUST return one entry in "groups" (same "name") — never skip one. These fixtures have no
