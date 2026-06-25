@@ -152,3 +152,15 @@ test('a changed tonight kickoff changes the hash', () => {
 test('a changed date changes the hash', () => {
   assert.notEqual(factsHash(base), factsHash({ ...base, date: '2026-06-13' }));
 });
+
+test('FIFA ranks on matches and standings do NOT change the hash (freeze-safe)', () => {
+  const ranked = structuredClone(base);
+  ranked.finished[0].homeRank = 30;
+  ranked.finished[0].awayRank = 56;
+  ranked.finished[1].homeRank = 14;
+  ranked.finished[1].awayRank = 60;
+  ranked.tonight[0].homeRank = 6;
+  ranked.tonight[0].awayRank = 7;
+  ranked.standings[0].table[0].rank = 30;
+  assert.equal(factsHash(base), factsHash(ranked));
+});

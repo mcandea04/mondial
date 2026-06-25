@@ -47,7 +47,7 @@ import {
   localizeProse, factsWithEnglishVerdicts, englishVerdict,
 } from './narration-core.js';
 import { computeScenarios, scenarioFor, computeDecisiveGroupScenario, synthesizeGroupParagraph } from './scenarios.js';
-import { englishTeamName } from './teams.js';
+import { englishTeamName, fifaRank } from './teams.js';
 import { fetchRecaps, parseHighlightFeed, recapsFor } from './highlights.js';
 import { renderOgImage } from './og-image.js';
 import { buildTeaser, buildTeaserEn } from './teaser.js';
@@ -127,6 +127,12 @@ function hasNoEnrichment(match) {
   return (match.scorers?.length ?? 0) === 0
     && (match.events?.length ?? 0) === 0
     && match.stats == null;
+}
+
+// Attach FIFA world ranks to a match so the narrator can weigh how surprising a
+// result is. Unknown/placeholder names resolve to null.
+function withMatchRanks(match) {
+  return { ...match, homeRank: fifaRank(match.home), awayRank: fifaRank(match.away) };
 }
 
 /**
@@ -597,18 +603,27 @@ async function main() {
   // because they are derived deterministically from scores/standings already hashed.
   const scenarios = computeScenarios(facts.standings, allMatchesForScenarios);
   const tonightWithScenarios = facts.tonight.map((f) => {
-    if (decisivePairs.has([f.home, f.away].sort().join('|'))) return { ...f };
+    const ranked = withMatchRanks(f);
+    if (decisivePairs.has([f.home, f.away].sort().join('|'))) return ranked;
     const hs = scenarioFor(f.home, scenarios);
     const as = scenarioFor(f.away, scenarios);
     return {
-      ...f,
+      ...ranked,
       ...(hs != null && { homeScenario: hs }),
       ...(as != null && { awayScenario: as }),
     };
   });
 
+  // Ranks live only on the narrator's view, not the published JSON, and are
+  // excluded from factsHash (static per team, never a reason to re-narrate).
+  const finishedWithRanks = facts.finished.map(withMatchRanks);
+  const standingsWithRanks = standings.map((g) => ({
+    ...g,
+    table: g.table.map((row) => ({ ...row, rank: fifaRank(row.team) })),
+  }));
+
   const factsForNarration = {
-    date, finished: facts.finished, tonight: tonightWithScenarios, standings,
+    date, finished: finishedWithRanks, tonight: tonightWithScenarios, standings: standingsWithRanks,
     ...(decisiveGroups.length > 0 && { decisiveGroups }),
   };
   // Hashed AFTER mergeEnrichment so a transient outage doesn't flip the hash.

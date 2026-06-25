@@ -199,6 +199,15 @@ test('offline run with bilingual fixtures produces {ro,en} prose fields', () => 
   assert.ok(digest.teaser.ro && digest.teaser.en);
 });
 
+test('FIFA ranks feed the narrator but never leak into the published digest', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const raw = readFileSync(path.join(out, `${DATE}.json`), 'utf8');
+  assert.equal(raw.includes('homeRank'), false, 'homeRank must not appear in published JSON');
+  assert.equal(raw.includes('awayRank'), false, 'awayRank must not appear in published JSON');
+  assert.equal(raw.includes('"rank"'), false, 'standings rank must not appear in published JSON');
+});
+
 import { mergeHighlight, mergeEnrichment, withoutGold } from '../pipeline/run.js';
 
 test('withoutGold removes promoted lines from the avoid-list', () => {
