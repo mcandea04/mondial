@@ -2,16 +2,16 @@
   "date": "2026-06-25",
   "factsHash": "a693eb2a6ee8ecb004cccdb26458e9f595b89b3ec5523595519a04524dc3ff74",
   "narrator": {
-    "ro": "gemini-polish",
+    "ro": "gemini",
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Surpriza dimineții: Africa de Sud, direct în optimi",
-    "en": "South Africa dance into the last 16, Mexico and Brazil cruise"
+    "ro": "„Bafana Bafana” a zburdat și s-a calificat, Coreea de Sud a rămas pe tușă",
+    "en": "60th-ranked South Africa pulls off the shock of the night"
   },
   "summary": {
-    "ro": "Africa de Sud, ocupanta locului 60 mondial, a lăsat cu gura căscată pe toată lumea învingând Coreea de Sud și asigurându-și un loc în optimi. Favoritele Mexic, Brazilia, Elveția și Maroc au bifat victorii care le-au consolidat pozițiile de calificate.",
-    "en": "The world's 60th-ranked side, South Africa, pulled off the night's big upset with a gritty win to reach the knockout stages. Elsewhere, Mexico, Switzerland, Brazil, and Morocco all secured comfortable victories, booking their places in the last 16."
+    "ro": "Africa de Sud, locul 60 mondial, a reușit surpriza serii învingând Coreea de Sud (25) cu un gol smuls dintr-o dominare statistică minimă și își asigură prezența în șaisprezecimi. Pe celelalte terenuri, favoritele Brazilia, Mexic și Elveția au bifat victorii așteptate, în timp ce Marocul a oferit un festival de goluri împotriva lui Haiti.",
+    "en": "The 60th-ranked South Africa pulled off the shock of the night, beating South Korea 1-0 to secure a spot in the round of 32. This result leaves the 25th-ranked South Korea's qualification hanging by a thread, despite their higher ranking."
   },
   "matches": [
     {
@@ -89,8 +89,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Bosnia a deschis scorul prin Kerim Alajbegovic, apoi a beneficiat de un autogol pentru a trece în avantaj. Hassan Al-Haydos a redus din diferență pentru Qatar, dar Ermin Mahmic a închis tabela în minutul 80, lăsând gazdele în cărți pentru optimi.",
-        "en": "Bosnia and Herzegovina saw off Qatar with Kerim Alajbegovic scoring from outside the box, followed by a Mahmoud Abunada own goal setting them on their way. Despite Hassan Al-Haydos pulling one back, Ermin Mahmic sealed the 3-1 win, keeping Bosnia in contention for a third-place spot."
+        "ro": "Bosnia a început greu, cu un autogol al lui Mahmoud Abunada în minutul 34, dar a revenit spectaculos. Ermin Mahmic a asigurat victoria din careu în minutul 80, consolidând speranțele bosniacilor de a rămâne în cărți. Qatarul părăsește competiția, eliminat.",
+        "en": "Bosnia and Herzegovina made sure Qatar's tournament ended without a single victory, with Kerim Alajbegovic opening the scoring from outside the box. A Mahmoud Abunada own goal doubled the lead, before Ermin Mahmic sealed the 3-1 win, leaving Qatar to book their flights home."
       },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/5CVV8X8QSnZDr6uKOh31ff"
@@ -160,8 +160,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Elveția a rezolvat meciul în mai puțin de un sfert de oră în repriza secundă, prin golurile lui Rubén Vargas și Johan Manzambi. Deși Promise David a redus din diferență pentru Canada, elvețienii și-au asigurat calificarea, chiar dacă adversarii au avut mai multe șuturi pe poartă.",
-        "en": "Switzerland scored two quick goals after the break, with Rubén Vargas and Johan Manzambi finding the net, to take a commanding lead against Canada. Promise David pulled one back for Canada in the 76th minute, but it wasn't enough to change the outcome, though both teams are through."
+        "ro": "Elveția și-a asigurat calificarea printr-o victorie muncită, cu goluri rapide după pauză, semnate de Rubén Vargas și Johan Manzambi. Deși Promise David a redus din handicap pentru Canada în minutul 76, \"naționala frunzei de arțar\" merge și ea mai departe în șaisprezecimi.",
+        "en": "Switzerland confirmed their top spot in Group B, with Rubén Vargas and Johan Manzambi giving them a comfortable lead. Promise David pulled one back for Canada from inside the box, but it was too little, too late, as both sides progressed to the round of 32."
       },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/1KiU2uFEKhMDYVNebmF5Zg"
@@ -261,10 +261,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Haiti a condus de două ori, cu un autogol nefericit al lui Yassine Bounou și o torpilă de la Wilson Isidor, dar Achraf Hakimi a restabilit egalitatea, iar Ismael Saibari a trimis-o pe Maroc în avantaj chiar înainte de pauză. Soufiane Rahimi și Gessime Yassine au închis apoi conturile, asigurând calificarea marocanilor cu o seară de goluri spectaculoase.",
-        "en": "Morocco recovered from conceding an early Yassine Bounou own goal to eventually overpower Haiti in a six-goal thriller. Achraf Hakimi equalized before Ismael Saibari put them ahead at the stroke of half-time, and two more goals capped off a busy night that sent Morocco into the next round."
+        "ro": "Ce meci! Haiti a condus de două ori, inclusiv după autogolul portarului Yassine Bounou din minutul 10 și golul lui Wilson Isidor din afara careului. Maroc a revenit de fiecare dată și a marcat de trei ori în a doua repriză, transformând meciul într-un spectacol cu șase goluri și asigurându-și calificarea.",
+        "en": "Morocco overcame an early own goal from Yassine Bounou and a Wilson Isidor strike from outside the box to dispatch Haiti 4-2. Achraf Hakimi, Ismael Saibari, Soufiane Rahimi, and Gessime Yassine all found the net, ensuring Morocco's spot in the last 32 and booking Haiti's early departure."
       },
-      "drama": 4,
+      "drama": 5,
       "highlight": "https://www.fifa.com/en/watch/4lDtvGJGbp8eEdlUUUZo3I"
     },
     {
@@ -332,8 +332,8 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Vinícius Júnior a bifat o dublă, deschizând scorul devreme și marcând al doilea său gol cu capul chiar înainte de pauză, iar Matheus Cunha a stabilit scorul final. Brazilia a continuat spectacolul așteptat și merge mai departe, lăsând Scoția să spere la un loc de pe trei.",
-        "en": "Brazil made short work of Scotland, with Vinícius Júnior bagging a first-half brace, first with his right foot then a header, to put them firmly in control. Matheus Cunha added a third on the hour mark, ensuring Brazil's comfortable passage into the next round."
+        "ro": "Brazilia a defilat, cu Vinícius Júnior reușind o dublă, inclusiv un gol cu capul în prelungirile primei reprize, și a rezolvat rapid ecuația. Matheus Cunha a închis tabela în minutul 60, lăsând Scoția să spere la calificarea de pe locul trei, dar fără puncte în fața sud-americanilor.",
+        "en": "Vinícius Júnior scored a first-half brace, including a header just before the break, to set Brazil on their way to a comfortable 3-0 victory over Scotland. Matheus Cunha added a third, leaving Scotland clinging to their hopes for a third-place spot."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/xuXoaffqDTNw6l4ejzMrz"
@@ -403,10 +403,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Mexicul a avut nevoie de o repriză secundă solidă pentru a deschide scorul prin Mateo Chávez și a se desprinde rapid prin Julián Quiñones. Álvaro Fidalgo a stabilit scorul final în prelungiri, condamnând Cehia la eliminare.",
-        "en": "Mexico left it until the second half to break down the Czech Republic, with Mateo Chávez opening the scoring before Julián Quiñones doubled the lead. Álvaro Fidalgo's injury-time strike put the game to bed, ensuring Mexico's perfect record and sending the Czechs heading home."
+        "ro": "Cehia a rezistat o repriză întreagă, dar a cedat în fața Mexicului, care a marcat de trei ori după pauză, prin Mateo Chávez, Julián Quiñones și Álvaro Fidalgo. Mexicanii merg mai departe cu punctaj maxim, în timp ce cehii își fac bagajele, fiind deja eliminati.",
+        "en": "Mexico waited until the second half to open the scoring, with Mateo Chávez breaking the deadlock from inside the box and Julián Quiñones quickly adding a second. Álvaro Fidalgo's stoppage-time strike completed the 3-0 rout, sending the Czech Republic home with just one point."
       },
-      "drama": 2,
+      "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/2GE7VJlgfD52khnWAjGpF2"
     },
     {
@@ -454,10 +454,10 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Africa de Sud a produs surpriza serii, învingând Coreea de Sud printr-un gol cu stângul al lui Thapelo Maseko și asigurându-și un loc în optimile de finală. Degeaba a avut Coreea de Sud posesia de 68% în acest meci, că nu a reușit să transforme dominarea în gol.",
-        "en": "The world's 60th-ranked team, South Africa, stunned South Korea with a second-half goal from Thapelo Maseko. This gritty 1-0 win was enough to send them dancing into the last 16, leaving South Korea's fate hanging by a thread."
+        "ro": "Africa de Sud a dat lovitura cu unicul gol al lui Thapelo Maseko, marcat din careu în minutul 63, și a uimit pe toată lumea. Cu o posesie de doar 31.6%, \"Bafana Bafana\" demonstrează că nu trebuie să ții mingea pentru a te califica în șaisprezecimi, lăsând Coreea de Sud să spere doar la un loc de pe trei.",
+        "en": "The 60th-ranked South Africa pulled off a major upset, with Thapelo Maseko's 63rd-minute goal from inside the box securing a shock 1-0 victory over South Korea. This hard-fought win sends South Africa into the round of 32 and leaves South Korea's hopes hanging in the balance."
       },
-      "drama": 3,
+      "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/4rg8eRpXuMQG67utITccQd"
     }
   ],
@@ -636,8 +636,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 23:00, ultimele meciuri din grupă se joacă în paralel – urmărește live.",
-        "en": "Also at 23:00, Ivory Coast and Curaçao go head-to-head in a crucial encounter, with the group’s finale playing out in parallel."
+        "ro": "la 23:00, finalul grupei se joacă în paralel – urmărește live.",
+        "en": "At 23:00, the group's finale plays out in parallel — worth watching live."
       }
     },
     {
@@ -653,8 +653,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "la 23:00, finalul acestei grupe se decide în paralel – nu rata emoțiile.",
-        "en": "At 23:00, Germany and Ecuador battle it out in a decisive clash as Group E’s final matches kick off simultaneously."
+        "ro": "la 23:00, finalul grupei se joacă în paralel – urmărește live.",
+        "en": "At 23:00, the group's finale plays out in parallel — worth watching live."
       }
     },
     {
@@ -666,12 +666,12 @@
       "group": "F",
       "kickoffEEST": "02:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "merită văzut",
+        "en": "worth watching"
       },
       "why": {
-        "ro": "la 02:00, soarta grupei se hotărăște în paralel, dar mai bine te odihnești și afli scorul la micul dejun.",
-        "en": "At 02:00, Japan and Sweden's winner-takes-all clash is one you can catch the highlights of in the morning."
+        "ro": "la 02:00, finalul grupei se joacă în paralel – cine merge mai departe?",
+        "en": "At 02:00, the group's finale plays out in parallel — worth watching live."
       }
     },
     {
@@ -687,8 +687,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 02:00, Olanda își joacă primul loc cu o echipă eliminată, deci poți descoperi deznodământul la trezire.",
-        "en": "Also at 02:00, the Netherlands face Tunisia in a match whose result you can easily review over coffee."
+        "ro": "la 02:00, Olanda joacă împotriva unei echipe deja eliminate, mai bine citești scorul la cafea.",
+        "en": "At 02:00, the group's finale plays out in parallel — you can catch the scores over coffee."
       }
     },
     {
@@ -700,12 +700,12 @@
       "group": "D",
       "kickoffEEST": "05:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "merită văzut",
+        "en": "worth watching"
       },
       "why": {
-        "ro": "la 05:00, un duel echilibrat pentru calificare, dar ora e un obstacol prea mare pentru live.",
-        "en": "At 05:00, Paraguay and Australia go head-to-head in Group D's finale; unless you’re an early riser, the scores can wait."
+        "ro": "la 05:00, finalul grupei se joacă în paralel – rămâi treaz pentru acest duel.",
+        "en": "At 05:00, the group's finale plays out in parallel — worth watching live."
       }
     },
     {
@@ -721,8 +721,8 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "la 05:00, un meci fără miză pentru Turcia eliminată, așa că rezultatul îl prinzi pe fugă.",
-        "en": "Also at 05:00, Turkey and the USA play out the final act of Group D, a game for which you can skip the live viewing."
+        "ro": "la 05:00, o formalitate pentru americani, Turcia e deja eliminată – îl afli la micul dejun.",
+        "en": "At 05:00, the group's finale plays out in parallel — the highlights will do tomorrow morning."
       }
     }
   ],
@@ -730,27 +730,27 @@
     {
       "name": "D",
       "prose": {
-        "ro": "SUA este deja calificată și joacă împotriva Turciei, care este eliminată. Miza mare e în celălalt meci, dintre Australia și Paraguay: cine câștigă merge mai departe. Un egal le-ar duce pe amândouă la golaveraj, deci e o miză de totul sau nimic. Pe scurt: SUA e safe, Australia și Paraguay trebuie să câștige sau să spere la golaveraj în caz de egal.",
-        "en": "The USA has already guaranteed their place in the next round, so their match against eliminated Turkey is a formality. The real drama is between Australia and Paraguay, both needing a win to guarantee their place in the next round. A draw for either would throw them into the lottery of goal difference, making it a winner-takes-all clash for progression. In short: USA is through, Turkey is out; Australia and Paraguay need a win to avoid goal difference calculations."
+        "ro": "SUA e deja calificată, iar Turcia nu mai are nicio șansă să avanseze. Adevărata miză e în duelul direct dintre Australia și Paraguay, ambele având nevoie de victorie pentru a spera la un loc în șaisprezecimi; un egal nu le ajută pe niciuna direct, soarta lor depinzând de golaveraj. Pe scurt: SUA e relaxată, Turcia pleacă acasă, iar Australia și Paraguay joacă totul pe o carte.",
+        "en": "The USA are already safe at the top of Group D, leaving Australia and Paraguay to fight it out for the second automatic spot. Both sides need a win; a draw for either would mean it will come down to goal difference to see if they can grab a best third-place spot. Turkey are already booking their flights home. In short: Australia needs a win, Paraguay needs a win, the USA are through."
       }
     },
     {
       "name": "E",
       "prose": {
-        "ro": "Germania e deja calificată, dar încă luptă pentru primul loc. Coastei de Fildeș îi ajunge să nu piardă cu Curaçao pentru a merge mai departe. Ecuador trebuie neapărat să învingă Germania și să depindă de golaveraj, în timp ce Curaçao se califică doar dacă învinge Coasta de Fildeș și Ecuador nu o învinge pe Germania. Pe scurt: Germania și Coasta de Fildeș au un avantaj, Ecuador și Curaçao au nevoie de rezultate complicate.",
-        "en": "Germany has already guaranteed their place, but the other three teams are still very much in it. Ivory Coast only needs a point against Curaçao to guarantee their place in the next round. Ecuador must beat Germany and then hope goal difference plays in their favour to stay in the competition. Curaçao can progress if they beat Ivory Coast and Ecuador does not win against Germany. In short: Germany is through; Ivory Coast needs a draw; Ecuador needs a win and goal difference; Curaçao needs a win and an Ecuador slip-up."
+        "ro": "Germania e deja în șaisprezecimi, iar Coasta de Fildeș are nevoie doar de un egal cu Curaçao pentru a merge mai departe. Ecuador are o misiune mult mai dificilă, fiind nevoită să învingă Germania și să spere la golaveraj pentru a-și asigura un loc. Curaçao trebuie să bată Coasta de Fildeș și ca Ecuador să nu câștige cu Germania. Pe scurt: Germania relaxată, Coasta de Fildeș e aproape, Ecuador are nevoie de victorie și noroc, Curaçao depinde și de celălalt meci.",
+        "en": "Germany have already secured their passage from Group E. Ivory Coast need at least a draw against Curaçao to guarantee their spot in the round of 32. Curaçao must beat Ivory Coast, and even then, they need Ecuador not to beat Germany in the other match. Ecuador, meanwhile, must beat Germany and hope it will come down to goal difference. In short: Germany are through, Ivory Coast need a draw, Curaçao need a win and help, Ecuador need a win and goal difference."
       }
     },
     {
       "name": "F",
       "prose": {
-        "ro": "Olandei și Japoniei le este suficient un egal pentru a avansa în optimi. Olanda joacă împotriva Tunisiei, deja eliminată. Suedia este obligată să câștige împotriva Japoniei pentru a spera la calificare. Pe scurt: Olandei și Japoniei le este suficient un egal, în timp ce Suedia trebuie să învingă pentru a rămâne în cursă.",
-        "en": "Tunisia is already heading home, but the other three teams are still fighting for the two spots. The Netherlands only needs a point against Tunisia to guarantee their place, and even a loss could see them through if Sweden does not win against Japan. Japan also only needs a point to guarantee their place in the next round, but a loss would leave them relying on goal difference. Sweden's path is clearer: they must beat Japan to stay in the competition. In short: Tunisia is out; the Netherlands and Japan need a draw; Sweden must win."
+        "ro": "Tunisia e deja eliminată, iar Olanda și Japonia au nevoie de un egal pentru a-și asigura calificarea. Suedia trebuie să învingă Japonia pentru a prinde un loc în șaisprezecimi, altfel șansele sale scad drastic. Olanda se poate califica chiar și la înfrângere, dacă Suedia nu câștigă cu Japonia. Pe scurt: Tunisia e afară, Olanda și Japonia stau la mâna lor, iar Suedia trebuie să forțeze victoria.",
+        "en": "Group F has the Netherlands and Japan in strong positions, both needing at least a draw to secure their spots in the round of 32. Sweden, however, must beat Japan to go through. If the Netherlands lose to Tunisia, they'll need Sweden not to beat Japan to advance. Tunisia are already out of the running. In short: the Netherlands need a draw (or Sweden not to win if they lose), Japan need a draw, Sweden need a win."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Surpriza dimineții: Africa de Sud, direct în optimi · 6 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ South Africa dance into the last 16, Mexico and Brazil cruise · 6 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ „Bafana Bafana” a zburdat și s-a calificat, Coreea de Sud a rămas pe tușă · 6 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ 60th-ranked South Africa pulls off the shock of the night · 6 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
