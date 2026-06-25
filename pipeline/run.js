@@ -730,23 +730,31 @@ async function main() {
       highlight: mergeHighlight(m.id, recapByMatch, existingHighlightById),
     })),
     groups: standings.filter((g) => groupsThatPlayed.has(g.name)),
-    tonight: facts.tonight.map((m) => ({
-      id: m.id,
-      home: m.home,
-      away: m.away,
-      homeCode: m.homeCode ?? null,
-      awayCode: m.awayCode ?? null,
-      group: m.group ?? null,
-      kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
-      // The watch verdict is canonical (Romanian); the English alarm is its
-      // mapped form, never the English model's own call — so the two never
-      // disagree. Only `why` wording differs per language.
-      alarm: bilingual(
-        narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
-        enByFixture.get(m.id)?.why == null ? undefined : englishVerdict(narrationByFixture.get(m.id)?.alarm),
-      ),
-      why: bilingual(narrationByFixture.get(m.id)?.why ?? '', enByFixture.get(m.id)?.why),
-    })),
+    tonight: facts.tonight.map((m) => {
+      // A decisive-group fixture's qualification story lives in the joint group
+      // paragraph; its per-fixture `why` only restated the kickoff time and tone
+      // the row already shows, so drop it and keep just the watch/skip badge.
+      const isDecisive = decisivePairs.has([m.home, m.away].sort().join('|'));
+      return {
+        id: m.id,
+        home: m.home,
+        away: m.away,
+        homeCode: m.homeCode ?? null,
+        awayCode: m.awayCode ?? null,
+        group: m.group ?? null,
+        kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
+        // The watch verdict is canonical (Romanian); the English alarm is its
+        // mapped form, never the English model's own call — so the two never
+        // disagree. Only `why` wording differs per language.
+        alarm: bilingual(
+          narrationByFixture.get(m.id)?.alarm ?? 'citești dimineața',
+          enByFixture.get(m.id)?.why == null ? undefined : englishVerdict(narrationByFixture.get(m.id)?.alarm),
+        ),
+        why: isDecisive
+          ? bilingual('', '')
+          : bilingual(narrationByFixture.get(m.id)?.why ?? '', enByFixture.get(m.id)?.why),
+      };
+    }),
     ...(groupScenarios.length > 0 && { groupScenarios }),
     teaser: bilingual(
       buildTeaser({ headline: narration.headline, matchCount: facts.finished.length, siteUrl }),

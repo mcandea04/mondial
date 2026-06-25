@@ -143,10 +143,10 @@ FORMAT:
    „why" = o propoziție care leagă EXPLICIT ora de miză (poți folosi puterea echipelor, nu
    numere seci), de ex. structura „merită văzut: 20:00 și sunt două forțe europene cu miză" sau,
    pentru un meci slab, „la 02:00 și o formalitate — îl afli la cafea".
-   Dacă meciul face parte dintr-o grupă din „decisiveGroups", „why" rămâne DOAR oră + ton
-   (ex. „la 22:00, finalul grupei se joacă în paralel — urmărește live") și NU conține NICIO
-   condiție de calificare: toată socoteala stă în paragraful de grupă („groups"). E o greșeală
-   să strecori „se califică dacă...", „are nevoie de", „la golaveraj" într-un astfel de „why".
+   Dacă meciul face parte dintr-o grupă din „decisiveGroups", „why"-ul lui nu se afișează deloc
+   (toată socoteala stă în paragraful de grupă, „groups"), dar schema cere un text — pune un
+   simplu marcaj, ex. „—". NU strecura NICIO condiție de calificare („se califică dacă...",
+   „are nevoie de", „la golaveraj") acolo; oricum nu se vede.
    VARIAȚIE OBLIGATORIE (se aplică la TOT digestul, nu doar la „why" — pastile, summary,
    tonight, la un loc): o imagine sau un cuvânt cu personalitate se folosește O SINGURĂ DATĂ în
    tot textul. Dacă ai scris „la cafea" / „dimineața" la un meci, NU îl repeta la altul — al
@@ -462,10 +462,10 @@ FORMAT:
      exceptional match earns the bother), e.g. "worth it: 20:00 and two European sides with real stakes".
    - for "catch it later": say why it can wait — a lopsided or low-stakes match, or only-decent at a punishing
      hour, e.g. "Ghana and Panama at 02:00 is a formality you can read about over coffee".
-   If the fixture belongs to a group in "decisiveGroups", "why" is ONLY the hour + tone (e.g. "at
-   22:00 the group's finale plays out in parallel — worth watching live") and carries NO
-   qualification condition at all: every bit of the maths stays in the group paragraph ("groups").
-   Slipping "go through if...", "need to", "on goal difference" into such a "why" is a mistake.
+   If the fixture belongs to a group in "decisiveGroups", its "why" is NOT shown at all (every bit
+   of the maths stays in the group paragraph, "groups"), but the schema needs a value — put a plain
+   placeholder, e.g. "—". Do NOT slip ANY qualification condition ("go through if...", "need to",
+   "on goal difference") in there; it is not displayed anyway.
    You may use team strength in words ("big favorites", "well above", "two equal forces") but NEVER a bare
    ranking number, and never write "ranked Nth". A sentence without both team names is a failure.
    MANDATORY VARIATION: the few "why" lines on the same night must NOT repeat the same formula. If you have
