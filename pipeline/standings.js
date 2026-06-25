@@ -20,10 +20,53 @@ const MATCHES_PER_TEAM = 3;
  */
 export function classifyGroup(table, matches = []) {
   const h2h = buildH2H(matches);
+
+  // A finished group has no remaining outcomes, so the final order is locked: top 2 are
+  // calificată, 3rd stays în cărți (best-thirds race across groups is still open), 4th is
+  // eliminată. This resolves point-ties that the reachability rules below can't (a drawn
+  // H2H separated only by a later tiebreaker like goal difference).
+  if (table.every((r) => r.p >= MATCHES_PER_TEAM)) {
+    const finalOrder = rankFinal(table, h2h);
+    const statusByPosition = ['calificată', 'calificată', 'în cărți', 'eliminată'];
+    const rankOf = new Map(finalOrder.map((r, i) => [r.team, i]));
+    return table.map((row) => ({
+      ...row,
+      status: statusByPosition[rankOf.get(row.team)] ?? 'în cărți',
+    }));
+  }
+
   return table.map((row) => ({
     ...row,
     status: classifyTeam(row, table, h2h),
   }));
+}
+
+/**
+ * Final group order using the 2026 tiebreaker chain, applied only to completed groups:
+ * points, then the H2H mini-table among the teams still tied, then overall goal
+ * difference, with team name as a stable last resort.
+ */
+function rankFinal(table, h2h) {
+  return [...table].sort((a, b) => {
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    const tied = table.filter((r) => r.pts === a.pts).map((r) => r.team);
+    const h2hDiff = h2hPoints(b.team, tied, h2h) - h2hPoints(a.team, tied, h2h);
+    if (h2hDiff !== 0) return h2hDiff;
+    if (b.gd !== a.gd) return b.gd - a.gd;
+    return a.team.localeCompare(b.team);
+  });
+}
+
+/** Points a team earned in matches played only against the other tied teams. */
+function h2hPoints(team, tied, h2h) {
+  let pts = 0;
+  for (const rival of tied) {
+    if (rival === team) continue;
+    const r = h2hResult(team, rival, h2h);
+    if (r === 'A') pts += 3;
+    else if (r === 'draw') pts += 1;
+  }
+  return pts;
 }
 
 export function buildH2H(matches) {
