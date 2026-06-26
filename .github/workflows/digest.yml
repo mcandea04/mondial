@@ -117,16 +117,31 @@ jobs:
             echo "committed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "digest: ${{ steps.build.outputs.date }}"
-            git pull --rebase origin main
-            git push
-            echo "committed=true" >> "$GITHUB_OUTPUT"
+            # A concurrent digest run can push the same day's regenerated files
+            # while this one was still narrating. The rebase then hits add/add
+            # conflicts on today's data, which means the other run already
+            # published this day -- our work is redundant, not broken. Treat that
+            # as a clean no-op (skip deploy/email) instead of a red failure.
+            if ! git pull --rebase origin main; then
+              git rebase --abort
+              echo "Concurrent run already published this day; skipping push."
+              echo "committed=false" >> "$GITHUB_OUTPUT"
+            else
+              git push
+              echo "committed=true" >> "$GITHUB_OUTPUT"
+            fi
           fi
 
+      # Deploy only what was actually pushed. On a graceful race-abort the local
+      # site/ holds this run's regenerated files that lost the race and were not
+      # pushed; deploying them would put race-loser content live. Gating on
+      # committed also skips a redundant re-deploy when there was nothing to
+      # commit (the winning run already deployed the identical site).
       - uses: actions/configure-pages@v5
-        if: steps.build.outputs.published == 'true'
+        if: steps.commit.outputs.committed == 'true'
 
       - uses: actions/upload-pages-artifact@v3
-        if: steps.build.outputs.published == 'true'
+        if: steps.commit.outputs.committed == 'true'
         with:
           path: site
 
@@ -135,16 +150,16 @@ jobs:
       # this point, so a failed deploy would leave the site stale until the next
       # nightly run. Attempt once, and on failure wait and try a second time.
       - id: deployment
-        if: steps.build.outputs.published == 'true'
+        if: steps.commit.outputs.committed == 'true'
         continue-on-error: true
         uses: actions/deploy-pages@v4
 
       - name: Wait before deploy retry
-        if: steps.build.outputs.published == 'true' && steps.deployment.outcome == 'failure'
+        if: steps.commit.outputs.committed == 'true' && steps.deployment.outcome == 'failure'
         run: sleep 30
 
       - id: deployment_retry
-        if: steps.build.outputs.published == 'true' && steps.deployment.outcome == 'failure'
+        if: steps.commit.outputs.committed == 'true' && steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
 
       - name: Email digest ready
