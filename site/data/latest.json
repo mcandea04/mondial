@@ -5,10 +5,10 @@
     "ro": "gemini-polish"
   },
   "headline": {
-    "ro": "Ecuador i-a dat o lecție de fotbal Germaniei, Turcia a smuls victoria în prelungiri"
+    "ro": "Gol în 90+8, dar acasă"
   },
   "summary": {
-    "ro": "Ecuador, deși deja cu un picior în șaisprezecimi, a învins-o pe Germania, o favorită deja calificată, printr-un gol târziu, în ciuda dominării nemților. Între timp, Turcia a reușit o victorie dramatică împotriva SUA cu un gol marcat în prelungirile meciului."
+    "ro": "Turcia a smuls o victorie incredibilă împotriva SUA, cu un gol în minutul 90+8, dar e eliminată. Între timp, Ecuador, a 23-a forță a lumii, a bătut Germania, locul 10 mondial, cu un 2-1 care a făcut valuri."
   },
   "matches": [
     {
@@ -66,7 +66,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Coasta de Fildeș a expediat rapid meciul cu Curaçao, Pépé reușind o dublă, mai întâi în minutul 7, apoi în 64. Chiar dacă au avut 11 șuturi la poartă, insularii au încheiat meciul cu o înfrângere, consolidând poziția favoritelor grupei."
+        "ro": "Nicolas Pépé a marcat o dublă cu stângul, prima dată la pasa lui Diomande în minutul 7 și a doua din dreapta careului în minutul 64. Curaçao a tras de 11 ori la poartă, dar n-a găsit plasa, iar Coasta de Fildeș își asigură calificarea."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/450gMxJHBSeV5QctbBsC9o"
@@ -136,7 +136,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Germania a deschis scorul prin Sané în minutul 2, dar Ecuadorul a egalat rapid, în 7 minute. Gonzalo Plata a dat lovitura de grație în minutul 77, oferind o lecție de eficiență nemților, care, deși calificați, au avut 11 șuturi la poartă și tot au încheiat meciul cu o înfrângere."
+        "ro": "Germania a deschis scorul prin Sané în minutul 2, însă bucuria le-a fost scurtă: Nilson Angulo a egalat șapte minute mai târziu. Gonzalo Plata a dat lovitura de grație în minutul 77, iar Ecuadorul a trimis Germania la culcare cu o înfrângere pe care nu și-o dorea."
       },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/6zwOi8MRCYL1qFZ0LwyOAD"
@@ -196,7 +196,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Japonia a deschis scorul prin Daizen Maeda, dar Suedia a egalat prin Anthony Elanga șase minute mai târziu. Un punct pentru fiecare, care le menține pe ambele în cărți, însă Japonia își asigură calificarea."
+        "ro": "Daizen Maeda a deschis scorul în minutul 56, dar Suedia a replicat rapid prin Anthony Elanga, șase minute mai târziu. Japonia își păstrează poziția de calificată, în timp ce Suedia mai are de transpirat pentru un loc trei bun."
       },
       "drama": 3,
       "highlight": "https://www.fifa.com/en/watch/2H1Uv4cmCqxFLfQRHvO2Kq"
@@ -276,7 +276,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Olanda a rezolvat rapid ecuația cu Tunisia, conducând cu 2-0 încă din minutul 7, după un autogol și reușita lui Brobbey. Chiar dacă tunisienii au redus din diferență, van Hecke a mărind avantajul, iar batavii își continuă drumul liber spre șaisprezecimi. Tunisia este eliminată."
+        "ro": "Tunisia a început cu un autogol al lui Skhiri în minutul 3, apoi Brian Brobbey a dublat avantajul Olandei rapid, în minutul 7. Hazem Mastouri a redus din handicap cu capul, dar Jan Paul van Hecke a readus diferența la două goluri, în minutul 62. Olandezii sunt calificați în șaisprezecimi, iar Tunisia ocupă ultimul loc."
       },
       "drama": 2,
       "highlight": "https://www.fifa.com/en/watch/2YZkJfuTl6nfWtN0Afygpx"
@@ -315,7 +315,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Un meci anost între Paraguay și Australia s-a încheiat fără goluri, singura dramă fiind că ne-am sacrificat somnul degeaba. Australia și-a asigurat calificarea, în timp ce Paraguay rămâne în cărți."
+        "ro": "Un 0-0 care a lăsat publicul cu ochii în soare la ora două dimineața. Australia a tras de 12 ori la poartă, dar portarul paraguayan a făcut 5 parade salvatoare și a închis poarta. Australia e calificată, Paraguay rămâne în cărți, dar cu semne de întrebare."
       },
       "drama": 1,
       "highlight": "https://www.fifa.com/en/watch/4NNX3soy5dReiHMd5HxRXA"
@@ -405,7 +405,7 @@
       },
       "decidedOnPenalties": false,
       "pill": {
-        "ro": "Turcia și-a adus aminte că trebuie să joace abia în prelungiri, Kaan Ayhan marcând golul victoriei în minutul 90+8, după o răsturnare de scor. SUA, deși deja calificată, a fost egalată și a revenit în avantaj, dar a încheiat meciul cu o înfrângere în fața unei echipe care este eliminată."
+        "ro": "Americanii au deschis scorul în minutul 3 prin Auston Trusty, dar Arda Güler a egalat rapid, iar Baris Alper Yilmaz a adus Turcia în avantaj înainte de pauză. Sebastian Berhalter a făcut 2-2 în minutul 49, însă Kaan Ayhan a smuls victoria pentru Turcia cu un gol în minutul 90+8, deși echipa ocupă ultimul loc."
       },
       "drama": 5,
       "highlight": "https://www.fifa.com/en/watch/qE2AtDA3GeQvnPPOcQCmi"
@@ -630,7 +630,7 @@
       "group": "H",
       "kickoffEEST": "03:00",
       "alarm": {
-        "ro": "merită văzut"
+        "ro": "citești dimineața"
       },
       "why": {
         "ro": "",
@@ -662,7 +662,7 @@
       "group": "G",
       "kickoffEEST": "06:00",
       "alarm": {
-        "ro": "merită văzut"
+        "ro": "citești dimineața"
       },
       "why": {
         "ro": "",
@@ -674,23 +674,23 @@
     {
       "name": "G",
       "prose": {
-        "ro": "Grupa G e un nod gordian: Egiptul se califică dacă nu pierde cu Iran, dar poate spera și la o înfrângere dacă Belgia nu câștigă. Belgia are nevoie de victorie cu Noua Zeelandă pentru a fi sigură de șaisprezecimi, dar un egal o obligă să spere la victoria Egiptului. Iranul trebuie să bată Egiptul, iar în caz de egalitate, se decide la golaveraj. Noua Zeelandă, ultima șansă, se califică doar cu victorie și sperând ca Iranul să nu câștige. Pe scurt: Egipt și Belgia sunt în poziții bune, Iran și Noua Zeelandă au nevoie de victorie și de conjunctură."
+        "ro": "Grupa G e un nod gordian. Egiptul își asigură calificarea dacă nu pierde cu Iranul. Belgia trebuie să bată Noua Zeelandă pentru a fi sigură de locul ei, altfel un egal o califică doar dacă Egiptul bate Iranul. Iranul are nevoie de victorie împotriva Egiptului, altfel un egal o lasă la mâna golaverajului. Noua Zeelandă e la mâna altor rezultate, dar trebuie să o bată pe Belgia și să spere că Iranul nu câștigă cu Egiptul. Pe scurt: Egipt merge dacă nu pierde, Belgia și Iran trebuie să câștige."
       }
     },
     {
       "name": "H",
       "prose": {
-        "ro": "În Grupa H, Spania este liniștită dacă nu pierde cu Uruguay, putând chiar să-și permită o înfrângere dacă Capul Verde nu învinge. Uruguayul are nevoie de victorie cu Spania, iar un egal o lasă la mâna golaverajului. Capul Verde trebuie să bată Arabia Saudită, iar o remiză o califică doar dacă Spania câștigă. Arabia Saudită are cea mai grea misiune: trebuie să câștige și să spere ca Uruguayul să nu câștige meciul cu Spania."
+        "ro": "În Grupa H, Spania e în pole-position: se califică dacă nu pierde cu Uruguayul. Dacă pierde, merge mai departe doar dacă Capul Verde nu bate Arabia Saudită. Uruguayul are nevoie de o victorie împotriva Spaniei, altfel un egal o lasă la mâna golaverajului. Capul Verde trebuie să învingă Arabia Saudită, iar un egal o ajută doar dacă Spania bate Uruguayul. Arabia Saudită trebuie să o bată pe Capul Verde și să spere că Uruguayul nu câștigă cu Spania. Pe scurt: Spania e la adăpost cu un egal, Uruguayul și Capul Verde trebuie să câștige."
       }
     },
     {
       "name": "I",
       "prose": {
-        "ro": "Grupa I este clară: Franța și Norvegia sunt deja calificate și se bat doar pentru primul loc. Senegalul și Irakul au fost eliminate, iar meciul lor nu mai are nicio miză sportivă, doar de palmares."
+        "ro": "Aici e simplu: Franța și Norvegia sunt deja calificate în șaisprezecimi, iar Senegal și Irak au plecat acasă. Meciurile din această seară se joacă doar pentru prestigiul de a termina grupa pe primul loc."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Ecuador i-a dat o lecție de fotbal Germaniei, Turcia a smuls victoria în prelungiri · 6 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Gol în 90+8, dar acasă · 6 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/"
   }
 }
