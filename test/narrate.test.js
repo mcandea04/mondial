@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildUserMessage, normalizeSteer, narrate } from '../pipeline/narrate.js';
+import { buildUserMessage, normalizeSteer, narrate, DEFAULT_MODEL, FALLBACK_MODEL } from '../pipeline/narrate.js';
 
 const facts = { date: '2026-06-12', finished: [], tonight: [], standings: [] };
 
@@ -34,6 +34,18 @@ function silencingWarn() {
   console.warn = () => {};
   return () => { console.warn = realWarn; };
 }
+
+test('the model ladder is two GA rungs, no preview endpoint', async () => {
+  // Both rungs must be GA model ids: preview endpoints have no SLA and were the
+  // worst-hit during the Google-side 503 storms that dropped digests. The id
+  // must be pinned and versioned — never a `-latest` alias, which 404s silently
+  // when Google rotates the model behind it.
+  for (const id of [DEFAULT_MODEL, FALLBACK_MODEL]) {
+    assert.doesNotMatch(id, /preview/, `${id} is a preview endpoint`);
+    assert.doesNotMatch(id, /latest/, `${id} is a non-versioned alias`);
+  }
+  assert.notEqual(DEFAULT_MODEL, FALLBACK_MODEL, 'the two rungs must be distinct endpoints');
+});
 
 test('narrate falls back to gemini-2.5-flash when the primary is exhausted', async () => {
   const realFetch = globalThis.fetch;

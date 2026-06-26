@@ -12,20 +12,24 @@ import { SYSTEM_PROMPT, SYSTEM_PROMPT_EN, narrationSchema, narrationSchemaEn, bu
 export { buildUserMessage, normalizeSteer };
 
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-// Pro tiers (gemini-2.5/3.x-pro) return 429 on the free key. Among free models,
-// gemini-3-flash-preview writes a far punchier, more specific Romanian than 2.5-flash.
-const DEFAULT_MODEL = 'gemini-3-flash-preview';
-// gemini-3-flash-preview is a preview endpoint with no SLA; under load it 503s
-// or stalls. gemini-2.5-flash is the stable GA model — weaker prose, but not
-// preview-throttled, so it is the safety net when the primary is down.
-const FALLBACK_MODEL = 'gemini-2.5-flash';
+// Both rungs are GA model ids, pinned and versioned. Preview endpoints
+// (gemini-*-flash-preview) have no SLA and were the worst-hit during the
+// Google-side 503 "high demand" storms that dropped digests — and since Google
+// counts failed 503s toward the daily quota, hammering a flapping preview also
+// burned the free quota. gemini-3.5-flash is the newest GA Flash (punchy
+// Romanian); gemini-2.5-flash is the older GA model kept as a distinct-endpoint
+// safety net. Never a `-latest` alias: it 404s silently when Google rotates the
+// model behind it.
+export const DEFAULT_MODEL = 'gemini-3.5-flash';
+export const FALLBACK_MODEL = 'gemini-2.5-flash';
 // Attempt counts are deliberately modest: the digest workflow polls every 15 min
-// with --require-complete, so that poll loop is the real outer retry. A run that
-// can't reach Gemini should fail fast and let the next poll try again, not burn a
-// whole 15-min window on one call. gemini-polish makes 3 calls (draft/critique/
-// rewrite); these counts keep its worst case bounded well under the poll cadence.
-const PRIMARY_MAX_ATTEMPTS = 4;
-const FALLBACK_MAX_ATTEMPTS = 3;
+// with --require-complete, so that poll loop is the real outer retry. During a
+// multi-hour Google 503 storm a run should fail FAST and let the next poll retry
+// on a fresh window, rather than burn backoff (and quota) on a dead endpoint.
+// gemini-polish makes 3 calls (draft/critique/rewrite) × RO+EN, so keeping the
+// per-call attempts low bounds the worst case well under the poll cadence.
+const PRIMARY_MAX_ATTEMPTS = 2;
+const FALLBACK_MAX_ATTEMPTS = 2;
 // Abort a stalled request so a hung socket on a flapping endpoint surfaces as a
 // retryable error instead of blocking the whole nightly run forever.
 const REQUEST_TIMEOUT_MS = 60_000;
