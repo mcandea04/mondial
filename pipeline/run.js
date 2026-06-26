@@ -204,7 +204,10 @@ export function reuseNarrationEn(stored, facts) {
     const s = tonightById.get(f.id) ?? tonightByTeams.get(`${f.home}|${f.away}`);
     const why = enOrNull(s?.why);
     const alarm = enOrNull(s?.alarm);
-    if (!why || !alarm) return null;
+    // A decisive-group fixture stores a blank `why` on purpose (the maths lives
+    // in the group paragraph), so an empty string is covered, not missing —
+    // only a null (no EN side at all) blocks reuse. `alarm` is a non-empty enum.
+    if (why == null || !alarm) return null;
     tonight.push({ id: f.id, alarm, why });
   }
 

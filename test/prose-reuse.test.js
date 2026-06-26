@@ -67,6 +67,22 @@ test('reuseNarrationEn rebuilds the English side', () => {
   });
 });
 
+test('reuseNarrationEn keeps EN when a decisive-group fixture has a blank why', () => {
+  // A decisive-matchday fixture stores an intentionally blank `why` (the maths
+  // lives in the group paragraph) but still has a real alarm. A blank why must
+  // not be read as "EN missing" — that would drop the whole English side.
+  const decisive = structuredClone(bilingualStored);
+  decisive.tonight[0].why = { ro: '', en: '' };
+  decisive.groupScenarios = [{ name: 'A', prose: { ro: 'RO grup', en: 'EN grup' } }];
+  const en = reuseNarrationEn(decisive, facts);
+  assert.deepEqual(en, {
+    headline: 'EN h', summary: 'EN s',
+    matches: [{ id: 1, pill: 'EN p', drama: 4 }],
+    tonight: [{ id: 3, alarm: 'worth watching', why: '' }],
+    groups: [{ name: 'A', scenario: 'EN grup' }],
+  });
+});
+
 test('reuseNarrationEn returns null for a RO-only stored day', () => {
   const roOnly = { headline: 'RO h', summary: 'RO s', matches: [{ id: 1, pill: 'p', drama: 1 }], tonight: [] };
   assert.equal(reuseNarrationEn(roOnly, { finished: [{ id: 1 }], tonight: [] }), null);
