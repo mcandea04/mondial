@@ -391,7 +391,7 @@
           "team": "away",
           "penalty": false,
           "ownGoal": false,
-          "assist": "Hans Vanaken",
+          "assist": null,
           "bodyPart": "dreptul",
           "placement": "din careu"
         },
