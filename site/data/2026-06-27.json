@@ -320,7 +320,7 @@
           "team": "home",
           "penalty": false,
           "ownGoal": false,
-          "assist": "Trézéguet",
+          "assist": null,
           "bodyPart": "stângul",
           "placement": "din stânga careului"
         },
