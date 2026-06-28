@@ -136,6 +136,74 @@ function withMatchRanks(match) {
 }
 
 /**
+ * Code-owned goal aggregates for narration. The model gets raw `scorers` too,
+ * but claims like "brace", "hat-trick", or "all scorers were different" should
+ * come from this block rather than from model-side counting.
+ */
+export function goalFactsForMatch(match) {
+  const scorers = match.scorers ?? [];
+  const totalGoals = (match.score ?? []).reduce((sum, n) => sum + (Number.isFinite(n) ? n : 0), 0);
+  if (totalGoals === 0 && scorers.length === 0) return null;
+
+  const sideName = { home: match.home, away: match.away };
+  const bySide = new Map(
+    ['home', 'away'].map((side, i) => [side, {
+      side,
+      team: sideName[side],
+      goals: Number.isFinite(match.score?.[i]) ? match.score[i] : null,
+      scoringPlayers: [],
+      ownGoals: [],
+    }]),
+  );
+  const playerCounts = new Map();
+
+  for (const goal of scorers) {
+    const side = goal.team ?? 'unknown';
+    if (!bySide.has(side)) {
+      bySide.set(side, {
+        side,
+        team: sideName[side] ?? null,
+        goals: null,
+        scoringPlayers: [],
+        ownGoals: [],
+      });
+    }
+    const teamFacts = bySide.get(side);
+    if (goal.ownGoal) {
+      teamFacts.ownGoals.push({ name: goal.name, minute: goal.minute });
+      continue;
+    }
+    const key = `${side}\u0000${goal.name}`;
+    if (!playerCounts.has(key)) {
+      const player = { name: goal.name, side, team: sideName[side] ?? null, goals: 0, minutes: [] };
+      playerCounts.set(key, player);
+      teamFacts.scoringPlayers.push(player);
+    }
+    const player = playerCounts.get(key);
+    player.goals += 1;
+    player.minutes.push(goal.minute);
+  }
+
+  const scoringPlayers = [...playerCounts.values()];
+  const nonOwnGoalCount = scorers.filter((g) => !g.ownGoal).length;
+  const ownGoalCount = scorers.length - nonOwnGoalCount;
+  const uniqueNonOwnScorers = scoringPlayers.every((p) => p.goals === 1);
+  const allScorersDifferent = nonOwnGoalCount > 1
+    ? (ownGoalCount === 0 || !uniqueNonOwnScorers ? uniqueNonOwnScorers : null)
+    : null;
+
+  return {
+    totalGoals,
+    recordedGoals: scorers.length,
+    byTeam: [...bySide.values()].filter(
+      (t) => t.goals || t.scoringPlayers.length || t.ownGoals.length,
+    ),
+    multiGoalPlayers: scoringPlayers.filter((p) => p.goals > 1),
+    allScorersDifferent,
+  };
+}
+
+/**
  * Monotonic enrichment: a finished match that ESPN once enriched is never
  * downgraded to bare facts by a later poll where the ESPN summary failed. When
  * the fresh parse has no scorers, events, or stats but a stored digest already
@@ -616,7 +684,10 @@ async function main() {
 
   // Ranks live only on the narrator's view, not the published JSON, and are
   // excluded from factsHash (static per team, never a reason to re-narrate).
-  const finishedWithRanks = facts.finished.map(withMatchRanks);
+  const finishedWithRanks = facts.finished.map((m) => {
+    const goalFacts = goalFactsForMatch(m);
+    return { ...withMatchRanks(m), ...(goalFacts && { goalFacts }) };
+  });
   const standingsWithRanks = standings.map((g) => ({
     ...g,
     table: g.table.map((row) => ({ ...row, rank: fifaRank(row.team) })),
