@@ -205,7 +205,7 @@
           "team": "away",
           "penalty": false,
           "ownGoal": false,
-          "assist": "Akmal Mozgovoy",
+          "assist": null,
           "bodyPart": "stângul",
           "placement": "din stânga careului"
         },
