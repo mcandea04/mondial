@@ -206,9 +206,48 @@ test('FIFA ranks feed the narrator but never leak into the published digest', ()
   assert.equal(raw.includes('homeRank'), false, 'homeRank must not appear in published JSON');
   assert.equal(raw.includes('awayRank'), false, 'awayRank must not appear in published JSON');
   assert.equal(raw.includes('"rank"'), false, 'standings rank must not appear in published JSON');
+  assert.equal(raw.includes('goalFacts'), false, 'goalFacts must not appear in published JSON');
 });
 
-import { mergeHighlight, mergeEnrichment, withoutGold } from '../pipeline/run.js';
+import { goalFactsForMatch, mergeHighlight, mergeEnrichment, withoutGold } from '../pipeline/run.js';
+
+test('goalFactsForMatch computes brace/different-scorer facts and keeps own goals separate', () => {
+  const facts = goalFactsForMatch({
+    home: 'Norvegia',
+    away: 'Senegal',
+    score: [3, 1],
+    scorers: [
+      { name: 'Erling Haaland', minute: '48', team: 'home', ownGoal: false },
+      { name: 'Erling Haaland', minute: '58', team: 'home', ownGoal: false },
+      { name: 'Kalidou Koulibaly', minute: '70', team: 'home', ownGoal: true },
+      { name: 'Ismaïla Sarr', minute: '90+3', team: 'away', ownGoal: false },
+    ],
+  });
+
+  assert.equal(facts.totalGoals, 4);
+  assert.equal(facts.recordedGoals, 4);
+  assert.deepEqual(facts.multiGoalPlayers, [
+    { name: 'Erling Haaland', side: 'home', team: 'Norvegia', goals: 2, minutes: ['48', '58'] },
+  ]);
+  assert.equal(facts.allScorersDifferent, false);
+  assert.deepEqual(facts.byTeam[0].ownGoals, [{ name: 'Kalidou Koulibaly', minute: '70' }]);
+});
+
+test('goalFactsForMatch marks allScorersDifferent only when every non-own-goal scorer is unique', () => {
+  const facts = goalFactsForMatch({
+    home: 'Mexic',
+    away: 'Cehia',
+    score: [2, 1],
+    scorers: [
+      { name: 'A', minute: '10', team: 'home', ownGoal: false },
+      { name: 'B', minute: '20', team: 'home', ownGoal: false },
+      { name: 'C', minute: '30', team: 'away', ownGoal: false },
+    ],
+  });
+
+  assert.equal(facts.allScorersDifferent, true);
+  assert.deepEqual(facts.multiGoalPlayers, []);
+});
 
 test('withoutGold removes promoted lines from the avoid-list', () => {
   const recent = ['o frază veche', 'linia de aur', 'altă frază'];

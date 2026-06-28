@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  narrationSchemaEn, SYSTEM_PROMPT_EN, CRITIQUE_SYSTEM_PROMPT_EN,
+  narrationSchemaEn, SYSTEM_PROMPT, SYSTEM_PROMPT_EN, CRITIQUE_SYSTEM_PROMPT_EN,
   buildRewriteSystemPromptEn, localizeProse,
   englishVerdict, factsWithEnglishVerdicts,
 } from '../pipeline/narration-core.js';
@@ -28,6 +28,13 @@ test('English prompts are English and reference the alarm enum', () => {
   assert.match(SYSTEM_PROMPT_EN, /worth watching/);
   assert.match(SYSTEM_PROMPT_EN, /catch it later/);
   assert.match(CRITIQUE_SYSTEM_PROMPT_EN, /English/i);
+});
+
+test('prompts route aggregate scorer claims through goalFacts', () => {
+  assert.match(SYSTEM_PROMPT, /goalFacts/);
+  assert.match(SYSTEM_PROMPT, /dublă/);
+  assert.match(SYSTEM_PROMPT_EN, /goalFacts/);
+  assert.match(SYSTEM_PROMPT_EN, /brace/);
 });
 
 test('buildRewriteSystemPromptEn embeds the critique and the English voice', () => {

@@ -165,6 +165,12 @@ DETALIILE MECIULUI (folosește-le, nu le inventa):
   „penalty" sau „ownGoal" (autogol), și cine a pasat („assist"). Țese-le natural în frază:
   „a marcat cu capul din careu", „din penalty", „autogol", „la pasa lui X". Folosești un
   detaliu DOAR dacă e prezent (non-null); ce lipsește, treci sub tăcere — nu deduci, nu inventezi.
+- Pentru afirmații agregate despre goluri — „dublă", „triplă", „hat-trick", „toți marcatorii
+  au fost diferiți", „a marcat de două ori" — folosești DOAR câmpul calculat „goalFacts".
+  NU renumăra singur lista „scorers". Dacă „goalFacts.multiGoalPlayers" nu conține jucătorul,
+  nu-i atribui dublă/triplă; dacă „goalFacts.allScorersDifferent" nu este true, nu spune că
+  golurile au fost date de marcatori diferiți. Autogolurile sunt listate separat în „ownGoals":
+  nu le transforma în dublă/triplă pentru jucătorul respectiv.
 - PICIORUL (cu dreptul / cu stângul) e cel mai puțin interesant detaliu. Îl menționezi
   cel mult O DATĂ pe tot meciul — fie în summary, fie în pastila acelui meci, niciodată de
   două ori — și numai când chiar piciorul e povestea (un șut formidabil cu piciorul slab,
@@ -480,6 +486,11 @@ MATCH DETAILS (use them, do not invent them):
   assisted ("assist"). Weave them in naturally: "headed in from inside the box", "from the penalty spot",
   "own goal", "set up by X". Use a detail ONLY if present (non-null); pass over what is missing — do not
   deduce, do not invent.
+- For aggregate goal claims — "brace", "hat-trick", "all scorers were different", "scored twice" —
+  use ONLY the computed "goalFacts" field. Do NOT recount the raw "scorers" list yourself. If
+  "goalFacts.multiGoalPlayers" does not contain a player, do not give them a brace/hat-trick; if
+  "goalFacts.allScorersDifferent" is not true, do not say the goals came from different scorers.
+  Own goals are listed separately under "ownGoals": never turn them into a brace/hat-trick for that player.
 - THE FOOT (left/right) is the least interesting detail. Mention it at most ONCE in the whole match, and
   only when the foot really is the story (a stunning strike with the weaker foot, a long-range volley). For
   a header, a penalty, a tap-in or any ordinary goal, the foot is noise: stay quiet. "Headed" does NOT fall
