@@ -59,6 +59,35 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SITE_DIR = path.join(ROOT, 'site');
 const DATA_DIR = path.join(SITE_DIR, 'data');
 const GOLD_PATH = path.join(ROOT, 'pipeline', 'gold.json');
+const KNOCKOUT_CUTOFF_DATE = '2026-06-29';
+
+const isKnockoutDigestDate = (date) => date >= KNOCKOUT_CUTOFF_DATE;
+
+function knockoutResultFromScore(match) {
+  const [homeScore, awayScore] = match.score ?? [];
+  if (homeScore == null || awayScore == null || homeScore === awayScore) return {};
+  return homeScore > awayScore
+    ? { winner: match.home, loser: match.away, winnerSide: 'home', loserSide: 'away' }
+    : { winner: match.away, loser: match.home, winnerSide: 'away', loserSide: 'home' };
+}
+
+function forceKnockoutMatch(match) {
+  const result = match.winner && match.loser ? {} : knockoutResultFromScore(match);
+  const out = {
+    ...match,
+    group: null,
+    stage: match.stage ?? 'round-of-32',
+    ...result,
+  };
+  if (!out.winner || !out.loser) {
+    throw new Error(`Knockout match ${out.id} has no resolvable winner/loser`);
+  }
+  return out;
+}
+
+function forceKnockoutFixture(fixture) {
+  return { ...fixture, group: null, stage: fixture.stage ?? 'round-of-32' };
+}
 
 function parseArgs(argv) {
   const args = { date: null, fixtures: null, requireComplete: false, out: null, reNarrate: false, steer: null };
@@ -622,8 +651,14 @@ async function main() {
   }
 
   const facts = await gatherFacts({ date, fixtures: args.fixtures });
+  const knockoutMode = isKnockoutDigestDate(date);
+  if (knockoutMode) {
+    facts.finished = facts.finished.map(forceKnockoutMatch);
+    facts.tonight = facts.tonight.map(forceKnockoutFixture);
+    facts.standings = [];
+  }
   const historical = await historicalMatches(date);
-  const standings = classifyStandings(facts.standings, [...historical, ...facts.finished]);
+  const standings = knockoutMode ? [] : classifyStandings(facts.standings, [...historical, ...facts.finished]);
 
   // Read the stored digest first: it both supplies prior enrichment (so a failed
   // ESPN poll can't strip detail off an already-rich match) and powers the freeze.
@@ -636,7 +671,9 @@ async function main() {
   });
 
   // Only groups that played last night get a snapshot on the page.
-  const groupsThatPlayed = new Set(facts.finished.map((m) => m.group).filter(Boolean));
+  const groupsThatPlayed = knockoutMode
+    ? new Set()
+    : new Set(facts.finished.map((m) => m.group).filter(Boolean));
 
   const allMatchesForScenarios = [...historical, ...facts.finished];
 
@@ -645,7 +682,7 @@ async function main() {
   // per-team conditions and writes one unified paragraph in `groups`.
   const tonightPairs = new Set(facts.tonight.map((f) => [f.home, f.away].sort().join('|')));
   const decisiveGroups = [];
-  for (const g of facts.standings) {
+  for (const g of knockoutMode ? [] : facts.standings) {
     const groupTeams = new Set(g.table.map((r) => r.team));
     const groupMatches = allMatchesForScenarios.filter(
       (m) => groupTeams.has(m.home) && groupTeams.has(m.away),
@@ -672,9 +709,10 @@ async function main() {
   // field. Scenarios are computed from raw ESPN standings (before classifyStandings
   // so we work with the undecorated table shape). They are not added to factsHash
   // because they are derived deterministically from scores/standings already hashed.
-  const scenarios = computeScenarios(facts.standings, allMatchesForScenarios);
+  const scenarios = knockoutMode ? new Map() : computeScenarios(facts.standings, allMatchesForScenarios);
   const tonightWithScenarios = facts.tonight.map((f) => {
     const ranked = withMatchRanks(f);
+    if (knockoutMode) return ranked;
     if (decisivePairs.has([f.home, f.away].sort().join('|'))) return ranked;
     const hs = scenarioFor(f.home, scenarios);
     const as = scenarioFor(f.away, scenarios);
@@ -699,6 +737,7 @@ async function main() {
   const factsForNarration = {
     date, finished: finishedWithRanks, tonight: tonightWithScenarios, standings: standingsWithRanks,
     ...(decisiveGroups.length > 0 && { decisiveGroups }),
+    ...(knockoutMode && { phase: 'knockout' }),
   };
   // Hashed AFTER mergeEnrichment so a transient outage doesn't flip the hash.
   // decisiveGroups is excluded from the hash for the same reason as the per-fixture
@@ -816,6 +855,7 @@ async function main() {
         homeCode: m.homeCode ?? null,
         awayCode: m.awayCode ?? null,
         group: m.group ?? null,
+        stage: m.stage ?? null,
         kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
         // The watch verdict is canonical (Romanian); the English alarm is its
         // mapped form, never the English model's own call — so the two never

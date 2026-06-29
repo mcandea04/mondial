@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   narrationSchemaEn, SYSTEM_PROMPT, SYSTEM_PROMPT_EN, CRITIQUE_SYSTEM_PROMPT_EN,
   buildRewriteSystemPromptEn, localizeProse,
-  englishVerdict, factsWithEnglishVerdicts,
+  englishVerdict, factsWithEnglishVerdicts, buildUserMessage,
 } from '../pipeline/narration-core.js';
 
 test('narrationSchemaEn accepts the English alarm enum', () => {
@@ -35,6 +35,43 @@ test('prompts route aggregate scorer claims through goalFacts', () => {
   assert.match(SYSTEM_PROMPT, /dublă/);
   assert.match(SYSTEM_PROMPT_EN, /goalFacts/);
   assert.match(SYSTEM_PROMPT_EN, /brace/);
+});
+
+test('prompts define knockout facts and forbid both-qualified framing', () => {
+  assert.match(SYSTEM_PROMPT, /FAZA ELIMINATORIE/);
+  assert.match(SYSTEM_PROMPT, /winner/);
+  assert.match(SYSTEM_PROMPT, /loser/);
+  assert.match(SYSTEM_PROMPT, /ambele echipe/);
+  assert.match(SYSTEM_PROMPT_EN, /KNOCKOUT STAGE/);
+  assert.match(SYSTEM_PROMPT_EN, /both teams qualified/);
+});
+
+test('buildUserMessage carries knockout facts without group standings', () => {
+  const facts = {
+    date: '2026-06-29',
+    phase: 'knockout',
+    finished: [{
+      id: 760486,
+      home: 'Africa de Sud',
+      away: 'Canada',
+      score: [0, 1],
+      stage: 'round-of-32',
+      winner: 'Canada',
+      loser: 'Africa de Sud',
+      scorers: [],
+      events: [],
+    }],
+    tonight: [{ id: 760487, home: 'Brazilia', away: 'Japonia', stage: 'round-of-32', kickoffEEST: '20:00' }],
+    standings: [],
+  };
+  const message = buildUserMessage(facts, [], null);
+  assert.match(message, /"phase": "knockout"/);
+  assert.match(message, /"stage": "round-of-32"/);
+  assert.match(message, /"winner": "Canada"/);
+  assert.match(message, /"loser": "Africa de Sud"/);
+  assert.match(message, /"standings": \[\]/);
+  assert.doesNotMatch(message, /"status": "calificată"/);
+  assert.doesNotMatch(message, /homeScenario/);
 });
 
 test('buildRewriteSystemPromptEn embeds the critique and the English voice', () => {

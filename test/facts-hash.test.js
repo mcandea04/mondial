@@ -149,6 +149,18 @@ test('a changed tonight kickoff changes the hash', () => {
   assert.notEqual(factsHash(base), factsHash(moved));
 });
 
+test('knockout stage and result fields change the hash', () => {
+  const knockout = structuredClone(base);
+  knockout.finished[0].stage = 'round-of-32';
+  knockout.finished[0].winner = 'Canada';
+  knockout.finished[0].loser = 'Qatar';
+  assert.notEqual(factsHash(base), factsHash(knockout));
+
+  const moved = structuredClone(base);
+  moved.tonight[0].stage = 'round-of-32';
+  assert.notEqual(factsHash(base), factsHash(moved));
+});
+
 test('a changed date changes the hash', () => {
   assert.notEqual(factsHash(base), factsHash({ ...base, date: '2026-06-13' }));
 });

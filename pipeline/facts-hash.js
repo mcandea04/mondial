@@ -66,13 +66,22 @@ function project({ date, finished, tonight }) {
       .sort(byId)
       .map((m) => ({
         id: m.id,
+        stage: m.stage ?? null,
         score: m.score,
+        winner: m.winner ?? null,
+        loser: m.loser ?? null,
         scorers: slimSorted(m.scorers, slimScorer),
         events: slimSorted(m.events, slimEvent),
       })),
     tonight: [...tonight]
       .sort(byId)
-      .map((m) => ({ id: m.id, home: m.home, away: m.away, kickoffEEST: m.kickoffEEST })),
+      .map((m) => ({
+        id: m.id,
+        home: m.home,
+        away: m.away,
+        stage: m.stage ?? null,
+        kickoffEEST: m.kickoffEEST,
+      })),
   };
 }
 

@@ -16,16 +16,16 @@ export function freshDirs() {
   return { fixtures, out };
 }
 
-export function runPipeline({ fixtures, out, extra = [], env = {} }) {
+export function runPipeline({ fixtures, out, extra = [], env = {}, date = DATE }) {
   return execFileSync(
     'node',
-    ['pipeline/run.js', '--fixtures', fixtures, '--date', DATE, '--out', out, ...extra],
+    ['pipeline/run.js', '--fixtures', fixtures, '--date', date, '--out', out, ...extra],
     { cwd: ROOT, encoding: 'utf8', env: { ...process.env, ...env } },
   );
 }
 
-export function readDigest(out) {
-  return JSON.parse(readFileSync(path.join(out, `${DATE}.json`), 'utf8'));
+export function readDigest(out, date = DATE) {
+  return JSON.parse(readFileSync(path.join(out, `${date}.json`), 'utf8'));
 }
 
 test('--out redirects all writes and leaves site/data untouched', () => {
@@ -247,6 +247,100 @@ test('goalFactsForMatch marks allScorersDifferent only when every non-own-goal s
 
   assert.equal(facts.allScorersDifferent, true);
   assert.deepEqual(facts.multiGoalPlayers, []);
+});
+
+test('2026-06-29 and later run in knockout mode', () => {
+  const { fixtures, out } = freshDirs();
+  const date = '2026-06-29';
+  const event = {
+    id: '760486',
+    name: 'Canada at South Africa',
+    date: '2026-06-28T19:00:00Z',
+    season: { year: 2026, type: 13801, slug: 'round-of-32' },
+    status: { type: { state: 'post', completed: true } },
+    competitions: [{ competitors: [
+      { homeAway: 'home', score: '0', winner: false, team: { id: '467', displayName: 'South Africa' } },
+      { homeAway: 'away', score: '1', winner: true, team: { id: '206', displayName: 'Canada' } },
+    ] }],
+  };
+  const tonight = [
+    {
+      id: '760487',
+      name: 'Japan at Brazil',
+      date: '2026-06-29T17:00:00Z',
+      season: { year: 2026, type: 13801, slug: 'round-of-32' },
+      status: { type: { state: 'pre', completed: false } },
+      competitions: [{ competitors: [
+        { homeAway: 'home', team: { id: '20', displayName: 'Brazil' } },
+        { homeAway: 'away', team: { id: '21', displayName: 'Japan' } },
+      ] }],
+    },
+    {
+      id: '760489',
+      name: 'Paraguay at Germany',
+      date: '2026-06-29T20:30:00Z',
+      season: { year: 2026, type: 13801, slug: 'round-of-32' },
+      status: { type: { state: 'pre', completed: false } },
+      competitions: [{ competitors: [
+        { homeAway: 'home', team: { id: '22', displayName: 'Germany' } },
+        { homeAway: 'away', team: { id: '23', displayName: 'Paraguay' } },
+      ] }],
+    },
+  ];
+  writeFileSync(path.join(fixtures, 'scoreboard.json'), JSON.stringify({
+    20260628: { events: [event] },
+    20260629: { events: tonight },
+    20260630: { events: [] },
+  }));
+  writeFileSync(path.join(fixtures, 'espn-standings.json'), JSON.stringify({
+    children: [{
+      name: 'Group A',
+      standings: { entries: [
+        { team: { displayName: 'South Africa' }, stats: [{ name: 'gamesPlayed', value: 3 }, { name: 'points', value: 4 }] },
+        { team: { displayName: 'Canada' }, stats: [{ name: 'gamesPlayed', value: 3 }, { name: 'points', value: 4 }] },
+      ] },
+    }],
+  }));
+  writeFileSync(path.join(fixtures, 'summary-760486.json'), JSON.stringify({
+    header: { competitions: event.competitions },
+    keyEvents: [
+      {
+        team: { id: '206' },
+        clock: { displayValue: "90'+2'" },
+        type: { text: 'Goal' },
+        scoringPlay: true,
+        participants: [{ athlete: { displayName: 'Stephen Eustáquio' } }],
+        text: 'Stephen Eustáquio scores.',
+      },
+    ],
+    boxscore: { teams: [] },
+  }));
+  writeFileSync(path.join(fixtures, 'narration.json'), JSON.stringify({
+    headline: 'Canada merge mai departe',
+    summary: 'Canada a câștigat în prelungiri. Africa de Sud a fost eliminată.',
+    matches: [{ id: 760486, pill: 'Canada avansează în optimi, Africa de Sud pleacă acasă.', drama: 4 }],
+    tonight: [
+      { id: 760487, alarm: 'merită văzut', why: 'Brazilia și Japonia joacă la 20:00 cu eliminarea pe masă.' },
+      { id: 760489, alarm: 'citești dimineața', why: 'Germania și Paraguay vin târziu, iar scorul îl prinzi dimineața.' },
+    ],
+  }));
+
+  runPipeline({ fixtures, out, date });
+  const digest = readDigest(out, date);
+  assert.deepEqual(digest.groups, []);
+  assert.equal(digest.groupScenarios, undefined);
+
+  const match = digest.matches[0];
+  assert.equal(match.stage, 'round-of-32');
+  assert.equal(match.group, null);
+  assert.equal(match.winner, 'Canada');
+  assert.equal(match.loser, 'Africa de Sud');
+  assert.equal(match.pill.ro.includes('ambele'), false);
+
+  assert.ok(digest.tonight.length > 0);
+  assert.ok(digest.tonight.every((fixture) => fixture.stage === 'round-of-32'));
+  assert.ok(digest.tonight.every((fixture) => fixture.group === null));
+  assert.ok(digest.tonight.every((fixture) => !('homeScenario' in fixture) && !('awayScenario' in fixture)));
 });
 
 test('withoutGold removes promoted lines from the avoid-list', () => {

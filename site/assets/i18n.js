@@ -26,6 +26,26 @@ export function localize(field, lang) {
   return field[lang] ?? field.ro ?? '';
 }
 
+export function stageLabel(stage, lang) {
+  const labels = {
+    ro: {
+      'round-of-32': 'șaisprezecimi',
+      'round-of-16': 'optimi',
+      quarterfinal: 'sferturi',
+      semifinal: 'semifinală',
+      final: 'finală',
+    },
+    en: {
+      'round-of-32': 'round of 32',
+      'round-of-16': 'round of 16',
+      quarterfinal: 'quarterfinal',
+      semifinal: 'semifinal',
+      final: 'final',
+    },
+  };
+  return labels[lang]?.[stage] ?? labels.ro[stage] ?? '';
+}
+
 export const UI_STRINGS = {
   ro: {
     nightHere: 'azi-noapte la Mondial',

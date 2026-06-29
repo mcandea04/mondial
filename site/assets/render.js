@@ -1,6 +1,6 @@
 /* Renders a digest JSON into the page. Shared by index.html and arhiva.html. */
 
-import { localize, localizeTeam, teamCode, UI_STRINGS, STATUS_LABEL, alarmIsWatch, alarmBadgeLabel, dateLabel } from './i18n.js';
+import { localize, localizeTeam, teamCode, UI_STRINGS, STATUS_LABEL, alarmIsWatch, alarmBadgeLabel, dateLabel, stageLabel } from './i18n.js';
 
 const STATUS_BADGE = {
   'calificată': 'badge-ok',
@@ -71,6 +71,8 @@ function matchCountLabel(n, lang) {
 
 function renderMatchCard(match, lang) {
   const card = el('div', 'card');
+  const label = stageLabel(match.stage, lang);
+  if (label) card.append(el('p', 'card-label', label));
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
   const score = el('span', 'score', `${match.score[0]} – ${match.score[1]}`);
@@ -239,6 +241,7 @@ function tonightRow(fixture, lang) {
   left.append(
     matchLine,
     el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`),
+    ...(stageLabel(fixture.stage, lang) ? [el('span', 'badge badge-muted', stageLabel(fixture.stage, lang))] : []),
     el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)),
   );
   const whyText = localize(fixture.why, lang);
@@ -315,8 +318,8 @@ export function renderDigest(root, digest, lang = 'ro') {
     root.append(emptyCard);
   }
   for (const match of digest.matches) root.append(renderMatchCard(match, lang));
-  for (const group of digest.groups) root.append(renderGroupCard(group, lang));
-  if (digest.tonight.length) root.append(renderTonight(digest.tonight, digest.groupScenarios, lang));
+  for (const group of digest.groups ?? []) root.append(renderGroupCard(group, lang));
+  if ((digest.tonight ?? []).length) root.append(renderTonight(digest.tonight, digest.groupScenarios, lang));
   root.append(renderShareBar(digest, lang));
 }
 

@@ -80,13 +80,21 @@ REGULI DE FAPTE (stricte):
    „a scos-o din competiție" despre o echipă care NU are „status: eliminată" — chiar dacă
    tocmai a pierdut. O echipă „în cărți" rămâne în cărți; despre ea spui cel mult „și-a
    complicat situația", niciodată că e afară. Asta se aplică PESTE TOT — headline, summary,
-   pastile — nu doar în preview-uri.
+   pastile — nu doar în preview-uri. EXCEPȚIE: dacă „phase" este „knockout" sau un meci are
+   „stage", nu mai folosești statutul din grupele vechi; folosești regula eliminatorie de mai jos.
 2ab. FORMATUL TURNEULUI 2026 (fapt fix): 48 de echipe, 12 grupe de câte 4; din fiecare grupă
    merg mai departe primele DOUĂ plus cele mai bune 8 echipe de pe locul 3 — adică 32 de
    echipe trec de grupe. Prima fază eliminatorie de după grupe e „șaisprezecimile de finală"
    (32 de echipe / „last 32"). NU e „optimi" și NU e „last 16" — aici joacă 32, nu 16. O echipă
    care se califică din grupă „ajunge în șaisprezecimi", nu „în optimi". Optimile vin DUPĂ
    șaisprezecimi (16 echipe). Nu inventa alt nume de fază.
+2ac. FAZA ELIMINATORIE: dacă „phase" este „knockout" sau meciul are „stage", fiecare meci e
+   eliminatoriu. La un meci terminat, câmpurile „winner" și „loser" sunt fapte calculate:
+   „winner" merge mai departe, „loser" este eliminată. NU scrie niciodată că ambele echipe
+   s-au calificat, au sărbătorit calificarea sau merg împreună mai departe după un meci
+   eliminatoriu. Pentru „stage":"round-of-32" spui „șaisprezecimi"; următoarea rundă este
+   „optimi". Pentru meciurile de diseară în faza eliminatorie, miza e simplă: câștigătoarea
+   merge mai departe, învinsa pleacă acasă — nu inventa scenarii de grupă.
 2b. SCENARII DE GRUPĂ (etapa decisivă) — OBLIGATORIU: dacă primești câmpul „decisiveGroups",
    fiecare intrare e o grupă ale cărei DOUĂ meciuri se joacă SIMULTAN diseară. Pentru FIECARE
    astfel de grupă TREBUIE să returnezi câte o intrare în „groups" (același „name") — nu sări
@@ -420,13 +428,21 @@ FACT RULES (strict):
    you eliminated your opponent. Do NOT write "knocked them out", "sent them home", "dumped them
    out" about a team that does NOT have "status: eliminată" — even if it just lost. A team that
    is "în cărți" stays in contention; at most say it "made things harder for itself", never that
-   it is out. This applies EVERYWHERE — headline, summary, pills — not just previews.
+   it is out. This applies EVERYWHERE — headline, summary, pills — not just previews. EXCEPTION:
+   when "phase" is "knockout" or a match has "stage", ignore old group statuses and use the
+   knockout rule below.
 2ab. 2026 TOURNAMENT FORMAT (fixed fact): 48 teams, 12 groups of 4; the top TWO of each group
    plus the 8 best third-placed teams advance — so 32 teams get through the groups. The first
    knockout round after the groups is the "round of 32" / "last 32" (32 teams). It is NOT the
    "round of 16" / "last 16" — 32 play here, not 16. A team that qualifies from its group
    "reaches the round of 32 (last 32)", never "the last 16". The round of 16 comes AFTER the
    round of 32. Do not invent any other round name.
+2ac. KNOCKOUT STAGE: when "phase" is "knockout" or a match has "stage", every match is
+   knockout. For a completed match, "winner" and "loser" are computed facts: the winner advances
+   and the loser is eliminated. Never say both teams qualified, celebrated qualification, or moved
+   on together after a knockout match. For "stage":"round-of-32", say "round of 32" / "last 32";
+   the next round is the round of 16. For tonight's knockout fixtures, the stakes are simple: the
+   winner advances and the loser goes home — do not invent group scenarios.
 2b. GROUP SCENARIOS (the decisive matchday) — REQUIRED: if you receive a "decisiveGroups" field,
    each entry is a group whose TWO matches kick off SIMULTANEOUSLY tonight. For EVERY such group
    you MUST return one entry in "groups" (same "name") — never skip one. These fixtures have no

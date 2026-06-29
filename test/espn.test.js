@@ -49,6 +49,7 @@ import {
   parseFixture,
   parseStandings,
   scoreboardDates,
+  stageFromEvent,
 } from '../pipeline/espn.js';
 
 test('scoreboardDates returns both the UTC date and the day before (ET buckets)', () => {
@@ -120,6 +121,50 @@ test('parseFixture maps a not-yet-played ESPN event to the fixture shape', () =>
   assert.equal(parsed.homeCode, 'br');
   assert.ok(parsed.kickoffEEST);
   assert.equal(parsed.group, 'C');
+});
+
+test('stageFromEvent normalizes ESPN round-of-32 metadata', () => {
+  assert.equal(stageFromEvent({ season: { slug: 'round-of-32' } }), 'round-of-32');
+  assert.equal(stageFromEvent({ season: { name: '2026 FIFA World Cup, Round of 32' } }), 'round-of-32');
+  assert.equal(stageFromEvent({ season: { type: 13801 } }), 'round-of-32');
+});
+
+test('parseMatch publishes knockout stage and winner/loser facts', () => {
+  const event = {
+    id: '760486',
+    date: '2026-06-28T19:00:00Z',
+    season: { slug: 'round-of-32' },
+    status: { type: { state: 'post', completed: true } },
+    competitions: [{ competitors: [
+      { homeAway: 'home', score: '0', winner: false, team: { id: '467', displayName: 'South Africa' } },
+      { homeAway: 'away', score: '1', winner: true, team: { id: '206', displayName: 'Canada' } },
+    ] }],
+    goals: [],
+    bookings: [],
+    matchStats: null,
+  };
+  const parsed = parseMatch(event, null);
+  assert.equal(parsed.group, null);
+  assert.equal(parsed.stage, 'round-of-32');
+  assert.equal(parsed.winner, 'Canada');
+  assert.equal(parsed.loser, 'Africa de Sud');
+  assert.equal(parsed.winnerSide, 'away');
+  assert.equal(parsed.loserSide, 'home');
+});
+
+test('parseFixture publishes knockout stage metadata', () => {
+  const event = {
+    id: '760487',
+    date: '2026-06-29T17:00:00Z',
+    season: { slug: 'round-of-32' },
+    competitions: [{ competitors: [
+      { homeAway: 'home', team: { id: '20', displayName: 'Brazil' } },
+      { homeAway: 'away', team: { id: '21', displayName: 'Japan' } },
+    ] }],
+  };
+  const parsed = parseFixture(event, null);
+  assert.equal(parsed.group, null);
+  assert.equal(parsed.stage, 'round-of-32');
 });
 
 test('parseStandings maps ESPN children into group tables', async () => {

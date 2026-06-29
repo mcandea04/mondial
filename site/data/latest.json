@@ -1,17 +1,17 @@
 {
   "date": "2026-06-29",
-  "factsHash": "ae93bb82142d23f6545ce0c22e4d69e64b0f382ea4d8e087304cdd7a23d8ed8d",
+  "factsHash": "5453a6e6ed96e40ac4782b8ca4b724b189ead00a6b7d010f838974de8ce93366",
   "narrator": {
     "ro": "gemini-polish",
     "en": "gemini-polish"
   },
   "headline": {
-    "ro": "Canada învinge la ultima fază, dar ambele sărbătoresc",
-    "en": "Eustáquio leaves it late, but the world number 60 is through anyway"
+    "ro": "Mingea acasă, calificarea la canadieni",
+    "en": "Eustáquio’s 92nd-minute winner spares us extra time"
   },
   "summary": {
-    "ro": "Canada a dat lovitura în minutul 92 prin Stephen Eustáquio, care a catapultat mingea în plasă cu un șut cu dreptul din afara careului. În ciuda înfrângerii dureroase de la ultima fază, Africa de Sud nu are de ce să se plângă, ambele echipe mergând mai departe în șaisprezecimile de finală.",
-    "en": "South Africa, the world number 60, successfully navigated their way into the round of 32 despite conceding a 92nd-minute winner to Canada. Stephen Eustáquio's late strike from outside the box secured a 1-0 win for the North Americans, though both sides ultimately celebrated progression from their groups."
+    "ro": "Canada, ocupanta locului 30 în clasamentul FIFA, a trimis-o acasă pe Africa de Sud și merge în optimi după golul lui Stephen Eustáquio din 90+2. Africanilor nu le-a folosit la nimic posesia de aproape 60%, încheind șaisprezecimile cu un sac de regrete.",
+    "en": "Canada reached the round of 16 after Stephen Eustáquio’s stoppage-time strike from distance punished a South African side that forgot to shoot. Despite having nearly 60% of the ball, the world's 60th-ranked team managed a single shot on target before being eliminated."
   },
   "matches": [
     {
@@ -20,7 +20,8 @@
       "away": "Canada",
       "homeCode": "za",
       "awayCode": "ca",
-      "group": "A",
+      "group": null,
+      "stage": "round-of-32",
       "utcDate": "2026-06-28T19:00Z",
       "score": [
         0,
@@ -44,7 +45,7 @@
           "foulsCommitted": "10",
           "wonCorners": "1",
           "saves": "5",
-          "possessionPct": "58.2",
+          "possessionPct": "58.4",
           "totalShots": "6",
           "shotsOnTarget": "1"
         },
@@ -52,75 +53,25 @@
           "foulsCommitted": "16",
           "wonCorners": "4",
           "saves": "1",
-          "possessionPct": "41.8",
+          "possessionPct": "41.6",
           "totalShots": "12",
           "shotsOnTarget": "7"
         }
       },
       "decidedOnPenalties": false,
+      "winner": "Canada",
+      "loser": "Africa de Sud",
+      "winnerSide": "away",
+      "loserSide": "home",
       "pill": {
-        "ro": "Sud-africanii au ținut mingea în proporție de 58%, dar au reușit un singur șut cadrat pe poartă tot jocul. Canada a fost mult mai periculoasă și a marcat în prelungiri prin Eustáquio, cu o execuție de la distanță care a lăsat portarul fără replică. Chiar și așa, ambele selecționate se califică împreună în șaisprezecimi, așa că supărarea trece repede.",
-        "en": "South Africa had 58.2% of the possession but did next to nothing with it, failing to seriously test the Canadian goalkeeper. Canada committed fouls all evening to keep things sluggish, but Stephen Eustáquio eventually prevented a scoreless draw by curling in a beauty from outside the box in the 92nd minute. But with both nations already qualified, everyone went home happy."
+        "ro": "Canada merge în optimi grație șutului din afara careului semnat de Stephen Eustáquio în minutul 90+2. Africa de Sud a ținut mingea 58.4% din timp, dar a reușit un singur șut pe poartă și a plecat acasă. Astfel, a 60-a echipă a lumii și-a încheiat parcursul.",
+        "en": "South Africa enjoyed 58.4% possession but proved that keeping the ball is useless if you only test the keeper once. Stephen Eustáquio’s strike from outside the box in the 92nd minute was a clinical way to settle a drab affair. Canada march into the round of 16, leaving their opponents with nothing but passing stats to admire."
       },
-      "drama": 3,
+      "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/6dFyzSCghyabYGJRQk8RYB"
     }
   ],
-  "groups": [
-    {
-      "name": "A",
-      "table": [
-        {
-          "team": "Mexic",
-          "code": "mx",
-          "p": 3,
-          "w": 3,
-          "d": 0,
-          "l": 0,
-          "gf": 6,
-          "gd": 6,
-          "pts": 9,
-          "status": "calificată"
-        },
-        {
-          "team": "Africa de Sud",
-          "code": "za",
-          "p": 3,
-          "w": 1,
-          "d": 1,
-          "l": 1,
-          "gf": 2,
-          "gd": -1,
-          "pts": 4,
-          "status": "calificată"
-        },
-        {
-          "team": "Coreea de Sud",
-          "code": "kr",
-          "p": 3,
-          "w": 1,
-          "d": 0,
-          "l": 2,
-          "gf": 2,
-          "gd": -1,
-          "pts": 3,
-          "status": "în cărți"
-        },
-        {
-          "team": "Cehia",
-          "code": "cz",
-          "p": 3,
-          "w": 0,
-          "d": 1,
-          "l": 2,
-          "gf": 2,
-          "gd": -4,
-          "pts": 1,
-          "status": "eliminată"
-        }
-      ]
-    }
-  ],
+  "groups": [],
   "tonight": [
     {
       "id": 760487,
@@ -128,15 +79,16 @@
       "away": "Japonia",
       "homeCode": "br",
       "awayCode": "jp",
-      "group": "C",
+      "group": null,
+      "stage": "round-of-32",
       "kickoffEEST": "20:00",
       "alarm": {
         "ro": "merită văzut",
         "en": "worth watching"
       },
       "why": {
-        "ro": "La 20:00, sud-americanii înfruntă disciplina niponă într-o partidă pe care o prinzi fără efort înainte de culcare.",
-        "en": "Brazil and Japan meet at 8 PM for a high-caliber clash that is well worth watching live."
+        "ro": "La 20:00, Brazilia și Japonia, două forțe ale fotbalului, se înfruntă pentru un loc în optimi.",
+        "en": "Brazil vs Japan occupies a prime evening slot and promises enough technical quality to justify staying on the sofa at 20:00."
       }
     },
     {
@@ -145,15 +97,16 @@
       "away": "Paraguay",
       "homeCode": "de",
       "awayCode": "py",
-      "group": "E",
+      "group": null,
+      "stage": "round-of-32",
       "kickoffEEST": "23:30",
       "alarm": {
         "ro": "citești dimineața",
         "en": "catch it later"
       },
       "why": {
-        "ro": "La 23:30, nemții au o misiune aparent facilă în fața trupei din Paraguay, așa că poți afla deznodământul când te trezești.",
-        "en": "Germany's 11:30 PM meeting with Paraguay can probably be skipped in favor of a warm bed, as the European heavyweights should have too much quality."
+        "ro": "La 23:30, Germania este o mare favorită împotriva Paraguayului, iar scorul îl poți afla liniștit mâine dimineață.",
+        "en": "Germany vs Paraguay at 23:30 looks like a mismatch that you can safely sleep through and check the margin over breakfast."
       }
     },
     {
@@ -162,20 +115,21 @@
       "away": "Maroc",
       "homeCode": "nl",
       "awayCode": "ma",
-      "group": "F",
+      "group": null,
+      "stage": "round-of-32",
       "kickoffEEST": "04:00",
       "alarm": {
-        "ro": "citești dimineața",
-        "en": "catch it later"
+        "ro": "merită văzut",
+        "en": "worth watching"
       },
       "why": {
-        "ro": "Deși se întâlnesc două selecționate de top, ora patru este prea nemiloasă ca să nu alegi perna în locul ecranului.",
-        "en": "A 4 AM kickoff for Netherlands and Morocco is far too punishing for viewers, especially since both sides have already booked their passage."
+        "ro": "Olanda și Maroc, două echipe de top, oferă un duel pentru care merită să pierzi somnul la 04:00.",
+        "en": "The Netherlands vs Morocco sees the world’s 7th and 8th ranked teams face off at 04:00, making a pre-dawn alarm finally feel justifiable."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Canada învinge la ultima fază, dar ambele sărbătoresc · 1 meci azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Eustáquio leaves it late, but the world number 60 is through anyway · 1 match overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Mingea acasă, calificarea la canadieni · 1 meci azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Eustáquio’s 92nd-minute winner spares us extra time · 1 match overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }

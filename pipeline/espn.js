@@ -85,7 +85,7 @@ function parseScore(competitor) {
 }
 
 /** The fields shared by parseMatch and parseFixture: id, team names/codes, group, date. */
-function teamIdentity(event, group) {
+function teamIdentity(event, group, stage = null) {
   const homeTeam = competitorFor(event, 'home')?.team?.displayName ?? '';
   const awayTeam = competitorFor(event, 'away')?.team?.displayName ?? '';
   return {
@@ -94,9 +94,55 @@ function teamIdentity(event, group) {
     away: romanianTeamName(awayTeam),
     homeCode: flagCode(homeTeam),
     awayCode: flagCode(awayTeam),
-    group: String(group),
+    group: group == null ? null : String(group),
+    stage,
     utcDate: event.date,
   };
+}
+
+export function stageFromEvent(event) {
+  const slug = event.season?.slug ?? '';
+  const name = event.season?.name ?? '';
+  const type = String(event.season?.type ?? '');
+  const text = `${slug} ${name} ${type}`.toLowerCase();
+  if (text.includes('round-of-32') || text.includes('round of 32') || text.includes('13801')) return 'round-of-32';
+  if (text.includes('round-of-16') || text.includes('round of 16')) return 'round-of-16';
+  if (text.includes('quarter')) return 'quarterfinal';
+  if (text.includes('semi')) return 'semifinal';
+  if (text.includes('final')) return 'final';
+  return null;
+}
+
+function knockoutResult(event) {
+  const home = competitorFor(event, 'home');
+  const away = competitorFor(event, 'away');
+  const winner = [home, away].find((c) => c?.winner === true);
+  const loser = [home, away].find((c) => c && c !== winner);
+  if (winner && loser) {
+    return {
+      winner: romanianTeamName(winner.team?.displayName ?? ''),
+      loser: romanianTeamName(loser.team?.displayName ?? ''),
+      winnerSide: winner.homeAway,
+      loserSide: loser.homeAway,
+    };
+  }
+
+  const homeScore = parseScore(home);
+  const awayScore = parseScore(away);
+  if (homeScore == null || awayScore == null || homeScore === awayScore) return {};
+  return homeScore > awayScore
+    ? {
+      winner: romanianTeamName(home?.team?.displayName ?? ''),
+      loser: romanianTeamName(away?.team?.displayName ?? ''),
+      winnerSide: 'home',
+      loserSide: 'away',
+    }
+    : {
+      winner: romanianTeamName(away?.team?.displayName ?? ''),
+      loser: romanianTeamName(home?.team?.displayName ?? ''),
+      winnerSide: 'away',
+      loserSide: 'home',
+    };
 }
 
 function synthesizeStatus(event) {
@@ -112,7 +158,7 @@ function synthesizeStatus(event) {
  * `group` comes from the caller (standings team→group map).
  * id is normalised to Number so facts-hash byId sort stays type-stable.
  */
-export function parseMatch(event, group = '') {
+export function parseMatch(event, group = '', stage = stageFromEvent(event)) {
   const home = competitorFor(event, 'home');
   const away = competitorFor(event, 'away');
   const scorers = (event.goals ?? []).map((g) => ({
@@ -134,18 +180,19 @@ export function parseMatch(event, group = '') {
       reason: b.reason ?? null,
     }));
   return {
-    ...teamIdentity(event, group),
+    ...teamIdentity(event, group, stage),
     score: [parseScore(home), parseScore(away)],
     scorers,
     events,
     stats: event.matchStats ?? null,
     decidedOnPenalties: Boolean(event.penalties),
+    ...(stage ? knockoutResult(event) : {}),
   };
 }
 
-export function parseFixture(event, group = '') {
+export function parseFixture(event, group = '', stage = stageFromEvent(event)) {
   return {
-    ...teamIdentity(event, group),
+    ...teamIdentity(event, group, stage),
     kickoffEEST: kickoffEEST(event.date),
   };
 }
