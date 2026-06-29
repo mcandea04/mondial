@@ -93,8 +93,11 @@ REGULI DE FAPTE (stricte):
    „winner" merge mai departe, „loser" este eliminată. NU scrie niciodată că ambele echipe
    s-au calificat, au sărbătorit calificarea sau merg împreună mai departe după un meci
    eliminatoriu. Pentru „stage":"round-of-32" spui „șaisprezecimi"; următoarea rundă este
-   „optimi". Pentru meciurile de diseară în faza eliminatorie, miza e simplă: câștigătoarea
-   merge mai departe, învinsa pleacă acasă — nu inventa scenarii de grupă.
+   „optimi". Pentru orice fază, câmpul „winnerAdvancesTo" este autoritatea pentru destinația
+   câștigătoarei: „round-of-16" = optimi, „quarterfinal" = sferturi, „semifinal" = semifinale,
+   „final" = finală, „champion" = câștigă trofeul. Pentru meciurile de diseară în faza
+   eliminatorie, miza e simplă: câștigătoarea merge în „winnerAdvancesTo", învinsa pleacă acasă
+   — nu inventa scenarii de grupă.
 2b. SCENARII DE GRUPĂ (etapa decisivă) — OBLIGATORIU: dacă primești câmpul „decisiveGroups",
    fiecare intrare e o grupă ale cărei DOUĂ meciuri se joacă SIMULTAN diseară. Pentru FIECARE
    astfel de grupă TREBUIE să returnezi câte o intrare în „groups" (același „name") — nu sări
@@ -441,8 +444,11 @@ FACT RULES (strict):
    knockout. For a completed match, "winner" and "loser" are computed facts: the winner advances
    and the loser is eliminated. Never say both teams qualified, celebrated qualification, or moved
    on together after a knockout match. For "stage":"round-of-32", say "round of 32" / "last 32";
-   the next round is the round of 16. For tonight's knockout fixtures, the stakes are simple: the
-   winner advances and the loser goes home — do not invent group scenarios.
+   the next round is the round of 16. For every stage, "winnerAdvancesTo" is the authority for
+   where the winner goes: "round-of-16" = round of 16, "quarterfinal" = quarterfinals,
+   "semifinal" = semifinals, "final" = final, "champion" = wins the trophy. For tonight's
+   knockout fixtures, the stakes are simple: the winner reaches "winnerAdvancesTo" and the loser
+   goes home — do not invent group scenarios.
 2b. GROUP SCENARIOS (the decisive matchday) — REQUIRED: if you receive a "decisiveGroups" field,
    each entry is a group whose TWO matches kick off SIMULTANEOUSLY tonight. For EVERY such group
    you MUST return one entry in "groups" (same "name") — never skip one. These fixtures have no

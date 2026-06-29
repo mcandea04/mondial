@@ -50,6 +50,7 @@ import {
   parseStandings,
   scoreboardDates,
   stageFromEvent,
+  nextStage,
 } from '../pipeline/espn.js';
 
 test('scoreboardDates returns both the UTC date and the day before (ET buckets)', () => {
@@ -129,6 +130,15 @@ test('stageFromEvent normalizes ESPN round-of-32 metadata', () => {
   assert.equal(stageFromEvent({ season: { type: 13801 } }), 'round-of-32');
 });
 
+test('nextStage maps the full knockout progression', () => {
+  assert.equal(nextStage('round-of-32'), 'round-of-16');
+  assert.equal(nextStage('round-of-16'), 'quarterfinal');
+  assert.equal(nextStage('quarterfinal'), 'semifinal');
+  assert.equal(nextStage('semifinal'), 'final');
+  assert.equal(nextStage('final'), 'champion');
+  assert.equal(nextStage('group-stage'), null);
+});
+
 test('parseMatch publishes knockout stage and winner/loser facts', () => {
   const event = {
     id: '760486',
@@ -146,6 +156,7 @@ test('parseMatch publishes knockout stage and winner/loser facts', () => {
   const parsed = parseMatch(event, null);
   assert.equal(parsed.group, null);
   assert.equal(parsed.stage, 'round-of-32');
+  assert.equal(parsed.winnerAdvancesTo, 'round-of-16');
   assert.equal(parsed.winner, 'Canada');
   assert.equal(parsed.loser, 'Africa de Sud');
   assert.equal(parsed.winnerSide, 'away');
@@ -165,6 +176,7 @@ test('parseFixture publishes knockout stage metadata', () => {
   const parsed = parseFixture(event, null);
   assert.equal(parsed.group, null);
   assert.equal(parsed.stage, 'round-of-32');
+  assert.equal(parsed.winnerAdvancesTo, 'round-of-16');
 });
 
 test('parseStandings maps ESPN children into group tables', async () => {

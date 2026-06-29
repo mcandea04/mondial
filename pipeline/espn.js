@@ -113,6 +113,16 @@ export function stageFromEvent(event) {
   return null;
 }
 
+export function nextStage(stage) {
+  return {
+    'round-of-32': 'round-of-16',
+    'round-of-16': 'quarterfinal',
+    quarterfinal: 'semifinal',
+    semifinal: 'final',
+    final: 'champion',
+  }[stage] ?? null;
+}
+
 function knockoutResult(event) {
   const home = competitorFor(event, 'home');
   const away = competitorFor(event, 'away');
@@ -186,6 +196,7 @@ export function parseMatch(event, group = '', stage = stageFromEvent(event)) {
     events,
     stats: event.matchStats ?? null,
     decidedOnPenalties: Boolean(event.penalties),
+    ...(stage ? { winnerAdvancesTo: nextStage(stage) } : {}),
     ...(stage ? knockoutResult(event) : {}),
   };
 }
@@ -194,6 +205,7 @@ export function parseFixture(event, group = '', stage = stageFromEvent(event)) {
   return {
     ...teamIdentity(event, group, stage),
     kickoffEEST: kickoffEEST(event.date),
+    ...(stage ? { winnerAdvancesTo: nextStage(stage) } : {}),
   };
 }
 

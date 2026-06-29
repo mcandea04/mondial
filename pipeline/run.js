@@ -35,6 +35,7 @@ import {
   digestReadiness,
   activeDigestDate,
   kickoffEEST,
+  nextStage,
 } from './espn.js';
 import { classifyStandings } from './standings.js';
 import { narrate, narrateEn } from './narrate.js';
@@ -73,10 +74,12 @@ function knockoutResultFromScore(match) {
 
 function forceKnockoutMatch(match) {
   const result = match.winner && match.loser ? {} : knockoutResultFromScore(match);
+  const stage = match.stage ?? 'round-of-32';
   const out = {
     ...match,
     group: null,
-    stage: match.stage ?? 'round-of-32',
+    stage,
+    winnerAdvancesTo: match.winnerAdvancesTo ?? nextStage(stage),
     ...result,
   };
   if (!out.winner || !out.loser) {
@@ -86,7 +89,13 @@ function forceKnockoutMatch(match) {
 }
 
 function forceKnockoutFixture(fixture) {
-  return { ...fixture, group: null, stage: fixture.stage ?? 'round-of-32' };
+  const stage = fixture.stage ?? 'round-of-32';
+  return {
+    ...fixture,
+    group: null,
+    stage,
+    winnerAdvancesTo: fixture.winnerAdvancesTo ?? nextStage(stage),
+  };
 }
 
 function parseArgs(argv) {
@@ -856,6 +865,7 @@ async function main() {
         awayCode: m.awayCode ?? null,
         group: m.group ?? null,
         stage: m.stage ?? null,
+        winnerAdvancesTo: m.winnerAdvancesTo ?? null,
         kickoffEEST: m.kickoffEEST ?? kickoffEEST(m.utcDate),
         // The watch verdict is canonical (Romanian); the English alarm is its
         // mapped form, never the English model's own call — so the two never

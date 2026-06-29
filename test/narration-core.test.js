@@ -41,8 +41,12 @@ test('prompts define knockout facts and forbid both-qualified framing', () => {
   assert.match(SYSTEM_PROMPT, /FAZA ELIMINATORIE/);
   assert.match(SYSTEM_PROMPT, /winner/);
   assert.match(SYSTEM_PROMPT, /loser/);
+  assert.match(SYSTEM_PROMPT, /winnerAdvancesTo/);
+  assert.match(SYSTEM_PROMPT, /sferturi/);
   assert.match(SYSTEM_PROMPT, /ambele echipe/);
   assert.match(SYSTEM_PROMPT_EN, /KNOCKOUT STAGE/);
+  assert.match(SYSTEM_PROMPT_EN, /winnerAdvancesTo/);
+  assert.match(SYSTEM_PROMPT_EN, /quarterfinals/);
   assert.match(SYSTEM_PROMPT_EN, /both teams qualified/);
 });
 
@@ -56,17 +60,26 @@ test('buildUserMessage carries knockout facts without group standings', () => {
       away: 'Canada',
       score: [0, 1],
       stage: 'round-of-32',
+      winnerAdvancesTo: 'round-of-16',
       winner: 'Canada',
       loser: 'Africa de Sud',
       scorers: [],
       events: [],
     }],
-    tonight: [{ id: 760487, home: 'Brazilia', away: 'Japonia', stage: 'round-of-32', kickoffEEST: '20:00' }],
+    tonight: [{
+      id: 760487,
+      home: 'Brazilia',
+      away: 'Japonia',
+      stage: 'round-of-32',
+      winnerAdvancesTo: 'round-of-16',
+      kickoffEEST: '20:00',
+    }],
     standings: [],
   };
   const message = buildUserMessage(facts, [], null);
   assert.match(message, /"phase": "knockout"/);
   assert.match(message, /"stage": "round-of-32"/);
+  assert.match(message, /"winnerAdvancesTo": "round-of-16"/);
   assert.match(message, /"winner": "Canada"/);
   assert.match(message, /"loser": "Africa de Sud"/);
   assert.match(message, /"standings": \[\]/);

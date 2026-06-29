@@ -67,6 +67,7 @@ function project({ date, finished, tonight }) {
       .map((m) => ({
         id: m.id,
         stage: m.stage ?? null,
+        winnerAdvancesTo: m.winnerAdvancesTo ?? null,
         score: m.score,
         winner: m.winner ?? null,
         loser: m.loser ?? null,
@@ -80,6 +81,7 @@ function project({ date, finished, tonight }) {
         home: m.home,
         away: m.away,
         stage: m.stage ?? null,
+        winnerAdvancesTo: m.winnerAdvancesTo ?? null,
         kickoffEEST: m.kickoffEEST,
       })),
   };

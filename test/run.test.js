@@ -332,6 +332,7 @@ test('2026-06-29 and later run in knockout mode', () => {
 
   const match = digest.matches[0];
   assert.equal(match.stage, 'round-of-32');
+  assert.equal(match.winnerAdvancesTo, 'round-of-16');
   assert.equal(match.group, null);
   assert.equal(match.winner, 'Canada');
   assert.equal(match.loser, 'Africa de Sud');
@@ -339,6 +340,7 @@ test('2026-06-29 and later run in knockout mode', () => {
 
   assert.ok(digest.tonight.length > 0);
   assert.ok(digest.tonight.every((fixture) => fixture.stage === 'round-of-32'));
+  assert.ok(digest.tonight.every((fixture) => fixture.winnerAdvancesTo === 'round-of-16'));
   assert.ok(digest.tonight.every((fixture) => fixture.group === null));
   assert.ok(digest.tonight.every((fixture) => !('homeScenario' in fixture) && !('awayScenario' in fixture)));
 });
