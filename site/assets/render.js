@@ -89,7 +89,8 @@ export function tonightPhaseLabel(tonight, lang) {
 export function displayTonightWhy(fixture, lang) {
   const text = localize(fixture.why, lang).trim();
   if (lang !== 'ro') return text;
-  return text.replace(/^(merită văzut|citești dimineața)\s*:\s*/i, '');
+  const withoutVerdict = text.replace(/^(merită văzut|citești dimineața)\s*:\s*/i, '');
+  return withoutVerdict.replace(/^(\p{L})/u, (letter) => letter.toLocaleUpperCase('ro-RO'));
 }
 
 function scoreBlock(match) {

@@ -29,11 +29,15 @@ test('tonightPhaseLabel summarizes unique upcoming stages', () => {
 test('displayTonightWhy removes duplicated Romanian verdict prefixes', () => {
   assert.equal(
     displayTonightWhy({ why: { ro: 'merită văzut: la 20:00, două echipe tari.' } }, 'ro'),
-    'la 20:00, două echipe tari.',
+    'La 20:00, două echipe tari.',
   );
   assert.equal(
     displayTonightWhy({ why: { ro: 'citești dimineața: la 04:00, somnul câștigă.' } }, 'ro'),
-    'la 04:00, somnul câștigă.',
+    'La 04:00, somnul câștigă.',
+  );
+  assert.equal(
+    displayTonightWhy({ why: { ro: 'începe cu literă mică fără verdict.' } }, 'ro'),
+    'Începe cu literă mică fără verdict.',
   );
   assert.equal(
     displayTonightWhy({ why: { en: 'Worth watching: two strong teams.', ro: 'fallback' } }, 'en'),
