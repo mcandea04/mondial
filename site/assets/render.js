@@ -81,12 +81,15 @@ export function matchDecisionNote(match, lang) {
   return '';
 }
 
-function scoreBlock(match, lang) {
+function scoreBlock(match) {
   const wrap = el('span', 'score-block');
   wrap.append(el('span', 'score', `${match.score[0]} – ${match.score[1]}`));
-  const note = matchDecisionNote(match, lang);
-  if (note) wrap.append(el('span', 'score-note', note));
   return wrap;
+}
+
+function matchDecisionLine(match, lang) {
+  const note = matchDecisionNote(match, lang);
+  return note ? el('span', 'match-decision', note) : null;
 }
 
 function renderMatchCard(match, lang) {
@@ -98,9 +101,11 @@ function renderMatchCard(match, lang) {
   const eliminatedSide = match.eliminatedSide ?? match.loserSide ?? null;
   teams.append(
     teamName(`team-name home${eliminatedSide === 'home' ? ' is-eliminated' : ''}`, match.home, match.homeCode, 'before', lang),
-    scoreBlock(match, lang),
+    scoreBlock(match),
     teamName(`team-name away${eliminatedSide === 'away' ? ' is-eliminated' : ''}`, match.away, match.awayCode, 'after', lang),
   );
+  const decision = matchDecisionLine(match, lang);
+  if (decision) teams.append(decision);
   const actions = el('div', 'match-actions');
   if (match.highlight) {
     const link = el('a', 'highlight-icon', '▷');
