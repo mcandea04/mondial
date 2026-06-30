@@ -78,6 +78,8 @@
           "shotsOnTarget": "2"
         }
       },
+      "decidedAfter": "regular",
+      "penalties": null,
       "decidedOnPenalties": false,
       "winnerAdvancesTo": "round-of-16",
       "winner": "Brazilia",
@@ -89,9 +91,7 @@
         "en": "Kaishu Sano gave Japan a shock lead with a fine strike from outside the box, forcing Brazil to actually wake up and play. Casemiro restored order with a header before Bruno Guimarães set up Gabriel Martinelli for a 95th-minute winner. Japan flew home with suitcases full of respect but empty hands."
       },
       "drama": 4,
-      "highlight": "https://www.fifa.com/en/watch/2RdUNscru4TZmci6y3Akdp",
-      "decidedAfter": "regular",
-      "penalties": null
+      "highlight": "https://www.fifa.com/en/watch/2RdUNscru4TZmci6y3Akdp"
     },
     {
       "id": 760489,
@@ -147,6 +147,11 @@
           "shotsOnTarget": "3"
         }
       },
+      "decidedAfter": "penalties",
+      "penalties": [
+        3,
+        4
+      ],
       "decidedOnPenalties": true,
       "winnerAdvancesTo": "round-of-16",
       "winner": "Paraguay",
@@ -158,12 +163,7 @@
         "en": "Germany took 21 shots but discovered that dominance is useless without a finishing touch. After Julio Enciso and Kai Havertz traded headers, the underdogs held firm to send Germany packing on penalties after a tense 1-1 draw. The South Americans march on, leaving German football to dissect another tournament disaster."
       },
       "drama": 5,
-      "highlight": "https://www.fifa.com/en/watch/1ObqWjTvyAO5EaR5aAQYbQ",
-      "decidedAfter": "penalties",
-      "penalties": [
-        3,
-        4
-      ]
+      "highlight": "https://www.fifa.com/en/watch/1ObqWjTvyAO5EaR5aAQYbQ"
     },
     {
       "id": 760488,
@@ -219,6 +219,11 @@
           "shotsOnTarget": "5"
         }
       },
+      "decidedAfter": "penalties",
+      "penalties": [
+        2,
+        3
+      ],
       "decidedOnPenalties": true,
       "winnerAdvancesTo": "round-of-16",
       "winner": "Maroc",
@@ -230,12 +235,7 @@
         "en": "Cody Gakpo thought he had booked a round-of-16 spot when he scored from inside the box, set up by Crysencio Summerville in the 72nd minute. But Issa Diop had other ideas, heading home a 90+1 minute equalizer to reward Morocco's overwhelming 70% possession. The Dutch were ultimately eliminated on penalties after a 1-1 draw, leaving them to ponder how they let this slip so late."
       },
       "drama": 5,
-      "highlight": "https://www.fifa.com/en/watch/3ypNkN0kvF5ZdsUFlQCJR5",
-      "decidedAfter": "penalties",
-      "penalties": [
-        2,
-        3
-      ]
+      "highlight": "https://www.fifa.com/en/watch/3ypNkN0kvF5ZdsUFlQCJR5"
     }
   ],
   "groups": [],
