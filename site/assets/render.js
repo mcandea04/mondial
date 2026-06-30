@@ -81,6 +81,11 @@ export function matchDecisionNote(match, lang) {
   return '';
 }
 
+export function tonightPhaseLabel(tonight, lang) {
+  const labels = [...new Set((tonight ?? []).map((fixture) => stageLabel(fixture.stage, lang)).filter(Boolean))];
+  return labels.join(' / ');
+}
+
 function scoreBlock(match) {
   const wrap = el('span', 'score-block');
   wrap.append(el('span', 'score', `${match.score[0]} – ${match.score[1]}`));
@@ -268,7 +273,6 @@ function tonightRow(fixture, lang) {
   left.append(
     matchLine,
     el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`),
-    ...(stageLabel(fixture.stage, lang) ? [el('span', 'badge badge-muted', stageLabel(fixture.stage, lang))] : []),
     el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)),
   );
   const whyText = localize(fixture.why, lang);
@@ -282,7 +286,8 @@ function tonightRow(fixture, lang) {
 function renderTonight(tonight, groupScenarios, lang) {
   const t = UI_STRINGS[lang];
   const card = el('div', 'card');
-  card.append(el('p', 'card-label', t.tonightTitle));
+  const phase = tonightPhaseLabel(tonight, lang);
+  card.append(el('p', 'card-label', phase ? `${t.tonightTitle} · ${phase}` : t.tonightTitle));
 
   // `tonight` arrives in kickoff order. Walk it once and emit each fixture in
   // place, so a decisive group's cluster (its pair of finals + the joint scenario
