@@ -84,6 +84,39 @@ function parseScore(competitor) {
   return Number.isFinite(n) ? n : null;
 }
 
+function penaltyScore(penalties) {
+  if (!penalties) return null;
+  if (Array.isArray(penalties) && penalties.length === 2) {
+    const [home, away] = penalties.map(Number);
+    return Number.isFinite(home) && Number.isFinite(away) ? [home, away] : null;
+  }
+  const home = Number(penalties.home);
+  const away = Number(penalties.away);
+  return Number.isFinite(home) && Number.isFinite(away) ? [home, away] : null;
+}
+
+function stringParts(value) {
+  if (value == null) return [];
+  if (typeof value === 'string' || typeof value === 'number') return [String(value)];
+  if (Array.isArray(value)) return value.flatMap(stringParts);
+  if (typeof value === 'object') return Object.values(value).flatMap(stringParts);
+  return [];
+}
+
+const EXTRA_TIME_RE = /\b(after extra time|extra time|aet)\b/i;
+
+function decidedAfter(event, penalties) {
+  if (penalties) return 'penalties';
+  const competition = event.competitions?.[0] ?? {};
+  const statusText = [
+    competition.status?.type?.description,
+    competition.status?.type?.detail,
+    event.status?.type?.description,
+    event.status?.type?.detail,
+  ].flatMap(stringParts);
+  return statusText.some((text) => EXTRA_TIME_RE.test(text)) ? 'extraTime' : 'regular';
+}
+
 /** The fields shared by parseMatch and parseFixture: id, team names/codes, group, date. */
 function teamIdentity(event, group, stage = null) {
   const homeTeam = competitorFor(event, 'home')?.team?.displayName ?? '';
@@ -123,7 +156,7 @@ export function nextStage(stage) {
   }[stage] ?? null;
 }
 
-function knockoutResult(event) {
+function knockoutResult(event, penalties = null) {
   const home = competitorFor(event, 'home');
   const away = competitorFor(event, 'away');
   const winner = [home, away].find((c) => c?.winner === true);
@@ -139,7 +172,26 @@ function knockoutResult(event) {
 
   const homeScore = parseScore(home);
   const awayScore = parseScore(away);
-  if (homeScore == null || awayScore == null || homeScore === awayScore) return {};
+  if (homeScore == null || awayScore == null) return {};
+  if (homeScore === awayScore) {
+    if (penalties?.[0] > penalties?.[1]) {
+      return {
+        winner: romanianTeamName(home?.team?.displayName ?? ''),
+        loser: romanianTeamName(away?.team?.displayName ?? ''),
+        winnerSide: 'home',
+        loserSide: 'away',
+      };
+    }
+    if (penalties?.[1] > penalties?.[0]) {
+      return {
+        winner: romanianTeamName(away?.team?.displayName ?? ''),
+        loser: romanianTeamName(home?.team?.displayName ?? ''),
+        winnerSide: 'away',
+        loserSide: 'home',
+      };
+    }
+    return {};
+  }
   return homeScore > awayScore
     ? {
       winner: romanianTeamName(home?.team?.displayName ?? ''),
@@ -171,6 +223,7 @@ function synthesizeStatus(event) {
 export function parseMatch(event, group = '', stage = stageFromEvent(event)) {
   const home = competitorFor(event, 'home');
   const away = competitorFor(event, 'away');
+  const penalties = penaltyScore(event.penalties);
   const scorers = (event.goals ?? []).map((g) => ({
     name: g.scorer?.name ?? '?',
     minute: String(g.minute),
@@ -195,9 +248,11 @@ export function parseMatch(event, group = '', stage = stageFromEvent(event)) {
     scorers,
     events,
     stats: event.matchStats ?? null,
-    decidedOnPenalties: Boolean(event.penalties),
+    decidedAfter: decidedAfter(event, penalties),
+    penalties,
+    decidedOnPenalties: Boolean(penalties),
     ...(stage ? { winnerAdvancesTo: nextStage(stage) } : {}),
-    ...(stage ? knockoutResult(event) : {}),
+    ...(stage ? knockoutResult(event, penalties) : {}),
   };
 }
 
@@ -446,6 +501,15 @@ async function fetchSummary(eventId, { fetchImpl, log }) {
 }
 
 function penaltiesFromSummary(summary) {
+  const competitors = summary?.header?.competitions?.[0]?.competitors ?? [];
+  const home = competitors.find((c) => c.homeAway === 'home');
+  const away = competitors.find((c) => c.homeAway === 'away');
+  const homeShootout = Number(home?.shootoutScore);
+  const awayShootout = Number(away?.shootoutScore);
+  if (Number.isFinite(homeShootout) && Number.isFinite(awayShootout)) {
+    return { home: homeShootout, away: awayShootout };
+  }
+
   const keyEvents = summary?.keyEvents ?? [];
   const haMap = homeAwayMap(summary);
   const shootoutGoals = keyEvents.filter(

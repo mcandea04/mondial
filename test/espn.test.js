@@ -87,6 +87,8 @@ test('parseMatch maps an ESPN-shaped completed event to the FD output shape', ()
   assert.deepEqual(parsed.score, [2, 1]);
   assert.equal(parsed.group, 'A');
   assert.equal(parsed.decidedOnPenalties, false);
+  assert.equal(parsed.decidedAfter, 'regular');
+  assert.equal(parsed.penalties, null);
   assert.equal(parsed.stats, null);
 });
 
@@ -161,6 +163,54 @@ test('parseMatch publishes knockout stage and winner/loser facts', () => {
   assert.equal(parsed.loser, 'Africa de Sud');
   assert.equal(parsed.winnerSide, 'away');
   assert.equal(parsed.loserSide, 'home');
+  assert.equal(parsed.decidedAfter, 'regular');
+  assert.equal(parsed.penalties, null);
+});
+
+test('parseMatch separates tied match score from shootout score', () => {
+  const event = {
+    id: '760488',
+    date: '2026-06-29T02:00:00Z',
+    season: { slug: 'round-of-32' },
+    status: { type: { state: 'post', completed: true } },
+    competitions: [{ competitors: [
+      { homeAway: 'home', score: '1', winner: false, team: { id: '7', displayName: 'Netherlands' } },
+      { homeAway: 'away', score: '1', winner: true, team: { id: '21', displayName: 'Morocco' } },
+    ] }],
+    goals: [],
+    bookings: [],
+    matchStats: null,
+    penalties: { home: 4, away: 5 },
+  };
+  const parsed = parseMatch(event, null);
+  assert.deepEqual(parsed.score, [1, 1]);
+  assert.deepEqual(parsed.penalties, [4, 5]);
+  assert.equal(parsed.winner, 'Maroc');
+  assert.equal(parsed.loser, 'Olanda');
+  assert.equal(parsed.winnerSide, 'away');
+  assert.equal(parsed.loserSide, 'home');
+  assert.equal(parsed.decidedAfter, 'penalties');
+  assert.equal(parsed.decidedOnPenalties, true);
+});
+
+test('parseMatch marks extra-time decisions without penalty score', () => {
+  const event = {
+    id: '760489',
+    date: '2026-06-29T02:00:00Z',
+    season: { slug: 'round-of-32' },
+    status: { type: { state: 'post', completed: true, detail: 'FT - AET' } },
+    competitions: [{ competitors: [
+      { homeAway: 'home', score: '2', winner: true, team: { id: '20', displayName: 'Brazil' } },
+      { homeAway: 'away', score: '1', winner: false, team: { id: '24', displayName: 'Japan' } },
+    ] }],
+    goals: [],
+    bookings: [],
+    matchStats: null,
+  };
+  const parsed = parseMatch(event, null);
+  assert.equal(parsed.decidedAfter, 'extraTime');
+  assert.equal(parsed.decidedOnPenalties, false);
+  assert.equal(parsed.penalties, null);
 });
 
 test('parseFixture publishes knockout stage metadata', () => {

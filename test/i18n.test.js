@@ -73,11 +73,13 @@ test('alarmBadgeLabel gives the canonical verdict label per language', () => {
 });
 
 test('new UI_STRINGS keys are present in both languages', () => {
-  for (const key of ['ownGoal', 'penalties', 'drama', 'archiveTitle', 'chooseDay', 'recaps', 'recapLabel', 'alarmWatch', 'alarmSkip']) {
+  for (const key of ['ownGoal', 'penalties', 'afterExtraTime', 'afterPenalties', 'drama', 'archiveTitle', 'chooseDay', 'recaps', 'recapLabel', 'alarmWatch', 'alarmSkip']) {
     assert.ok(UI_STRINGS.ro[key], `ro.${key}`);
     assert.ok(UI_STRINGS.en[key], `en.${key}`);
   }
   assert.equal(UI_STRINGS.en.ownGoal, 'own goal');
+  assert.equal(UI_STRINGS.ro.afterPenalties, 'după penalty-uri');
+  assert.equal(UI_STRINGS.en.afterExtraTime, 'after extra time');
   assert.equal(UI_STRINGS.en.drama(4), 'drama 4 of 5');
   assert.equal(UI_STRINGS.en.recapLabel, 'Highlights');
   assert.equal(UI_STRINGS.ro.recapLabel, 'Rezumat video');

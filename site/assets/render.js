@@ -69,17 +69,37 @@ function matchCountLabel(n, lang) {
   return t.manyMatches(n);
 }
 
+export function matchDecisionNote(match, lang) {
+  const t = UI_STRINGS[lang];
+  if (match.decidedAfter === 'penalties') {
+    const pens = Array.isArray(match.penalties) && match.penalties.length === 2
+      ? ` · ${match.penalties[0]} – ${match.penalties[1]}`
+      : '';
+    return `${t.afterPenalties}${pens}`;
+  }
+  if (match.decidedAfter === 'extraTime') return t.afterExtraTime;
+  return '';
+}
+
+function scoreBlock(match, lang) {
+  const wrap = el('span', 'score-block');
+  wrap.append(el('span', 'score', `${match.score[0]} – ${match.score[1]}`));
+  const note = matchDecisionNote(match, lang);
+  if (note) wrap.append(el('span', 'score-note', note));
+  return wrap;
+}
+
 function renderMatchCard(match, lang) {
   const card = el('div', 'card');
   const label = stageLabel(match.stage, lang);
   if (label) card.append(el('p', 'card-label', label));
   const header = el('div', 'match-header');
   const teams = el('div', 'match-teams');
-  const score = el('span', 'score', `${match.score[0]} – ${match.score[1]}`);
+  const eliminatedSide = match.eliminatedSide ?? match.loserSide ?? null;
   teams.append(
-    teamName('team-name home', match.home, match.homeCode, 'before', lang),
-    score,
-    teamName('team-name away', match.away, match.awayCode, 'after', lang),
+    teamName(`team-name home${eliminatedSide === 'home' ? ' is-eliminated' : ''}`, match.home, match.homeCode, 'before', lang),
+    scoreBlock(match, lang),
+    teamName(`team-name away${eliminatedSide === 'away' ? ' is-eliminated' : ''}`, match.away, match.awayCode, 'after', lang),
   );
   const actions = el('div', 'match-actions');
   if (match.highlight) {
@@ -159,7 +179,7 @@ function renderEvents(match, lang) {
   if (match.scorers.length) lines.push(eventLine(match.scorers.map((e) => eventSpan(e, lang))));
   if (match.events.length) lines.push(eventLine(match.events.map((e) => cardSpan(e, lang))));
 
-  if (match.decidedOnPenalties) {
+  if (match.decidedOnPenalties && match.decidedAfter !== 'penalties') {
     const note = UI_STRINGS[lang].penalties;
     const lastLine = lines[lines.length - 1];
     if (lastLine) {

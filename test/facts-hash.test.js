@@ -155,6 +155,8 @@ test('knockout stage and result fields change the hash', () => {
   knockout.finished[0].winnerAdvancesTo = 'round-of-16';
   knockout.finished[0].winner = 'Canada';
   knockout.finished[0].loser = 'Qatar';
+  knockout.finished[0].winnerSide = 'home';
+  knockout.finished[0].loserSide = 'away';
   assert.notEqual(factsHash(base), factsHash(knockout));
 
   const moved = structuredClone(base);
@@ -170,6 +172,35 @@ test('a changed knockout destination changes the hash', () => {
   a.finished[0].winnerAdvancesTo = 'quarterfinal';
   b.finished[0].winnerAdvancesTo = 'semifinal';
   assert.notEqual(factsHash(a), factsHash(b));
+});
+
+test('knockout decision details change the hash', () => {
+  const knockout = structuredClone(base);
+  Object.assign(knockout.finished[0], {
+    stage: 'round-of-32',
+    winnerAdvancesTo: 'round-of-16',
+    winner: 'Canada',
+    loser: 'Qatar',
+    winnerSide: 'home',
+    loserSide: 'away',
+    score: [1, 1],
+    decidedAfter: 'penalties',
+    penalties: [4, 2],
+  });
+
+  const flippedSides = structuredClone(knockout);
+  flippedSides.finished[0].winnerSide = 'away';
+  flippedSides.finished[0].loserSide = 'home';
+  assert.notEqual(factsHash(knockout), factsHash(flippedSides));
+
+  const correctedPens = structuredClone(knockout);
+  correctedPens.finished[0].penalties = [5, 3];
+  assert.notEqual(factsHash(knockout), factsHash(correctedPens));
+
+  const afterExtraTime = structuredClone(knockout);
+  afterExtraTime.finished[0].decidedAfter = 'extraTime';
+  afterExtraTime.finished[0].penalties = null;
+  assert.notEqual(factsHash(knockout), factsHash(afterExtraTime));
 });
 
 test('a changed date changes the hash', () => {
