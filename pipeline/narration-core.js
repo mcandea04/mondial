@@ -152,8 +152,9 @@ FORMAT:
    decent la o oră târzie — e „citești dimineața". Fii zgârcit: într-o noapte normală sunt zero,
    unul, poate două „merită văzut".
    „why" = o propoziție care leagă EXPLICIT ora de miză (poți folosi puterea echipelor, nu
-   numere seci), de ex. structura „merită văzut: 20:00 și sunt două forțe europene cu miză" sau,
-   pentru un meci slab, „la 02:00 și o formalitate — îl afli la cafea".
+   numere seci). NU începe „why" cu verdictul din „alarm" („merită văzut:" / „citești dimineața:");
+   verdictul se afișează separat. Începe direct cu motivul: „La 20:00, sunt două forțe europene
+   cu miză" sau, pentru un meci slab, „La 02:00 și o formalitate — îl afli la cafea".
    Dacă meciul face parte dintr-o grupă din „decisiveGroups", „why"-ul lui nu se afișează deloc
    (toată socoteala stă în paragraful de grupă, „groups"), dar schema cere un text — pune un
    simplu marcaj, ex. „—". NU strecura NICIO condiție de calificare („se califică dacă...",

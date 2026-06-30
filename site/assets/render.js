@@ -86,6 +86,12 @@ export function tonightPhaseLabel(tonight, lang) {
   return labels.join(' / ');
 }
 
+export function displayTonightWhy(fixture, lang) {
+  const text = localize(fixture.why, lang).trim();
+  if (lang !== 'ro') return text;
+  return text.replace(/^(merită văzut|citești dimineața)\s*:\s*/i, '');
+}
+
 function scoreBlock(match) {
   const wrap = el('span', 'score-block');
   wrap.append(el('span', 'score', `${match.score[0]} – ${match.score[1]}`));
@@ -275,7 +281,7 @@ function tonightRow(fixture, lang) {
     el('span', 'tonight-time', ` · ${fixture.kickoffEEST} ${t.eest}`),
     el('span', `badge ${badgeClass}`, alarmBadgeLabel(watch, lang)),
   );
-  const whyText = localize(fixture.why, lang);
+  const whyText = displayTonightWhy(fixture, lang);
   if (whyText) {
     left.append(el('br'), el('span', 'tonight-why', whyText));
   }
