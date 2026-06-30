@@ -97,6 +97,7 @@ function renderMatchCard(match, lang) {
   const label = stageLabel(match.stage, lang);
   if (label) card.append(el('p', 'card-label', label));
   const header = el('div', 'match-header');
+  const topLine = el('div', 'match-topline');
   const teams = el('div', 'match-teams');
   const eliminatedSide = match.eliminatedSide ?? match.loserSide ?? null;
   teams.append(
@@ -104,8 +105,6 @@ function renderMatchCard(match, lang) {
     scoreBlock(match),
     teamName(`team-name away${eliminatedSide === 'away' ? ' is-eliminated' : ''}`, match.away, match.awayCode, 'after', lang),
   );
-  const decision = matchDecisionLine(match, lang);
-  if (decision) teams.append(decision);
   const actions = el('div', 'match-actions');
   if (match.highlight) {
     const link = el('a', 'highlight-icon', '▷');
@@ -129,7 +128,10 @@ function renderMatchCard(match, lang) {
     }
     actions.append(flames);
   }
-  header.append(teams, actions);
+  topLine.append(teams, actions);
+  header.append(topLine);
+  const decision = matchDecisionLine(match, lang);
+  if (decision) header.append(decision);
   card.append(header);
 
   const events = renderEvents(match, lang);

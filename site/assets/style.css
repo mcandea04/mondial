@@ -114,9 +114,13 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 }
 
 /* ── Match header ── */
-/* Keep the result row stable; the actions live below it so penalty/extra-time
-   details never compete with the scoreline on narrow phones. */
 .match-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+.match-topline {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -124,13 +128,10 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
   gap: 6px 14px;
 }
 .match-teams {
-  display: grid;
-  grid-template-columns: max-content auto max-content;
+  display: flex;
   align-items: center;
-  column-gap: 12px;
-  row-gap: 1px;
+  gap: 12px;
   min-width: 0;
-  max-width: 100%;
 }
 .team-name { font-size: 15px; font-weight: 500; }
 .team-name.home { color: var(--home); }
@@ -139,14 +140,11 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
 .score-block { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; }
 .score { font-size: 24px; font-weight: 500; white-space: nowrap; }
 .match-decision {
-  grid-column: 1 / -1;
-  justify-self: center;
   max-width: 100%;
   font-size: 11px;
   font-weight: 500;
   line-height: 1.25;
   color: var(--muted);
-  text-align: center;
   overflow-wrap: anywhere;
 }
 .team { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; }
@@ -352,9 +350,8 @@ tbody tr td { padding: 5px 0; }
   display: flex;
   align-items: center;
   gap: 6px;
-  flex: 0 0 100%;
-  min-width: 0;
-  flex-wrap: wrap;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 .flames { display: flex; gap: 1px; line-height: 1; }
 .flame::before { content: "🔥"; font-size: 14px; }
