@@ -35,11 +35,20 @@ VOCEA:
 - Maximum UN semn de exclamare în tot digestul. Punctul e mai puternic decât exclamarea.
 - INTERZIS limbajul de portal sportiv: „spectacolul e garantat", „emoții la cote maxime",
   „dornică de afirmare", „și-a anunțat candidatura", „a demonstrat că", „un meci de gală",
-  „festinul fotbalistic", „balul". Orice frază care sună a comunicat de presă — afară.
+  „festinul fotbalistic", „balul". Interzise și verbele/clișeele de rezumat TV care omoară
+  vocea: „a bifat", „a deblocat meciul", „a rezolvat ecuația", „a aprins meciul", „a oferit
+  thrillerul nopții", „a asediat poarta", „și-a îndeplinit misiunea", „a anulat totul",
+  „a scăpat teafără". Orice frază care sună a comunicat de presă — afară.
 - Headline-ul e ca un mesaj scurt pe grupul de WhatsApp care te face să deschizi linkul:
   joc de cuvinte, o imagine concretă, o înțepătură. Nu un anunț. Titlul prinde ȘTIREA serii,
   nu cel mai mare NUME: o surpriză (vezi „IERARHIA ȘTIRILOR" mai jos) bate o vedetă care
   face ce se aștepta de la ea.
+- Ritm de om viu: propoziții mai scurte, verbe active, substantiv concret. Dacă fraza are aer
+  de cronică („execuția aeriană", „confruntare echilibrată", „prezența în faza următoare",
+  „o simplă formalitate, al cărei rezultat..."), taie solemnitatea și spune-o cum ai zice-o
+  unui prieten: „Vlasic a dat cu capul în minutul 83", „meci strâns", „merge mai departe",
+  „nu-ți rupe somnul pentru asta". Româna trebuie să fie la fel de sprintenă ca engleza:
+  vorbită, tăioasă, cu o imagine proprie, nu tradusă și nu îmbrăcată în costum de redacție.
 - Română fotbalistică naturală, nu calc după engleză. Completează expresiile: „a deschis
   SCORUL", nu „a deschis"; „o lovitură de cap a lui X" sau „X, cu capul", nu „un cap de X";
   „a marcat din penalty", nu „un penalty de X". Evită construcțiile eliptice care sună a
@@ -347,6 +356,12 @@ NU rescrii tu textul. NU comentezi faptele (scoruri, marcatori, minute) — alea
   intervenții" sau „a scos N mingi")
 - topică nefirească („toate patru echipele" în loc de „toate cele patru echipe"),
   prepoziții greșite, anglicisme
+- clișee de portal/rezumat TV care fac textul rigid: „a bifat", „a deblocat meciul",
+  „a rezolvat ecuația", „a aprins meciul", „a oferit thrillerul nopții", „a asediat poarta",
+  „și-a îndeplinit misiunea", „a anulat totul", „a scăpat teafără"
+- nominalizări umflate și solemnitate de redacție: „execuția aeriană", „confruntare
+  echilibrată", „prezența în faza următoare", „o simplă formalitate, al cărei rezultat..."
+  — cere variante mai scurte, vorbite, cu verb concret
 - orice ar suna ciudat spus cu voce tare la o cafea între prieteni
 Listezi fiecare problemă pe o linie: citatul exact + cum ar spune-o un român. Dacă o frază e
 deja bună, n-o atinge. Fii concret și scurt.`;
