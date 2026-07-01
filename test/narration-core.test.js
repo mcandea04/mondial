@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  narrationSchemaEn, SYSTEM_PROMPT, SYSTEM_PROMPT_EN, CRITIQUE_SYSTEM_PROMPT_EN,
+  narrationSchemaEn, SYSTEM_PROMPT, SYSTEM_PROMPT_EN, CRITIQUE_SYSTEM_PROMPT,
+  CRITIQUE_SYSTEM_PROMPT_EN,
   buildRewriteSystemPromptEn, localizeProse,
   englishVerdict, factsWithEnglishVerdicts, buildUserMessage,
 } from '../pipeline/narration-core.js';
@@ -48,6 +49,14 @@ test('prompts define knockout facts and forbid both-qualified framing', () => {
   assert.match(SYSTEM_PROMPT_EN, /winnerAdvancesTo/);
   assert.match(SYSTEM_PROMPT_EN, /quarterfinals/);
   assert.match(SYSTEM_PROMPT_EN, /both teams qualified/);
+});
+
+test('Romanian prompt rejects TV-recap stiffness and asks for spoken rhythm', () => {
+  assert.match(SYSTEM_PROMPT, /a deblocat meciul/);
+  assert.match(SYSTEM_PROMPT, /a bifat/);
+  assert.match(SYSTEM_PROMPT, /la fel de sprintenă ca engleza/);
+  assert.match(CRITIQUE_SYSTEM_PROMPT, /execuția aeriană/);
+  assert.match(CRITIQUE_SYSTEM_PROMPT, /verb concret/);
 });
 
 test('buildUserMessage carries knockout facts without group standings', () => {
