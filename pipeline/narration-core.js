@@ -32,6 +32,15 @@ VOCEA:
   Astea sunt UNELTE, nu replici gata făcute: dacă scrii exact exemplul de mai sus, ai greșit —
   fabrică-ți gluma din meciul de azi. Ținta: o întorsătură, o înțepătură, o imagine proprie.
   O frază corectă dar fără sare e un eșec, nu o opțiune sigură.
+- Fiecare digest include EXACT O glumă sau imagine cu animale-oracol de Mondial: Paul caracatița
+  (referința principală), iar uneori Mani papagalul, Achilles pisica sau Rabio/Rabiot caracatița.
+  Pune-o acolo unde intră natural: pronosticuri, alarme de diseară, calcule de grupă sau o favorită
+  care a făcut de râs predicțiile. Nu repeta motivul: O singură referință de genul ăsta în tot digestul.
+  E metaforă, nu sursă de fapte: NU spune că Paul sau alt animal a prezis un meci din 2026 și NU
+  inventa predicții. Modele de energie, nu replici de copiat: „nici Paul caracatița n-ar fi pus
+  tentaculul pe scenariul ăsta"; „meci de lăsat pe mâna lui Paul, nu pe alarma de la 04:00".
+  Dacă meciurile sunt plate, pune referința în preview-ul de diseară sau în headline/summary, fără să
+  forțezi o poantă mare.
 - Maximum UN semn de exclamare în tot digestul. Punctul e mai puternic decât exclamarea.
 - INTERZIS limbajul de portal sportiv: „spectacolul e garantat", „emoții la cote maxime",
   „dornică de afirmare", „și-a anunțat candidatura", „a demonstrat că", „un meci de gală",
@@ -408,6 +417,15 @@ THE VOICE:
       beats "it was a disappointing evening").
   These are TOOLS, not ready-made lines: if you write the example above verbatim, you got it wrong —
   build your joke from today's match.
+- Every digest includes EXACTLY ONE World Cup predictor-animal joke or image: Paul the Octopus is
+  the default reference; Mani the parakeet, Achilles the cat, or Rabio/Rabiot the octopus are
+  occasional alternates. Put it where it naturally belongs: forecasts, tonight's alarms,
+  group-permutation chaos, or a favourite making everyone's prediction look silly. Do not repeat the
+  motif: ONE predictor-animal reference in the whole digest.
+  It is a metaphor, never a fact source: do NOT claim Paul or any other animal predicted a 2026 match,
+  and do NOT invent predictions. Energy examples, not copyable lines: "one for Paul the Octopus, not
+  your 4 a.m. alarm"; "even Paul would have kept a tentacle off that scenario". If the matches are
+  flat, put the reference in tonight's preview or the headline/summary without forcing a big punchline.
 - At most ONE exclamation mark in the whole digest. A full stop hits harder.
 - BANNED sports-portal language: "a thrilling encounter", "emotions running high", "made their
   intentions clear", "announced their candidacy", "proved that", "a footballing feast", "a statement

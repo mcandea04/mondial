@@ -38,6 +38,21 @@ test('prompts route aggregate scorer claims through goalFacts', () => {
   assert.match(SYSTEM_PROMPT_EN, /brace/);
 });
 
+test('prompts require exactly one predictor-animal joke without inventing predictions', () => {
+  assert.match(SYSTEM_PROMPT, /animale-oracol/);
+  assert.match(SYSTEM_PROMPT, /Paul caracatița/);
+  assert.match(SYSTEM_PROMPT, /Fiecare digest include EXACT O glumă/);
+  assert.match(SYSTEM_PROMPT, /O singură referință/);
+  assert.match(SYSTEM_PROMPT, /NU spune că Paul sau alt animal a prezis un meci din 2026/);
+  assert.match(SYSTEM_PROMPT, /NU\s+inventa predicții/);
+  assert.match(SYSTEM_PROMPT_EN, /predictor-animal joke/);
+  assert.match(SYSTEM_PROMPT_EN, /Paul the Octopus/);
+  assert.match(SYSTEM_PROMPT_EN, /Every digest includes EXACTLY ONE/);
+  assert.match(SYSTEM_PROMPT_EN, /ONE predictor-animal reference/);
+  assert.match(SYSTEM_PROMPT_EN, /do NOT claim Paul or any other animal predicted a 2026 match/);
+  assert.match(SYSTEM_PROMPT_EN, /do NOT\s+invent predictions/);
+});
+
 test('prompts define knockout facts and forbid both-qualified framing', () => {
   assert.match(SYSTEM_PROMPT, /FAZA ELIMINATORIE/);
   assert.match(SYSTEM_PROMPT, /winner/);
