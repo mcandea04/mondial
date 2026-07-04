@@ -47,9 +47,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           cache: npm
@@ -60,7 +60,7 @@ jobs:
       # the Pro subscription via CLAUDE_CODE_OAUTH_TOKEN. Cache the global install
       # keyed on the pinned version so a green run does not reinstall it. Skipped
       # for free when NARRATOR is unset/gemini — the install is cheap either way.
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.npm-global
           key: claude-code-${{ env.CLAUDE_CODE_VERSION }}
@@ -137,10 +137,10 @@ jobs:
       # pushed; deploying them would put race-loser content live. Gating on
       # committed also skips a redundant re-deploy when there was nothing to
       # commit (the winning run already deployed the identical site).
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
         if: steps.commit.outputs.committed == 'true'
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         if: steps.commit.outputs.committed == 'true'
         with:
           path: site
@@ -152,7 +152,7 @@ jobs:
       - id: deployment
         if: steps.commit.outputs.committed == 'true'
         continue-on-error: true
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
       - name: Wait before deploy retry
         if: steps.commit.outputs.committed == 'true' && steps.deployment.outcome == 'failure'
@@ -160,7 +160,7 @@ jobs:
 
       - id: deployment_retry
         if: steps.commit.outputs.committed == 'true' && steps.deployment.outcome == 'failure'
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
       - name: Email digest ready
         # Nightly: only when fresh prose was generated — not on a highlight-link
@@ -171,7 +171,7 @@ jobs:
           steps.build.outputs.published == 'true' &&
           ((steps.commit.outputs.committed == 'true' && steps.build.outputs.narrationChanged == 'true') ||
            (github.event_name == 'workflow_dispatch' && inputs.force == 'true'))
-        uses: dawidd6/action-send-mail@v3
+        uses: dawidd6/action-send-mail@4226df7daafa6fc901a43789c49bf7ab309066e7 # v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
