@@ -46,6 +46,7 @@ import {
   SYSTEM_PROMPT, SYSTEM_PROMPT_EN, buildUserMessage,
   CRITIQUE_SYSTEM_PROMPT_EN, buildRewriteSystemPromptEn,
   localizeProse, factsWithEnglishVerdicts, englishVerdict,
+  oracleAnimalForDate,
 } from './narration-core.js';
 import { computeScenarios, scenarioFor, computeDecisiveGroupScenario, synthesizeGroupParagraph } from './scenarios.js';
 import { englishTeamName, fifaRank } from './teams.js';
@@ -745,6 +746,7 @@ async function main() {
 
   const factsForNarration = {
     date, finished: finishedWithRanks, tonight: tonightWithScenarios, standings: standingsWithRanks,
+    oracleAnimal: oracleAnimalForDate(date),
     ...(decisiveGroups.length > 0 && { decisiveGroups }),
     ...(knockoutMode && { phase: 'knockout' }),
   };

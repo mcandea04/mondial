@@ -5,6 +5,7 @@ import {
   CRITIQUE_SYSTEM_PROMPT_EN,
   buildRewriteSystemPromptEn, localizeProse,
   englishVerdict, factsWithEnglishVerdicts, buildUserMessage,
+  oracleAnimalForDate,
 } from '../pipeline/narration-core.js';
 
 test('narrationSchemaEn accepts the English alarm enum', () => {
@@ -40,17 +41,33 @@ test('prompts route aggregate scorer claims through goalFacts', () => {
 
 test('prompts require exactly one predictor-animal joke without inventing predictions', () => {
   assert.match(SYSTEM_PROMPT, /animale-oracol/);
-  assert.match(SYSTEM_PROMPT, /Paul caracatița/);
   assert.match(SYSTEM_PROMPT, /Fiecare digest include EXACT O glumă/);
+  assert.match(SYSTEM_PROMPT, /oracleAnimal/);
+  assert.match(SYSTEM_PROMPT, /NU îl înlocui cu Paul/);
   assert.match(SYSTEM_PROMPT, /O singură referință/);
-  assert.match(SYSTEM_PROMPT, /NU spune că Paul sau alt animal a prezis un meci din 2026/);
-  assert.match(SYSTEM_PROMPT, /NU\s+inventa predicții/);
+  assert.match(SYSTEM_PROMPT, /NU spune că animalul a prezis un meci din 2026/);
+  assert.match(SYSTEM_PROMPT, /NU\s+inventa\s+predicții/);
   assert.match(SYSTEM_PROMPT_EN, /predictor-animal joke/);
-  assert.match(SYSTEM_PROMPT_EN, /Paul the Octopus/);
   assert.match(SYSTEM_PROMPT_EN, /Every digest includes EXACTLY ONE/);
+  assert.match(SYSTEM_PROMPT_EN, /oracleAnimal/);
+  assert.match(SYSTEM_PROMPT_EN, /do NOT substitute Paul/);
   assert.match(SYSTEM_PROMPT_EN, /ONE predictor-animal reference/);
-  assert.match(SYSTEM_PROMPT_EN, /do NOT claim Paul or any other animal predicted a 2026 match/);
+  assert.match(SYSTEM_PROMPT_EN, /do NOT claim the animal predicted a 2026 match/);
   assert.match(SYSTEM_PROMPT_EN, /do NOT\s+invent predictions/);
+});
+
+test('oracleAnimalForDate rotates animals while keeping Paul weighted', () => {
+  const animals = Array.from({ length: 6 }, (_, i) => oracleAnimalForDate(`2026-07-${String(i + 3).padStart(2, '0')}`));
+  assert.equal(animals.filter((a) => a.id === 'paul').length, 3);
+  assert.ok(animals.some((a) => a.id === 'mani'));
+  assert.ok(animals.some((a) => a.id === 'achilles'));
+  assert.ok(animals.some((a) => a.id === 'rabio'));
+  assert.ok(new Set(animals.slice(0, 3).map((a) => a.id)).size > 1, 'recent dates do not all select Paul');
+  assert.deepEqual(oracleAnimalForDate('not-a-date'), {
+    id: 'paul',
+    ro: 'Paul caracatița',
+    en: 'Paul the Octopus',
+  });
 });
 
 test('prompts define knockout facts and forbid both-qualified framing', () => {
@@ -78,6 +95,7 @@ test('buildUserMessage carries knockout facts without group standings', () => {
   const facts = {
     date: '2026-06-29',
     phase: 'knockout',
+    oracleAnimal: oracleAnimalForDate('2026-06-29'),
     finished: [{
       id: 760486,
       home: 'Africa de Sud',
@@ -102,6 +120,7 @@ test('buildUserMessage carries knockout facts without group standings', () => {
   };
   const message = buildUserMessage(facts, [], null);
   assert.match(message, /"phase": "knockout"/);
+  assert.match(message, /"oracleAnimal"/);
   assert.match(message, /"stage": "round-of-32"/);
   assert.match(message, /"winnerAdvancesTo": "round-of-16"/);
   assert.match(message, /"winner": "Canada"/);
