@@ -194,3 +194,21 @@ jobs:
 
             ---
             Proză: ${{ steps.build.outputs.narrator }}
+          html_body: |
+            <p><strong>${{ steps.build.outputs.headline }}</strong></p>
+
+            <p>
+              ${{ steps.build.outputs.match_count }} meciuri azi-noapte.${{ steps.commit.outputs.committed == 'true' && ' ' || ' (regenerat, proza neschimbată) ' }}
+            </p>
+
+            <p>
+              <a href="https://mcandea04.github.io/mondial/">Citește digestul</a>
+            </p>
+
+            <p>
+              <a href="https://github.com/mcandea04/mondial/issues/new?title=re-narrate&amp;labels=re-narrate&amp;body=%3C%21--%20scrie%20aici%2C%20op%C8%9Bional%2C%20ce%20vrei%20schimbat%20la%20ton%20sau%20glume%20--%3E">Regenerează proza</a><br>
+              <a href="https://github.com/mcandea04/mondial/issues/new?title=gold&amp;labels=gold&amp;body=%3C%21--%20Lipe%C8%99te%20o%20linie%20pe%20r%C3%A2nd.%20Op%C8%9Bional%20pune%20%C3%AEn%20fa%C8%9B%C4%83%20headline%3A%20summary%3A%20pill%3A%20tonight%3A%20-%20altfel%20e%20pill.%20Po%C8%9Bi%20s%C4%83%20o%20rescrii%20%C3%AEn%20cuvintele%20tale.%20--%3E">Salvează o frază bună</a>
+            </p>
+
+            <hr>
+            <p>Proză: <code>${{ steps.build.outputs.narrator }}</code></p>
