@@ -119,7 +119,7 @@ function renderMatchCard(match, lang) {
   );
   const actions = el('div', 'match-actions');
   if (match.highlight) {
-    const link = el('a', 'highlight-icon', '▷');
+    const link = el('a', 'highlight-icon', '▶');
     link.href = match.highlight;
     link.target = '_blank';
     link.rel = 'noopener';

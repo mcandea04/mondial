@@ -20,6 +20,11 @@
   /* drama flame */
   --flame: #d85a30;
 
+  /* video recap action */
+  --video-bg: #d92323;
+  --video-bg-hover: #b91c1c;
+  --video-focus: rgba(217, 35, 35, 0.32);
+
   /* event team colours and red card */
   --home: #2f6fb0;
   --away: #a8640c;
@@ -41,6 +46,10 @@
 
   --pill-bg:  #4a1b0c; --pill-txt: #f0997b; --pill-head: #f5c4b3;
 
+  --video-bg: #e73535;
+  --video-bg-hover: #ff4a4a;
+  --video-focus: rgba(231, 53, 53, 0.42);
+
   --home: #7db0e6;
   --away: #e0a948;
   --card: #f0726f;
@@ -61,6 +70,10 @@
   --danger-bg:#501313; --danger-txt:#f7c1c1;
 
   --pill-bg:  #4a1b0c; --pill-txt: #f0997b; --pill-head: #f5c4b3;
+
+  --video-bg: #e73535;
+  --video-bg-hover: #ff4a4a;
+  --video-focus: rgba(231, 53, 53, 0.42);
 
   --home: #7db0e6;
   --away: #e0a948;
@@ -120,12 +133,16 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
   align-items: flex-start;
   gap: 1px;
 }
+/* The tricode scoreline is compact and uniform, so the actions (highlight icon +
+   flames) sit left, packed right after it. The video icon is a fixed square, and
+   the surrounding gaps stay tight so the action cluster preserves the previous
+   one-row behavior on common phone widths. */
 .match-topline {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px 14px;
+  gap: 6px 8px;
 }
 .match-teams {
   display: flex;
@@ -349,7 +366,7 @@ tbody tr td { padding: 5px 0; }
 .match-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
   flex-shrink: 0;
   flex-wrap: nowrap;
 }
@@ -359,16 +376,19 @@ tbody tr td { padding: 5px 0; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 32px;
-  padding: 0 6px;
-  border-radius: 999px;
-  color: var(--pill-txt);
-  font-size: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1;
   text-decoration: none;
-  background: transparent;
+  background: var(--video-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 .highlight-icon:hover,
 .highlight-icon:focus-visible {
-  background: var(--pill-bg);
-  outline: none;
+  background: var(--video-bg-hover);
+  outline: 2px solid var(--video-focus);
+  outline-offset: 2px;
 }
