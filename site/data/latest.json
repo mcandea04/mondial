@@ -3,15 +3,15 @@
   "factsHash": "8320ac1d86d4e606e54ec533321d1a88363809b2be92cb8a8cbe117c9534f68a",
   "narrator": {
     "ro": "gemini-polish",
-    "en": "gemini-polish"
+    "en": "gemini"
   },
   "headline": {
-    "ro": "Haaland dă stingerea în Brazilia cu o execuție din afara careului",
-    "en": "Haaland douses the Samba while England survive a sweat"
+    "ro": "Haaland dă de pământ cu Brazilia, Bellingham stinge Mexicul",
+    "en": "Haaland stuns Brazil while Bellingham spares England's blushes"
   },
   "summary": {
-    "ro": "Ocupanta locului 31 în clasamentul FIFA, Norvegia, a produs șocul optimilor după ce a învins Brazilia cu 2-1, grație celor două goluri înscrise de Erling Haaland. În celălalt meci, Anglia s-a calificat mai departe după un 3-2 spectaculos în fața Mexicului, meci decis de sclipirile lui Jude Bellingham din prima repriză.",
-    "en": "Norway, ranked 31st in the world, pulled off a monumental shock as Erling Haaland’s brace dumped Brazil out of the tournament with a 2-1 defeat. Meanwhile, England weathered a storm and Jarell Quansah’s dismissal to edge Mexico 3-2 and reach the quarterfinals."
+    "ro": "Norvegia, ocupanta locului 31 în clasamentul FIFA, a produs șocul optimilor după ce a învins Brazilia cu 2-1 prin cele două goluri târzii ale lui Erling Haaland. În celălalt meci, Anglia a trecut de Mexic cu 3-2, grație dublei lui Jude Bellingham din prima repriză și a unui penalty transformat de Harry Kane.",
+    "en": "Not even Paul the Octopus would have put a tentacle on the 31st-ranked Norway eliminating Brazil, courtesy of a late Erling Haaland double. Meanwhile, Jude Bellingham scored twice to help England survive a spirited Mexico comeback and secure their spot in the quarterfinals."
   },
   "matches": [
     {
@@ -87,8 +87,8 @@
       "winnerSide": "away",
       "loserSide": "home",
       "pill": {
-        "ro": "Când te numești Brazilia, e greu să accepți că Erling Haaland te trimite acasă după ce înscrie cu capul în minutul 79 și apoi cu stângul, din afara careului, în minutul 90. Nici Paul caracatița n-ar fi prezis că penalty-ul lui Neymar din minutul 90+10 va fi doar unul de consolare. Norvegia merge mai departe, iar sud-americanii își fac bagajele după ce au avut doar 33.6% posesie.",
-        "en": "Erling Haaland headed Norway in front from inside the box in the 79th minute, before doubling down with a left-footed strike from outside the area in the 90th. Neymar’s penalty deep in stoppage time was nothing more than a consolation in a historic disaster for Brazil, who leave the tournament reeling. Norway, ranked 31st in the world, dominated so thoroughly that even Paul the Octopus would have struggled to predict the Seleção having just 33.6% possession."
+        "ro": "Haaland a decis meciul în doar unsprezece minute, înscriind mai întâi cu capul din careu în minutul 79 și apoi cu un șut cu stângul din afara careului în minutul 90. Degeaba a transformat Neymar un penalty în minutul 90+10, pentru că sud-americanii au fost dominați clar, având o posesie de doar 33.6%. Nici caracatița Paul n-ar fi riscat un tentacul pe eliminarea Braziliei în optimi.",
+        "en": "Brazil managed just 33.6% possession and paid the ultimate price as Erling Haaland decided the tie with a clinical late brace. The Norwegian striker headed in the opener in the 79th minute before unleashing a left-footed strike from outside the box in the 90th. Neymar's 100th-minute penalty was nothing more than a consolation prize as the South Americans booked an early flight home."
       },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/2GmG5OiXMG1EuoLtfYSCMf"
@@ -193,8 +193,8 @@
       "winnerSide": "away",
       "loserSide": "home",
       "pill": {
-        "ro": "Jude Bellingham a tranșat rapid meciul în prima repriză, marcând cu o lovitură de cap în minutul 36 și dublând avantajul două minute mai târziu, din pasa lui Harry Kane. Mexicanii au ripostat prin golul lui Julián Quiñones și penalty-ul lui Raúl Jiménez, dar lovitura de la 11 metri a lui Kane din minutul 60 a adus calificarea Angliei. Degeaba a atacat Mexicul în valuri, având 20 de șuturi la poartă, pentru că defensiva engleză a rezistat presiunii pe final.",
-        "en": "Jude Bellingham’s rapid first-half double, featuring a 36th-minute header, put England in control before Jarell Quansah’s 54th-minute exit threatened to derail them. Despite twenty shots from Mexico and a late penalty from Raúl Jiménez, Harry Kane’s spot-kick kept the Three Lions ahead. England survived having just 33.2% possession to seal their place in the quarterfinals."
+        "ro": "Bellingham a lovit necruțător cu două goluri rapide în minutele 36 și 38, dar mexicanii au luptat până la capăt după reușita lui Quiñones. Kane a punctat și el din penalty în minutul 60, făcând inutil golul de la 11 metri al lui Jiménez. Degeaba a avut Mexicul o posesie zdrobitoare, de 66.8%, fiindcă englezii au fost extrem de cinici, marcând de trei ori din doar cinci șuturi pe poartă.",
+        "en": "England turned efficiency into an art form, scoring three goals from just five shots on target despite letting Mexico have 66.8% of the ball. Jude Bellingham's quickfire double, including a 36th-minute header, set the tone before Harry Kane converted from the spot. Mexico launched a furious 20-shot assault and pulled two back, but ultimately ran out of time."
       },
       "drama": 4,
       "highlight": "https://www.fifa.com/en/watch/UtO24MbZ8ce7YLpu6NMsM"
@@ -217,8 +217,8 @@
         "en": "worth watching"
       },
       "why": {
-        "ro": "La 22:00, se joacă un derby iberic veritabil între două forțe de top care nu își permit niciun pas greșit în drumul spre sferturi.",
-        "en": "A blockbuster Iberian derby at 22:00 sees Portugal and Spain collide for a coveted spot in the quarterfinals."
+        "ro": "La 22:00 avem o încleștare de zile mari între doi giganți din Peninsula Iberică, un duel pe viață și pe moarte pentru un loc în sferturi.",
+        "en": "An Iberian blockbuster at 22:00 is absolutely worth your time as Portugal and Spain fight for a place in the quarterfinals."
       }
     },
     {
@@ -236,13 +236,13 @@
         "en": "catch it later"
       },
       "why": {
-        "ro": "La 03:00, somnul este mult mai prețios decât încercarea americanilor de a bloca o selecționată belgiană experimentată.",
-        "en": "The USA and Belgium battle for a quarterfinal berth at 03:00, but it is a late-night chore best left for the morning highlights."
+        "ro": "La 03:00 noaptea nu merită să sacrifici somnul pentru o partidă în care americanii vor încerca doar să blocheze ofensiva belgiană.",
+        "en": "USA and Belgium at 03:00 is a decent clash but at such a punishing hour, it is best left for the morning highlights."
       }
     }
   ],
   "teaser": {
-    "ro": "⚽ Haaland dă stingerea în Brazilia cu o execuție din afara careului · 2 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
-    "en": "⚽ Haaland douses the Samba while England survive a sweat · 2 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
+    "ro": "⚽ Haaland dă de pământ cu Brazilia, Bellingham stinge Mexicul · 2 meciuri azi-noapte, cu rezumate video\nhttps://mcandea04.github.io/mondial/",
+    "en": "⚽ Haaland stuns Brazil while Bellingham spares England's blushes · 2 matches overnight, with video highlights\nhttps://mcandea04.github.io/mondial/"
   }
 }
