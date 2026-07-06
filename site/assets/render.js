@@ -118,15 +118,6 @@ function renderMatchCard(match, lang) {
     teamName(`team-name away${eliminatedSide === 'away' ? ' is-eliminated' : ''}`, match.away, match.awayCode, 'after', lang),
   );
   const actions = el('div', 'match-actions');
-  if (match.highlight) {
-    const link = el('a', 'highlight-icon', '▶');
-    link.href = match.highlight;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.setAttribute('aria-label', UI_STRINGS[lang].recapLabel);
-    link.title = UI_STRINGS[lang].recapLabel;
-    actions.append(link);
-  }
   const rating = clampDrama(match.drama);
   if (rating !== null) {
     const label = UI_STRINGS[lang].drama(rating);
@@ -139,6 +130,15 @@ function renderMatchCard(match, lang) {
       flames.append(flame);
     }
     actions.append(flames);
+  }
+  if (match.highlight) {
+    const link = el('a', 'highlight-icon', '▶');
+    link.href = match.highlight;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.setAttribute('aria-label', UI_STRINGS[lang].recapLabel);
+    link.title = UI_STRINGS[lang].recapLabel;
+    actions.append(link);
   }
   topLine.append(teams, actions);
   header.append(topLine);
