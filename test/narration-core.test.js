@@ -111,6 +111,13 @@ test('buildUserMessage carries knockout facts without group standings', () => {
   assert.doesNotMatch(message, /homeScenario/);
 });
 
+test('headline prompt requires covering both matches on two-match nights', () => {
+  assert.match(SYSTEM_PROMPT, /EXACT două meciuri/);
+  assert.match(SYSTEM_PROMPT, /headline-ul TREBUIE să atingă ambele meciuri/);
+  assert.match(SYSTEM_PROMPT_EN, /EXACTLY two matches/);
+  assert.match(SYSTEM_PROMPT_EN, /headline MUST touch both matches/);
+});
+
 test('buildRewriteSystemPromptEn embeds the critique and the English voice', () => {
   const out = buildRewriteSystemPromptEn('note: avoid "thrilling encounter"');
   assert.match(out, /thrilling encounter/);

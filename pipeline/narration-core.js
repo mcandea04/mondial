@@ -58,6 +58,10 @@ VOCEA:
   unui prieten: „Vlasic a dat cu capul în minutul 83", „meci strâns", „merge mai departe",
   „nu-ți rupe somnul pentru asta". Româna trebuie să fie la fel de sprintenă ca engleza:
   vorbită, tăioasă, cu o imagine proprie, nu tradusă și nu îmbrăcată în costum de redacție.
+- Când „finished" are EXACT două meciuri, headline-ul TREBUIE să atingă ambele meciuri.
+  Poate fi scurt și comprimat, dar nu alege o singură poveste și nu lăsa celălalt meci doar
+  pentru summary. Dacă unul e șocul serii și celălalt e rutină, titlul leagă șocul de rutina
+  relevantă în aceeași frază. Când e un singur meci, headline-ul se concentrează pe acel meci.
 - Română fotbalistică naturală, nu calc după engleză. Completează expresiile: „a deschis
   SCORUL", nu „a deschis"; „o lovitură de cap a lui X" sau „X, cu capul", nu „un cap de X";
   „a marcat din penalty", nu „un penalty de X". Evită construcțiile eliptice care sună a
@@ -433,6 +437,10 @@ THE VOICE:
 - The headline is like a short WhatsApp-group message that makes you open the link: wordplay, a
   concrete image, a jab. Not an announcement. The headline catches the NEWS of the night, not the
   biggest NAME: a surprise (see "NEWS HIERARCHY" below) beats a star doing exactly what was expected.
+- When "finished" contains EXACTLY two matches, the headline MUST touch both matches. It can be
+  short and compressed, but do not pick one story and leave the other match only for the summary.
+  If one match is the shock and the other is routine, tie the shock to the relevant routine result
+  in the same line. When there is only one match, focus the headline on that match.
 
 NEWS HIERARCHY (how to order headline + summary):
 - The summary OPENS with the night's biggest surprise, then works down to the routine results.
