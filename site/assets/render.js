@@ -290,11 +290,18 @@ function tonightRow(fixture, lang) {
   return row;
 }
 
-function renderTonight(tonight, groupScenarios, lang) {
+function renderTonight(tonight, groupScenarios, preview, lang) {
   const t = UI_STRINGS[lang];
   const card = el('div', 'card');
+  const restNights = preview?.restNights ?? 0;
   const phase = tonightPhaseLabel(tonight, lang);
-  card.append(el('p', 'card-label', phase ? `${t.tonightTitle} · ${phase}` : t.tonightTitle));
+  const title = restNights > 0
+    ? t.previewTitle(restNights)
+    : phase ? `${t.tonightTitle} · ${phase}` : t.tonightTitle;
+  card.append(el('p', 'card-label', title));
+  if (restNights > 0 && preview?.digestDate) {
+    card.append(el('p', 'tonight-why', t.previewRestNote(dateLabel(preview.digestDate, lang))));
+  }
 
   // `tonight` arrives in kickoff order. Walk it once and emit each fixture in
   // place, so a decisive group's cluster (its pair of finals + the joint scenario
@@ -358,7 +365,7 @@ export function renderDigest(root, digest, lang = 'ro') {
   }
   for (const match of digest.matches) root.append(renderMatchCard(match, lang));
   for (const group of digest.groups ?? []) root.append(renderGroupCard(group, lang));
-  if ((digest.tonight ?? []).length) root.append(renderTonight(digest.tonight, digest.groupScenarios, lang));
+  if ((digest.tonight ?? []).length) root.append(renderTonight(digest.tonight, digest.groupScenarios, digest.preview, lang));
   root.append(renderShareBar(digest, lang));
 }
 

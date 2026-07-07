@@ -59,9 +59,13 @@ const slimEvent = (e) => ({ name: e.name, minute: e.minute, team: e.team });
  * are revised post-whistle and would churn the narrator for no narrative gain.
  * They still ride into the published JSON; only the hash input is narrowed.
  */
-function project({ date, finished, tonight }) {
+function project({ date, finished, tonight, preview }) {
   return {
     date,
+    preview: preview == null ? null : {
+      digestDate: preview.digestDate ?? null,
+      restNights: preview.restNights ?? null,
+    },
     finished: [...finished]
       .sort(byId)
       .map((m) => ({

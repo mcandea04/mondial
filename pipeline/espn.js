@@ -11,6 +11,7 @@ import { romanianTeamName, flagCode } from './teams.js';
 const ESPN_BASE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world';
 const ESPN_STANDINGS_BASE = 'https://site.api.espn.com/apis/v2/sports/soccer/fifa.world';
 const REQUEST_DELAY_MS = 200;
+const LOOKAHEAD_NIGHTS = 7;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -545,6 +546,43 @@ async function nightEvents(digestDate, fetchImpl) {
   return [...byId.values()].filter((e) => isInNightWindow(e.date, window));
 }
 
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setUTCDate(next.getUTCDate() + days);
+  return next.toISOString().slice(0, 10);
+}
+
+function previewCandidateEvents(events) {
+  return events.filter((e) => !isOver(e));
+}
+
+export async function fetchNextFixtureNight({
+  digestDate,
+  fetchImpl = fetch,
+  maxLookaheadNights = LOOKAHEAD_NIGHTS,
+}) {
+  const currentWindow = nightWindow(digestDate);
+  const firstPreviewDate = addDays(currentWindow.end, 1);
+
+  for (let restNights = 0; restNights <= maxLookaheadNights; restNights += 1) {
+    const previewDate = addDays(firstPreviewDate, restNights);
+    const events = previewCandidateEvents(await nightEvents(previewDate, fetchImpl));
+    if (events.length > 0) {
+      return {
+        digestDate: previewDate,
+        restNights,
+        events,
+      };
+    }
+  }
+
+  return {
+    digestDate: null,
+    restNights: null,
+    events: [],
+  };
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /** Lightweight fetch for the readiness gate. */
@@ -570,23 +608,13 @@ export async function fetchDigestData({
   delayMs = REQUEST_DELAY_MS,
   log = (msg) => console.log(`espn: ${msg}`),
 }) {
-  const window = nightWindow(digestDate);
-  const nextDigestDate = new Date(window.end.getTime() + 24 * 60 * 60 * 1000)
-    .toISOString()
-    .slice(0, 10);
-  const nextWindow = nightWindow(nextDigestDate);
-
   const standingsRaw = await espnGet('/standings', fetchImpl, ESPN_STANDINGS_BASE);
   const groupMap = buildGroupMap(standingsRaw);
   await sleep(delayMs);
 
   const lastNightEvents = await nightEvents(digestDate, fetchImpl);
-  const tonightEventsRaw = await nightEvents(nextDigestDate, fetchImpl);
-
   const finishedEvents  = lastNightEvents.filter(isOver);
-  const tonightEvents   = tonightEventsRaw.filter(
-    (e) => !isOver(e) && isInNightWindow(e.date, nextWindow),
-  );
+  const previewNight = await fetchNextFixtureNight({ digestDate, fetchImpl });
 
   // Enrich each finished event with its summary
   const finished = [];
@@ -604,7 +632,7 @@ export async function fetchDigestData({
     finished.push(parseMatch(enrichedEvent, group));
   }
 
-  const tonight = tonightEvents.map((e) => {
+  const tonight = previewNight.events.map((e) => {
     const group = groupFor(e, groupMap);
     return parseFixture(e, group);
   });
@@ -612,6 +640,10 @@ export async function fetchDigestData({
   return {
     finished,
     tonight,
+    preview: {
+      digestDate: previewNight.digestDate,
+      restNights: previewNight.restNights,
+    },
     standings: parseStandings(standingsRaw),
   };
 }

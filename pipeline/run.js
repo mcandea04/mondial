@@ -666,6 +666,10 @@ async function main() {
     facts.tonight = facts.tonight.map(forceKnockoutFixture);
     facts.standings = [];
   }
+  facts.preview ??= {
+    digestDate: facts.tonight.length > 0 ? null : null,
+    restNights: facts.tonight.length > 0 ? 0 : null,
+  };
   const historical = await historicalMatches(date);
   const standings = knockoutMode ? [] : classifyStandings(facts.standings, [...historical, ...facts.finished]);
 
@@ -744,7 +748,7 @@ async function main() {
   }));
 
   const factsForNarration = {
-    date, finished: finishedWithRanks, tonight: tonightWithScenarios, standings: standingsWithRanks,
+    date, finished: finishedWithRanks, tonight: tonightWithScenarios, preview: facts.preview, standings: standingsWithRanks,
     ...(decisiveGroups.length > 0 && { decisiveGroups }),
     ...(knockoutMode && { phase: 'knockout' }),
   };
@@ -845,6 +849,7 @@ async function main() {
     narrator: bilingual(narratorRo, narratorEn),
     headline: bilingual(narration.headline, enNarration?.headline),
     summary: bilingual(narration.summary, enNarration?.summary),
+    preview: facts.preview,
     matches: facts.finished.map((m) => ({
       ...m,
       pill: bilingual(narrationByMatch.get(m.id)?.pill ?? '', enByMatch.get(m.id)?.pill),

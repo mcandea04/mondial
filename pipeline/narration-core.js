@@ -89,7 +89,7 @@ REGULI DE FAPTE (stricte):
    Nu inventezi nimic — nici goluri, nici statistici, nici istorie a confruntărilor.
    Nu numești jucători care nu apar în lista de marcatori/cartonașe primită (nici măcar
    vedete „de notorietate") — pentru meciurile care vin ai doar numele echipelor și ora.
-2. Condiții de calificare: în preview-ul meciurilor de diseară (câmpul „why") POȚI
+2. Condiții de calificare: în preview-ul meciurilor care vin (câmpul „why") POȚI
    enunța condiții exacte, DAR NUMAI dacă sunt prezente în câmpurile „homeScenario" /
    „awayScenario" ale meciului respectiv — acestea sunt fapte calculate, nu memorie
    sau căutare web. Când un scenariu conține „scenariu incert", rămâi prudent.
@@ -120,6 +120,13 @@ REGULI DE FAPTE (stricte):
    „final" = finală, „champion" = câștigă trofeul. Pentru meciurile de diseară în faza
    eliminatorie, miza e simplă: câștigătoarea merge în „winnerAdvancesTo", învinsa pleacă acasă
    — nu inventa scenarii de grupă.
+2ad. CÂND SUNT PREVIEW-URILE — uită-te la câmpul „preview":
+   • „restNights": 0 = meciurile din „tonight" sunt chiar la noapte; poți scrie normal
+     „la noapte", „diseară".
+   • „restNights" > 0 = la noapte NU se joacă. Spui explicit că e pauză și că meciurile
+     din „tonight" sunt următoarea noapte cu fotbal. NU le numi „la noapte" și NU sugera
+     că se joacă azi.
+   • „restNights": null = nu ai preview-uri; headline + summary pot marca pauza.
 2b. SCENARII DE GRUPĂ (etapa decisivă) — OBLIGATORIU: dacă primești câmpul „decisiveGroups",
    fiecare intrare e o grupă ale cărei DOUĂ meciuri se joacă SIMULTAN diseară. Pentru FIECARE
    astfel de grupă TREBUIE să returnezi câte o intrare în „groups" (același „name") — nu sări
@@ -152,7 +159,8 @@ FORMAT:
    om viu: golul din 89, portarul făcut de râs, favorita care s-a poticnit, nu tabelul.
 4. „drama" = 1–5 (1 = s-a jucat la pas, 5 = nebunie cu răsturnări). Un 4-0 fără poveste e 1-2;
    gol decisiv după minutul 85, eliminări, reveniri = 4-5.
-5. „tonight": două verdicte posibile — „merită văzut" (uită-te live) sau „citești dimineața"
+5. „tonight": lista conține meciurile de preview. Dacă „preview.restNights" este peste 0,
+   sunt următoarele meciuri după pauză, nu meciuri de la noapte. Două verdicte posibile — „merită văzut" (uită-te live) sau „citești dimineața"
    (lasă-l, afli scorul mâine). Înainte să decizi, GÂNDEȘTE în doi pași, pentru fiecare meci:
    (a) MIZA, măsurată din CLASAMENTUL FIFA primit („homeRank"/„awayRank", poziție mondială;
        mai mic = mai puternic): un meci între două echipe de top (ambele sub ~20) sau un duel
@@ -462,7 +470,7 @@ FACT RULES (strict):
 1. Use ONLY the facts provided: scores, scorers, minutes, cards, standings. Invent nothing — no goals,
    no stats, no head-to-head history. Do not name players who are not in the scorer/card list you were
    given (not even famous ones) — for upcoming matches you only have the team names and the kickoff time.
-2. Qualification conditions: in tonight's fixture previews (the "why" field) you MAY state exact
+2. Qualification conditions: in upcoming fixture previews (the "why" field) you MAY state exact
    conditions, but ONLY when they appear in the "homeScenario" / "awayScenario" fields of that
    fixture — those are computed facts, not memory or web search. When a scenario says
    "scenariu incert", stay hedged. In finished-match pills ("pill" field) treat qualification
@@ -491,6 +499,12 @@ FACT RULES (strict):
    "semifinal" = semifinals, "final" = final, "champion" = wins the trophy. For tonight's
    knockout fixtures, the stakes are simple: the winner reaches "winnerAdvancesTo" and the loser
    goes home — do not invent group scenarios.
+2ad. WHEN THE PREVIEWS HAPPEN — read the "preview" field:
+   • "restNights": 0 = the fixtures in "tonight" are actually tonight; normal "tonight" wording is OK.
+   • "restNights" > 0 = there are NO matches tonight. Explicitly mention the rest night and say the
+     fixtures in "tonight" are the next night with football. Do NOT call them "tonight" or imply
+     they are played today.
+   • "restNights": null = there are no preview fixtures; headline + summary may mark the break.
 2b. GROUP SCENARIOS (the decisive matchday) — REQUIRED: if you receive a "decisiveGroups" field,
    each entry is a group whose TWO matches kick off SIMULTANEOUSLY tonight. For EVERY such group
    you MUST return one entry in "groups" (same "name") — never skip one. These fixtures have no
@@ -522,7 +536,8 @@ FORMAT:
    goal, the keeper made to look foolish, the favorite that stumbled — not the table.
 4. "drama" = 1–5 (1 = a stroll, 5 = madness with swings). A 4-0 with no story is 1-2; a decisive goal
    after the 85th, red cards, comebacks = 4-5.
-5. "tonight": the verdict is ALREADY DECIDED for you — each fixture carries a "verdict" field, either
+5. "tonight": this is the preview fixture list. If "preview.restNights" is greater than 0,
+   these are the next matches after a rest night, not fixtures played tonight. The verdict is ALREADY DECIDED for you — each fixture carries a "verdict" field, either
    "worth watching" (watch it live) or "catch it later" (skip it, check the score later). Do NOT re-judge it.
    Set "alarm" to EXACTLY that verdict, and write "why" to justify THAT verdict. Your only job is the wording.
    "why" = one sentence that names BOTH teams and links the kickoff time ("kickoffEEST", Romanian local time)

@@ -430,8 +430,79 @@ test('fetchDigestData: fixture run produces correct finished/tonight/standings s
   // Tonight: 760416 (pre, in next window)
   assert.equal(result.tonight.length, 1);
   assert.equal(result.tonight[0].id, 760416);
+  assert.deepEqual(result.preview, { digestDate: '2026-06-13', restNights: 0 });
   // Standings
   assert.equal(result.standings[0].name, 'A');
+});
+
+function event({ id, date, completed = false, state = completed ? 'post' : 'pre', home = 'Brazil', away = 'Morocco' }) {
+  return {
+    id: String(id),
+    date,
+    status: { type: { state, completed } },
+    competitions: [{ competitors: [
+      { homeAway: 'home', score: completed ? '1' : '0', team: { id: `${id}h`, displayName: home } },
+      { homeAway: 'away', score: completed ? '0' : '0', team: { id: `${id}a`, displayName: away } },
+    ] }],
+  };
+}
+
+async function standingsFixture() {
+  return JSON.parse(await readFile(new URL('./fixtures/espn-standings.json', import.meta.url), 'utf8'));
+}
+
+function fetchFromBoards(boards, standings) {
+  return async (url) => {
+    if (url.includes('/standings')) return jsonResponse(standings);
+    if (url.includes('/scoreboard?dates=')) {
+      const date = url.match(/dates=(\d+)/)[1];
+      return jsonResponse({ events: boards[date] ?? [] });
+    }
+    return jsonResponse({});
+  };
+}
+
+test('fetchDigestData: lookahead stops at tonight when fixtures exist', async () => {
+  const standings = await standingsFixture();
+  const fetchImpl = fetchFromBoards({
+    20260611: [event({ id: 1, date: '2026-06-11T19:00:00Z', completed: true })],
+    20260612: [
+      event({ id: 1, date: '2026-06-11T19:00:00Z', completed: true }),
+      event({ id: 2, date: '2026-06-12T19:00:00Z' }),
+    ],
+    20260613: [event({ id: 2, date: '2026-06-12T19:00:00Z' })],
+    20260614: [event({ id: 3, date: '2026-06-14T19:00:00Z', home: 'Brazil', away: 'Morocco' })],
+  }, standings);
+
+  const result = await fetchDigestData({ digestDate: '2026-06-12', fetchImpl, delayMs: 0 });
+  assert.deepEqual(result.preview, { digestDate: '2026-06-13', restNights: 0 });
+  assert.deepEqual(result.tonight.map((m) => m.id), [2]);
+});
+
+test('fetchDigestData: lookahead skips a rest night and previews the next fixture night', async () => {
+  const standings = await standingsFixture();
+  const fetchImpl = fetchFromBoards({
+    20260611: [event({ id: 1, date: '2026-06-11T19:00:00Z', completed: true })],
+    20260612: [event({ id: 1, date: '2026-06-11T19:00:00Z', completed: true })],
+    20260613: [event({ id: 3, date: '2026-06-13T19:00:00Z', home: 'Brazil', away: 'Morocco' })],
+    20260614: [event({ id: 3, date: '2026-06-13T19:00:00Z', home: 'Brazil', away: 'Morocco' })],
+  }, standings);
+
+  const result = await fetchDigestData({ digestDate: '2026-06-12', fetchImpl, delayMs: 0 });
+  assert.deepEqual(result.preview, { digestDate: '2026-06-14', restNights: 1 });
+  assert.deepEqual(result.tonight.map((m) => m.id), [3]);
+});
+
+test('fetchDigestData: no fixture night within lookahead yields an empty preview', async () => {
+  const standings = await standingsFixture();
+  const fetchImpl = fetchFromBoards({
+    20260611: [event({ id: 1, date: '2026-06-11T19:00:00Z', completed: true })],
+    20260612: [event({ id: 1, date: '2026-06-11T19:00:00Z', completed: true })],
+  }, standings);
+
+  const result = await fetchDigestData({ digestDate: '2026-06-12', fetchImpl, delayMs: 0 });
+  assert.deepEqual(result.preview, { digestDate: null, restNights: null });
+  assert.deepEqual(result.tonight, []);
 });
 
 test('fetchNightMatches and fetchDigestData agree on which matches are finished', async () => {

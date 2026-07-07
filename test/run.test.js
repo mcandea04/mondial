@@ -91,6 +91,49 @@ function setSummaryAssist(fixtures, assistName) {
   writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
 }
 
+function makeScoreboardEvent({ id, date, home, away }) {
+  return {
+    id: String(id),
+    date,
+    status: { type: { state: 'pre', completed: false } },
+    competitions: [{ competitors: [
+      { homeAway: 'home', score: '0', team: { id: `${id}h`, displayName: home } },
+      { homeAway: 'away', score: '0', team: { id: `${id}a`, displayName: away } },
+    ] }],
+  };
+}
+
+function movePreviewAfterOneRestNight(fixtures) {
+  const boardPath = path.join(fixtures, 'scoreboard.json');
+  const board = JSON.parse(readFileSync(boardPath, 'utf8'));
+  for (const dateKey of Object.keys(board)) {
+    board[dateKey].events = board[dateKey].events.filter((e) => e.id !== '760416');
+  }
+  const nextFixture = makeScoreboardEvent({
+    id: 760418,
+    date: '2026-06-13T19:00:00Z',
+    home: 'Brazil',
+    away: 'Morocco',
+  });
+  board['20260613'] = { events: [nextFixture] };
+  board['20260614'] = { events: [nextFixture] };
+  writeFileSync(boardPath, JSON.stringify(board, null, 2));
+
+  const narrationPath = path.join(fixtures, 'narration.json');
+  const narration = JSON.parse(readFileSync(narrationPath, 'utf8'));
+  narration.tonight = [
+    { id: 760418, alarm: 'merită văzut', why: 'Pauza se termină cu Brazilia - Maroc la 22:00.' },
+  ];
+  writeFileSync(narrationPath, JSON.stringify(narration, null, 2));
+
+  const narrationEnPath = path.join(fixtures, 'narration.en.json');
+  const narrationEn = JSON.parse(readFileSync(narrationEnPath, 'utf8'));
+  narrationEn.tonight = [
+    { id: 760418, alarm: 'worth watching', why: 'The rest ends with Brazil against Morocco at 22:00.' },
+  ];
+  writeFileSync(narrationEnPath, JSON.stringify(narrationEn, null, 2));
+}
+
 test('a late assist correction reuses prose but still publishes the new assist', () => {
   const { fixtures, out } = freshDirs();
   runPipeline({ fixtures, out });
@@ -137,6 +180,23 @@ test('changed facts re-narrate automatically', () => {
   const second = readDigest(out);
   assert.notEqual(second.factsHash, first.factsHash);
   assert.equal(second.headline.ro, 'Proză nouă după corecția scorului');
+});
+
+test('a rest-night lookahead preview is published and changes the facts hash', () => {
+  const { fixtures, out } = freshDirs();
+  runPipeline({ fixtures, out });
+  const first = readDigest(out);
+  assert.deepEqual(first.preview, { digestDate: '2026-06-13', restNights: 0 });
+
+  movePreviewAfterOneRestNight(fixtures);
+  setCannedHeadline(fixtures, 'Pauză azi, grei mâine');
+  runPipeline({ fixtures, out });
+
+  const second = readDigest(out);
+  assert.notEqual(second.factsHash, first.factsHash);
+  assert.equal(second.headline.ro, 'Pauză azi, grei mâine');
+  assert.deepEqual(second.preview, { digestDate: '2026-06-14', restNights: 1 });
+  assert.deepEqual(second.tonight.map((m) => m.id), [760418]);
 });
 
 test('legacy digest without factsHash is trusted: prose reused, hash stamped', () => {

@@ -203,6 +203,12 @@ test('knockout decision details change the hash', () => {
   assert.notEqual(factsHash(knockout), factsHash(afterExtraTime));
 });
 
+test('changed preview metadata changes the hash', () => {
+  const immediate = { ...structuredClone(base), preview: { digestDate: '2026-06-13', restNights: 0 } };
+  const afterRest = { ...structuredClone(base), preview: { digestDate: '2026-06-14', restNights: 1 } };
+  assert.notEqual(factsHash(immediate), factsHash(afterRest));
+});
+
 test('a changed date changes the hash', () => {
   assert.notEqual(factsHash(base), factsHash({ ...base, date: '2026-06-13' }));
 });

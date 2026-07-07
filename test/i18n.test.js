@@ -73,7 +73,7 @@ test('alarmBadgeLabel gives the canonical verdict label per language', () => {
 });
 
 test('new UI_STRINGS keys are present in both languages', () => {
-  for (const key of ['ownGoal', 'penalties', 'afterExtraTime', 'afterPenalties', 'drama', 'archiveTitle', 'chooseDay', 'recaps', 'recapLabel', 'alarmWatch', 'alarmSkip']) {
+  for (const key of ['ownGoal', 'penalties', 'afterExtraTime', 'afterPenalties', 'drama', 'archiveTitle', 'chooseDay', 'recaps', 'recapLabel', 'alarmWatch', 'alarmSkip', 'previewTitle', 'previewRestNote']) {
     assert.ok(UI_STRINGS.ro[key], `ro.${key}`);
     assert.ok(UI_STRINGS.en[key], `en.${key}`);
   }
@@ -83,4 +83,8 @@ test('new UI_STRINGS keys are present in both languages', () => {
   assert.equal(UI_STRINGS.en.drama(4), 'drama 4 of 5');
   assert.equal(UI_STRINGS.en.recapLabel, 'Highlights');
   assert.equal(UI_STRINGS.ro.recapLabel, 'Rezumat video');
+  assert.equal(UI_STRINGS.ro.previewTitle(1), 'Pauză la noapte — ce urmează');
+  assert.equal(UI_STRINGS.en.previewTitle(2), 'A few nights off — next up');
+  assert.match(UI_STRINGS.ro.previewRestNote('Duminică, 14 iunie'), /La noapte nu se joacă/);
+  assert.match(UI_STRINGS.en.previewRestNote('Sunday, 14 June'), /No matches tonight/);
 });
