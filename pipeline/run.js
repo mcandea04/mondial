@@ -64,6 +64,11 @@ const KNOCKOUT_CUTOFF_DATE = '2026-06-29';
 
 const isKnockoutDigestDate = (date) => date >= KNOCKOUT_CUTOFF_DATE;
 
+function requireKnockoutStage(item) {
+  if (item.stage) return item.stage;
+  throw new Error(`Knockout event ${item.id} has no recognized stage`);
+}
+
 function knockoutResultFromScore(match) {
   const [homeScore, awayScore] = match.score ?? [];
   if (homeScore == null || awayScore == null || homeScore === awayScore) return {};
@@ -74,12 +79,13 @@ function knockoutResultFromScore(match) {
 
 function forceKnockoutMatch(match) {
   const result = match.winner && match.loser ? {} : knockoutResultFromScore(match);
-  const stage = match.stage ?? 'round-of-32';
+  const stage = requireKnockoutStage(match);
+  const winnerAdvancesTo = match.winnerAdvancesTo ?? nextStage(stage);
   const out = {
     ...match,
     group: null,
     stage,
-    winnerAdvancesTo: match.winnerAdvancesTo ?? nextStage(stage),
+    ...(winnerAdvancesTo ? { winnerAdvancesTo } : {}),
     ...result,
   };
   if (!out.winner || !out.loser) {
@@ -89,12 +95,13 @@ function forceKnockoutMatch(match) {
 }
 
 function forceKnockoutFixture(fixture) {
-  const stage = fixture.stage ?? 'round-of-32';
+  const stage = requireKnockoutStage(fixture);
+  const winnerAdvancesTo = fixture.winnerAdvancesTo ?? nextStage(stage);
   return {
     ...fixture,
     group: null,
     stage,
-    winnerAdvancesTo: fixture.winnerAdvancesTo ?? nextStage(stage),
+    ...(winnerAdvancesTo ? { winnerAdvancesTo } : {}),
   };
 }
 

@@ -33,6 +33,7 @@ export function stageLabel(stage, lang) {
       'round-of-16': 'optimi',
       quarterfinal: 'sferturi',
       semifinal: 'semifinală',
+      'third-place': 'finala mică',
       final: 'finală',
     },
     en: {
@@ -40,6 +41,7 @@ export function stageLabel(stage, lang) {
       'round-of-16': 'round of 16',
       quarterfinal: 'quarterfinal',
       semifinal: 'semifinal',
+      'third-place': 'third-place match',
       final: 'final',
     },
   };

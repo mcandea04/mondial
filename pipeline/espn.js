@@ -139,6 +139,13 @@ export function stageFromEvent(event) {
   const name = event.season?.name ?? '';
   const type = String(event.season?.type ?? '');
   const text = `${slug} ${name} ${type}`.toLowerCase();
+  if (
+    text.includes('3rd-place')
+    || text.includes('3rd place')
+    || text.includes('third-place')
+    || text.includes('third place')
+    || text.includes('13797')
+  ) return 'third-place';
   if (text.includes('round-of-32') || text.includes('round of 32') || text.includes('13801')) return 'round-of-32';
   if (text.includes('round-of-16') || text.includes('round of 16')) return 'round-of-16';
   if (text.includes('quarter')) return 'quarterfinal';
@@ -243,6 +250,7 @@ export function parseMatch(event, group = '', stage = stageFromEvent(event)) {
       team: b.team ?? null,
       reason: b.reason ?? null,
     }));
+  const winnerAdvancesTo = nextStage(stage);
   return {
     ...teamIdentity(event, group, stage),
     score: [parseScore(home), parseScore(away)],
@@ -252,16 +260,17 @@ export function parseMatch(event, group = '', stage = stageFromEvent(event)) {
     decidedAfter: decidedAfter(event, penalties),
     penalties,
     decidedOnPenalties: Boolean(penalties),
-    ...(stage ? { winnerAdvancesTo: nextStage(stage) } : {}),
+    ...(winnerAdvancesTo ? { winnerAdvancesTo } : {}),
     ...(stage ? knockoutResult(event, penalties) : {}),
   };
 }
 
 export function parseFixture(event, group = '', stage = stageFromEvent(event)) {
+  const winnerAdvancesTo = nextStage(stage);
   return {
     ...teamIdentity(event, group, stage),
     kickoffEEST: kickoffEEST(event.date),
-    ...(stage ? { winnerAdvancesTo: nextStage(stage) } : {}),
+    ...(winnerAdvancesTo ? { winnerAdvancesTo } : {}),
   };
 }
 

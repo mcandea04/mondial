@@ -132,13 +132,35 @@ test('stageFromEvent normalizes ESPN round-of-32 metadata', () => {
   assert.equal(stageFromEvent({ season: { type: 13801 } }), 'round-of-32');
 });
 
+test('stageFromEvent recognizes ESPN third-place metadata', () => {
+  assert.equal(stageFromEvent({ season: { slug: '3rd-place-match' } }), 'third-place');
+  assert.equal(stageFromEvent({ season: { name: '2026 FIFA World Cup, Third Place' } }), 'third-place');
+  assert.equal(stageFromEvent({ season: { type: 13797 } }), 'third-place');
+});
+
 test('nextStage maps the full knockout progression', () => {
   assert.equal(nextStage('round-of-32'), 'round-of-16');
   assert.equal(nextStage('round-of-16'), 'quarterfinal');
   assert.equal(nextStage('quarterfinal'), 'semifinal');
   assert.equal(nextStage('semifinal'), 'final');
   assert.equal(nextStage('final'), 'champion');
+  assert.equal(nextStage('third-place'), null);
   assert.equal(nextStage('group-stage'), null);
+});
+
+test('parseFixture publishes third-place stage without an advancement target', () => {
+  const event = {
+    id: '760516',
+    date: '2026-07-18T21:00:00Z',
+    season: { year: 2026, type: 13797, slug: '3rd-place-match' },
+    competitions: [{ competitors: [
+      { homeAway: 'home', team: { id: '478', displayName: 'France' } },
+      { homeAway: 'away', team: { id: '448', displayName: 'England' } },
+    ] }],
+  };
+  const parsed = parseFixture(event, null);
+  assert.equal(parsed.stage, 'third-place');
+  assert.equal(parsed.winnerAdvancesTo, undefined);
 });
 
 test('parseMatch publishes knockout stage and winner/loser facts', () => {

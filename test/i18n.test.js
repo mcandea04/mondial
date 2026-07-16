@@ -1,7 +1,7 @@
 // test/i18n.test.js
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { localize, localizeTeam, alarmIsWatch, alarmBadgeLabel, UI_STRINGS, STATUS_LABEL, dateLabel } from '../site/assets/i18n.js';
+import { localize, localizeTeam, alarmIsWatch, alarmBadgeLabel, UI_STRINGS, STATUS_LABEL, dateLabel, stageLabel } from '../site/assets/i18n.js';
 
 test('localize: legacy string passes through unchanged', () => {
   assert.equal(localize('salut', 'en'), 'salut');
@@ -50,6 +50,11 @@ test('dateLabel returns a capitalized localized weekday', () => {
   // 17 June 2026 is a Wednesday — RO and EN must name the same day differently.
   assert.match(ro, /[Mm]iercuri/);
   assert.match(en, /Wednesday/);
+});
+
+test('stageLabel localizes the third-place match', () => {
+  assert.equal(stageLabel('third-place', 'ro'), 'finala mică');
+  assert.equal(stageLabel('third-place', 'en'), 'third-place match');
 });
 
 test('localizeTeam maps Romanian exonyms to English, RO passes through', () => {

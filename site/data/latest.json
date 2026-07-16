@@ -1,6 +1,6 @@
 {
   "date": "2026-07-16",
-  "factsHash": "c3bf4a3901a2c9ea39c99ec79ab2f5107af6c29c6c72643f992b5d3fd35ba960",
+  "factsHash": "e5832491202f8dd03b21ec706d58877edd4fcff63ffe5289f924d15cab796940",
   "narrator": {
     "ro": "gemini-polish",
     "en": "gemini-polish"
@@ -107,16 +107,16 @@
       "homeCode": "fr",
       "awayCode": "gb-eng",
       "group": null,
-      "stage": "round-of-32",
-      "winnerAdvancesTo": "round-of-16",
+      "stage": "third-place",
+      "winnerAdvancesTo": null,
       "kickoffEEST": "00:00",
       "alarm": {
         "ro": "merită văzut",
         "en": "worth watching"
       },
       "why": {
-        "ro": "Peste două nopți, de la ora 00:00, Franța și Anglia se înfruntă pentru un bilet în optimi, o partidă de calibru pentru care merită să rămâi treaz.",
-        "en": "After a two-day break, France and England clash in a tense Round of 32 tie at 00:00, where a spot in the last 16 makes the midnight kickoff well worth the wait."
+        "ro": "Peste două nopți, de la 00:00, Franța și Anglia se bat pentru locul 3, un duel între două forțe prea apropiate ca să-l lași pe dimineață.",
+        "en": "After two rest nights, France and England meet for third place at 00:00, with two evenly matched heavyweights making the late hour worth it."
       }
     }
   ],

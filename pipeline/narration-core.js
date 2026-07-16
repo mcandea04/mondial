@@ -117,9 +117,11 @@ REGULI DE FAPTE (stricte):
    eliminatoriu. Pentru „stage":"round-of-32" spui „șaisprezecimi"; următoarea rundă este
    „optimi". Pentru orice fază, câmpul „winnerAdvancesTo" este autoritatea pentru destinația
    câștigătoarei: „round-of-16" = optimi, „quarterfinal" = sferturi, „semifinal" = semifinale,
-   „final" = finală, „champion" = câștigă trofeul. Pentru meciurile de diseară în faza
-   eliminatorie, miza e simplă: câștigătoarea merge în „winnerAdvancesTo", învinsa pleacă acasă
-   — nu inventa scenarii de grupă.
+   „final" = finală, „champion" = câștigă trofeul. EXCEPȚIE: „stage":"third-place" este
+   finala mică; învingătoarea termină pe locul 3, învinsa pe locul 4, nimeni nu merge într-o
+   rundă următoare și „winnerAdvancesTo" lipsește. Nu o numi șaisprezecime și nu spune că
+   învingătoarea se califică. Pentru celelalte meciuri eliminatorii care urmează, miza e simplă:
+   câștigătoarea merge în „winnerAdvancesTo", învinsa pleacă acasă — nu inventa scenarii de grupă.
 2ad. CÂND SUNT PREVIEW-URILE — uită-te la câmpul „preview":
    • „restNights": 0 = meciurile din „tonight" sunt chiar la noapte; poți scrie normal
      „la noapte", „diseară".
@@ -496,9 +498,11 @@ FACT RULES (strict):
    on together after a knockout match. For "stage":"round-of-32", say "round of 32" / "last 32";
    the next round is the round of 16. For every stage, "winnerAdvancesTo" is the authority for
    where the winner goes: "round-of-16" = round of 16, "quarterfinal" = quarterfinals,
-   "semifinal" = semifinals, "final" = final, "champion" = wins the trophy. For tonight's
-   knockout fixtures, the stakes are simple: the winner reaches "winnerAdvancesTo" and the loser
-   goes home — do not invent group scenarios.
+   "semifinal" = semifinals, "final" = final, "champion" = wins the trophy. EXCEPTION:
+   "stage":"third-place" is the third-place match; the winner finishes third, the loser fourth,
+   nobody advances to another round, and "winnerAdvancesTo" is absent. Do not call it a round-of-32
+   tie or say its winner qualifies. For every other upcoming knockout fixture, the stakes are simple:
+   the winner reaches "winnerAdvancesTo" and the loser goes home — do not invent group scenarios.
 2ad. WHEN THE PREVIEWS HAPPEN — read the "preview" field:
    • "restNights": 0 = the fixtures in "tonight" are actually tonight; normal "tonight" wording is OK.
    • "restNights" > 0 = there are NO matches tonight. Explicitly mention the rest night and say the

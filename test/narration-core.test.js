@@ -60,10 +60,14 @@ test('prompts define knockout facts and forbid both-qualified framing', () => {
   assert.match(SYSTEM_PROMPT, /winnerAdvancesTo/);
   assert.match(SYSTEM_PROMPT, /sferturi/);
   assert.match(SYSTEM_PROMPT, /ambele echipe/);
+  assert.match(SYSTEM_PROMPT, /„stage":"third-place"/);
+  assert.match(SYSTEM_PROMPT, /finala mică/);
   assert.match(SYSTEM_PROMPT_EN, /KNOCKOUT STAGE/);
   assert.match(SYSTEM_PROMPT_EN, /winnerAdvancesTo/);
   assert.match(SYSTEM_PROMPT_EN, /quarterfinals/);
   assert.match(SYSTEM_PROMPT_EN, /both teams qualified/);
+  assert.match(SYSTEM_PROMPT_EN, /"stage":"third-place"/);
+  assert.match(SYSTEM_PROMPT_EN, /winner finishes third/);
 });
 
 test('Romanian prompt rejects TV-recap stiffness and asks for spoken rhythm', () => {

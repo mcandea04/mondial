@@ -23,6 +23,8 @@ test('tonightPhaseLabel summarizes unique upcoming stages', () => {
   ];
   assert.equal(tonightPhaseLabel(tonight, 'ro'), 'șaisprezecimi / optimi');
   assert.equal(tonightPhaseLabel(tonight, 'en'), 'round of 32 / round of 16');
+  assert.equal(tonightPhaseLabel([{ stage: 'third-place' }], 'ro'), 'finala mică');
+  assert.equal(tonightPhaseLabel([{ stage: 'third-place' }], 'en'), 'third-place match');
   assert.equal(tonightPhaseLabel([{ stage: null }], 'ro'), '');
 });
 
