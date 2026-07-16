@@ -38,7 +38,7 @@
           "team": "home",
           "penalty": false,
           "ownGoal": false,
-          "assist": "Morgan Rogers",
+          "assist": null,
           "bodyPart": "dreptul",
           "placement": null
         },
