@@ -142,21 +142,17 @@ site data or use a private window.
 
 ## Deployment (GitHub Actions)
 
-- `digest.yml` polls every 15 min across the night window, runs the pipeline with
-  `--require-complete`, and only commits + deploys to Pages when the night is over. It deploys in
-  the **same run** because commits made with `GITHUB_TOKEN` don't trigger other workflows. Needs
-  `contents: write, pages: write, id-token: write`. `published=true` (set via `$GITHUB_OUTPUT`)
-  gates the commit/deploy/email steps. A `workflow_dispatch` with `force=true` runs `--re-narrate`
-  (skips the completeness gate); an optional `steer` input becomes a one-shot prompt note.
+- `digest.yml` is manual-only (`workflow_dispatch`); automated polling was retired after the
+  tournament. A run without `force` uses `--require-complete`; `force=true` runs `--re-narrate`
+  (skips the completeness gate), and an optional `steer` input becomes a one-shot prompt note.
+  Successful runs commit and deploy to Pages in the **same run** because commits made with
+  `GITHUB_TOKEN` don't trigger other workflows.
 - `deploy.yml` — manual `workflow_dispatch` that deploys the committed `site/` without running the
   pipeline. Use after a manual content edit or a restore, when re-narrating would lose data.
 - `re-narrate.yml` — owner-only, triggered by a labeled issue. `re-narrate` label → dispatch
   `digest.yml` `force=true` with the issue body as a steering note (regenerate today's prose).
   `gold` label → append the issue body's lines to `pipeline/gold.json` and push (taste for future
   nights; does NOT re-narrate today).
-- `freshness-alarm.yml` — dead-man switch: runs after the night window closes
-  (`scripts/check-digest-fresh.js`) and emails an alarm if `latest.json` isn't today's, so a total
-  trigger failure is noticed instead of discovered by chance.
 - All digest-related workflows share the `concurrency: digest` group so a deploy, a digest run, and
   a gold push never collide.
 - The narrator engine is the `NARRATOR` GitHub repo *variable* (`gemini-polish` is the prod

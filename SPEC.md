@@ -181,8 +181,9 @@ mondial/
   token replacement) so previews are correct without JS.
 
 ### 4.7 Workflow (`.github/workflows/digest.yml`)
-- `schedule: cron "30 4 * * *"` (04:30 UTC = 07:30 EEST during summer time) +
-  `workflow_dispatch` for manual reruns.
+- Manual-only `workflow_dispatch`; automated polling and freshness alarms were retired after the
+  tournament. A run without `force` still checks match completeness, while `force=true` supports
+  explicit re-runs and backfills.
 - Steps: checkout → setup-node → `npm ci` → `node pipeline/run.js` → commit
   `site/data/*` and regenerated `index.html` → push → deploy `site/` to GitHub Pages
   via `actions/configure-pages` + `actions/upload-pages-artifact` + `actions/deploy-pages`.
@@ -192,9 +193,6 @@ mondial/
 - Repo settings: Pages → Source = GitHub Actions. Site lives at
   `https://<user>.github.io/mondial/` (or a custom domain later). Free public-repo
   limits (soft 100 GB/month bandwidth, 1 GB site) are far beyond this site's needs.
-- Scheduled-workflow quirks on free accounts: cron is auto-disabled after 60 days of
-  repo inactivity (the pipeline's daily commits prevent this) and runs may start a few
-  minutes late under load — both acceptable here.
 - Failure handling: if the football API or Claude call fails, keep yesterday's
   `latest.json` untouched and exit non-zero so the run shows red in Actions (and skip
   the deploy step).

@@ -1,17 +1,6 @@
 name: Daily digest
 
 on:
-  schedule:
-    # Poll every 15 min from 00:00 EEST (21:00 UTC) through 13:00 EEST (10:00
-    # UTC). No night finishes before midnight EEST, so earlier polling can never
-    # publish; the morning tail covers matches that kick off near 06:00 UTC and
-    # only flip to FINISHED hours later (extra time, penalties, API lag). The run
-    # is a cheap no-op until every match of the night has finished. GitHub
-    # frequently drops these scheduled triggers, so a local launchd poller
-    # (scripts/poll-digest.sh) fires the same workflow as the reliable path; this
-    # cron is the cloud-side fallback for when that machine is asleep.
-    - cron: "*/15 21-23 * * *"
-    - cron: "*/15 0-10 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -76,8 +65,8 @@ jobs:
 
       - name: Build digest
         id: build
-        # Scheduled polls gate on completeness; a manual run without "force"
-        # gates too, but force=true (re-run / backfill) skips the gate.
+        # A manual run without "force" gates on completeness; force=true
+        # (re-run / backfill) skips the gate.
         run: |
           DATE_ARG=""
           if [ -n "${{ inputs.date }}" ]; then DATE_ARG="--date ${{ inputs.date }}"; fi
