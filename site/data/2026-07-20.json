@@ -38,7 +38,7 @@
           "team": "home",
           "penalty": false,
           "ownGoal": false,
-          "assist": null,
+          "assist": "Nico Williams",
           "bodyPart": "stângul",
           "placement": "din careu"
         }
